@@ -1,20 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<project name="ijoyplus-all" default="hello">
+<project name="ijoyplus-all" default="deploy">
 
-	  <!-- ============================================  -->
-	  <!-- (DEFAULT)  Target: hello                      -->
-	  <!-- ============================================  -->
-	    <target name="hello" description="Says Hello">
-	      <echo msg="Hello, world!" />
-	    </target>
+ <property name="server.webroot" value="/var/www/html" />
+ <property name="ijoyplus-service.workingdir" value="./ijoyplus-social/" />
+ <property name="repository" value="https://github.com/scottliyq/ijoyplus-service" />
+ <resolvepath propertyName="local.repository.resolved" file="./" />
+ <resolvepath propertyName="ijoyplus-service.workingdir.resolved" file="${ijoyplus-service.workingdir}" />
 
-	  <!-- ============================================  -->
-	  <!-- Target: cheese                                -->
-	  <!-- ============================================  -->
+  <tstamp>
+    <format property="build.time" pattern="%Y_%m_%d__%H_%M_%S" />
+  </tstamp>
 
-	  <target name="cheese" description="Expresses feelings about cheese">
-	    <echo msg="I like cheese" />
-	  </target>
+ <target name="clone" description="Deploys a copy of ijoyplus">
+   <gitclone repository="https://github.com/scottliyq/ijoyplus-service" targetPath="${ijoyplus-service.workingdir.resolved}" />
+ </target>
 
+ <target name="deploy" description="Deploys a copy of ijoyplus-service">
+   <!-- Switch to the version of Drupal I want -->
+   <gitpull repository="${local.repository.resolved}" source="origin"
+            strategy="recursive" keep="true"
+            force="true" quiet="true" norebase="true" />
+   
+   <!-- Put the code in the webroot (remove unwanted files) -->
+   <copy todir="${server.webroot}/drupal-${build.time}" >
+     <fileset dir="./ijoyplus-service/">
+       <include name="ijoyplus-service/" />
+       <exclude name="ijoyplus-service/.git" />
+     </fileset>
+   </copy>
+
+   <!-- Make the code live. -->
+   <symlink target="${server.webroot}/ijoyplus-service-${build.time}/drupal" link="${server.webroot}/ijoyplus-service" overwrite="true" />
+
+ </target>
 </project>
