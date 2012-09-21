@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="ijoyplus-all" default="hello">
+
+  <!-- ============================================  -->
+  <!-- (DEFAULT)  Target: hello                      -->
+  <!-- ============================================  -->
+    <target name="hello" description="Says Hello">
+      <echo msg="Hello, world!" />
+    </target
+
+  <!-- ============================================  -->
+  <!-- Target: cheese                               -->
+  <!-- ============================================  -->
+
+  <target name="cheese" description="Expresses feelings about cheese">
+    <echo msg="I like cheese" />
+  </target>
+
+</project>
