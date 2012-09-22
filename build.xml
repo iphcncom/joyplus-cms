@@ -2,7 +2,7 @@
 
 <project name="ijoyplus-all" default="deploy">
 
- <property name="server.webroot" value="/opt/local/www" />
+ <property name="server.webroot" value="/var/www/html" />
  <property name="ijoyplus-service.workingdir" value="./ijoyplus-social/" />
  <property name="repository" value="https://github.com/scottliyq/ijoyplus-service" />
  <resolvepath propertyName="local.repository.resolved" file="./" />
