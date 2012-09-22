@@ -2,15 +2,11 @@
 
 <project name="ijoyplus-all" default="deploy">
 
- <property name="server.webroot" value="/var/www/html" />
+ <property name="server.webroot" value="/opt/local/www" />
  <property name="ijoyplus-service.workingdir" value="./ijoyplus-social/" />
  <property name="repository" value="https://github.com/scottliyq/ijoyplus-service" />
  <resolvepath propertyName="local.repository.resolved" file="./" />
  <resolvepath propertyName="ijoyplus-service.workingdir.resolved" file="${ijoyplus-service.workingdir}" />
-
-  <tstamp>
-    <format property="build.time" pattern="%Y_%m_%d__%H_%M_%S" />
-  </tstamp>
 
  <target name="clone" description="Deploys a copy of ijoyplus">
    <gitclone repository="https://github.com/scottliyq/ijoyplus-service" targetPath="${ijoyplus-service.workingdir.resolved}" />
@@ -23,15 +19,29 @@
             force="true" quiet="true" norebase="true" />
    
    <!-- Put the code in the webroot (remove unwanted files) -->
-   <copy todir="${server.webroot}/drupal-${build.time}" >
-     <fileset dir="./ijoyplus-service/">
-       <include name="ijoyplus-service/" />
-       <exclude name="ijoyplus-service/.git" />
+  <delete dir="${server.webroot}/joyplus-service" includeemptydirs="true" verbose="true" failonerror="false" />
+   <mkdir  dir="${server.webroot}/joyplus-service" /> 
+   <copy todir="${server.webroot}/joyplus-service" >
+     <fileset dir="joyplus-social/ijoyplusservice">
+     </fileset>
+   </copy>
+
+  <delete dir="${server.webroot}/joyplus-video" includeemptydirs="true" verbose="true" failonerror="false" />
+   <mkdir  dir="${server.webroot}/joyplus-video" /> 
+   <copy todir="${server.webroot}/joyplus-video" >
+     <fileset dir="joyplus-video">
+     </fileset>
+   </copy>
+
+  <delete dir="${server.webroot}/joyplus-crawler" includeemptydirs="true" verbose="true" failonerror="false" />
+   <mkdir  dir="${server.webroot}/joyplus-crawler" /> 
+   <copy todir="${server.webroot}/joyplus-crawler" >
+     <fileset dir="joyplus-crawler">
      </fileset>
    </copy>
 
    <!-- Make the code live. -->
-   <symlink target="${server.webroot}/ijoyplus-service-${build.time}/drupal" link="${server.webroot}/ijoyplus-service" overwrite="true" />
+   <!--><symlink target="${server.webroot}/ijoyplus-service-${build.time}/drupal" link="${server.webroot}/ijoyplus-service" overwrite="true" />-->
 
  </target>
 </project>
