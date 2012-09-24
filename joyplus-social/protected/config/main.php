@@ -66,7 +66,7 @@ return array(
 		// uncomment the following to use a MySQL database
 		
 		'db'=>array(
-			'connectionString' => 'mysql:host=115.239.196.123;dbname=ijoyplus',
+			'connectionString' => 'mysql:host=localhost;dbname=ijoyplus',
 			'emulatePrepare' => true,
 			'username' => 'root',
 			'password' => 'ilovetv001',
@@ -100,9 +100,9 @@ return array(
 				),
 				// uncomment the following to show log messages on web pages
 				
-				//array(
-				//	'class'=>'CWebLogRoute',
-				//),
+//				array(
+//					'class'=>'CWebLogRoute',
+//				),
 				
 			),
 		),
