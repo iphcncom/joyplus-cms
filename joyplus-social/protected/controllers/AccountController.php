@@ -170,10 +170,7 @@ class AccountController extends Controller{
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
-		}
+		
    		$username = Yii::app()->request->getParam("username");
    		$pwd = Yii::app()->request->getParam("password");
    		$email = Yii::app()->request->getParam("email");
@@ -244,10 +241,7 @@ class AccountController extends Controller{
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
-		}
+		
    		$username = Yii::app()->request->getParam("username");
    		$pwd = Yii::app()->request->getParam("password");
    		$email = Yii::app()->request->getParam("email");
