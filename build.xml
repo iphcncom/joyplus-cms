@@ -22,7 +22,14 @@
   <delete dir="${server.webroot}/joyplus-service" includeemptydirs="true" verbose="true" failonerror="false" />
    <mkdir  dir="${server.webroot}/joyplus-service" /> 
    <copy todir="${server.webroot}/joyplus-service" >
-     <fileset dir="joyplus-social/ijoyplusservice">
+     <fileset dir="joyplus-social">
+     </fileset>
+   </copy>
+
+   <delete dir="${server.webroot}/yii" includeemptydirs="true" verbose="true" failonerror="false" />
+   <mkdir  dir="${server.webroot}/yii" /> 
+   <copy todir="${server.webroot}/yii" >
+     <fileset dir="yii">
      </fileset>
    </copy>
 
