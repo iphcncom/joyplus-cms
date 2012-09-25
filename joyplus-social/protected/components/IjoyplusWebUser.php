@@ -5,7 +5,6 @@
 	{   
 		parent::afterLogin($fromCookie);
 		User::model()->updateLastLoginDate(Yii::app()->user->id);
-		echo 'ddss';
 	}
   }
 ?>
