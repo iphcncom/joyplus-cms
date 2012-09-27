@@ -16,7 +16,7 @@ class AccountController extends Controller{
               IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		  return ;
 		}		 	
-   	    $email = Yii::app()->request->getParam("email");
+   	    $email = Yii::app()->request->getParam("username");
    		$pwd = Yii::app()->request->getParam("password");
    		$rememberMe = Yii::app()->request->getParam("rememberMe");
    		$identity=new IjoyPlusUserIdentity($email,$pwd);
@@ -171,9 +171,9 @@ class AccountController extends Controller{
 		   return ;
 		}
 		
-   		$username = Yii::app()->request->getParam("username");
+   		$username = Yii::app()->request->getParam("nickname");
    		$pwd = Yii::app()->request->getParam("password");
-   		$email = Yii::app()->request->getParam("email");
+   		$email = Yii::app()->request->getParam("username");
    		
    		if( !(isset($username) && !is_null($username) && strlen($username) >0) ) {
    			IjoyPlusServiceUtils::exportServiceError(Constants::USERNAME_IS_NULL);	
@@ -242,9 +242,9 @@ class AccountController extends Controller{
 		   return ;
 		}
 		
-   		$username = Yii::app()->request->getParam("username");
+   		$username = Yii::app()->request->getParam("nickname");
    		$pwd = Yii::app()->request->getParam("password");
-   		$email = Yii::app()->request->getParam("email");
+   		$email = Yii::app()->request->getParam("username");
 	    $sourceid= Yii::app()->request->getParam("source_id");
 	    $source_type= Yii::app()->request->getParam("source_type");
         if(!IjoyPlusServiceUtils::validateThirdPartSource($source_type)){
