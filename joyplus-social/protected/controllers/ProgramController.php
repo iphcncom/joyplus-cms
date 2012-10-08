@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 class ProgramController extends Controller
 {
@@ -128,19 +128,12 @@ class ProgramController extends Controller
 		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
 		   		 return ;
 		   	}
-		    if(!IjoyPlusServiceUtils::validateAPPKey()){
-	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
-			   return ;
-			}
+		   
 			if(Yii::app()->user->isGuest){
 				IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
 				return ;
 			}
-			$prod_id= Yii::app()->request->getParam("prod_id");
-			if( (!isset($prod_id)) || is_null($prod_id)  ){
-				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
-				return;
-			}
+			
 			$prod_id= Yii::app()->request->getParam("prod_id");
 			if( (!isset($prod_id)) || is_null($prod_id)  ){
 				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
@@ -464,7 +457,7 @@ class ProgramController extends Controller
 		 * If creation is successful, the browser will be redirected to the 'view' page.
 		 */
 		public function actionComment(){
-	        header('Content-type: application/json');
+//	        header('Content-type: application/json');
 		    if(Yii::app()->request->isPostRequest){   
 		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
 		   		 return ;
@@ -490,7 +483,7 @@ class ProgramController extends Controller
 			$model->author_id = Yii::app()->user->id;
 			$model->author_username=Yii::app()->user->getState("username");
 			$model->author_photo_url=Yii::app()->user->getState("pic_url");
-			//var_dump($model);
+			var_dump($model->comments);
 			if($model->createComments()){
 		      IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
 			}else{
