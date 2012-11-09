@@ -1,0 +1,2 @@
+MacPlayer.playhtml = '<object id="Player" classid="clsid:A74BF134-5213-46B5-AF36-CE1888315DC7" width="100%" height="'+MacPlayer.height+'" onError="MacPlayer.install();"><PARAM NAME="URL" VALUE="'+MacPlayer.playurl+'"><PARAM NAME="lActiveXStyle" VALUE="1"><PARAM NAME="NextWebUrl" VALUE="'+MacPlayer.nexturl+'"></object>';
+MacPlayer.show();

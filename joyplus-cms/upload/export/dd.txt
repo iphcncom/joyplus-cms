@@ -1,0 +1,1 @@
+update {pre}vod set d_playfrom='youku',d_playserver='0',d_playurl='XNDU2NjUwNDA0',webUrls='http://v.youku.com/v_show/id_XNDU2NjUwNDA0.html'  where d_id=14875

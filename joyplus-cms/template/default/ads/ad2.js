@@ -1,0 +1,1 @@
+﻿document.writeln(" 预留广告位2  width=\"700\" height=\"90\" ");

@@ -1,0 +1,2 @@
+MacPlayer.playhtml = '<embed type="application/x-shockwave-flash" src="http://union.maccms.com/player8/tudou.swf" id="Player" name="Player" bgcolor="#FFFFFF" quality="high" allowfullscreen="true" allowNetworking="internal" allowscriptaccess="never" wmode="transparent" menu="false" always="false"  pluginspage="http://www.macromedia.com/go/getflashplayer" width="100%" height="'+MacPlayer.height+'" flashvars="iid='+MacPlayer.playurl+'&autoplay=1&">';
+MacPlayer.show();

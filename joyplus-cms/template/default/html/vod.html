@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBliC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>[vodinfo:name]_[vodinfo:typename] - {maccms:name}</title>
+<meta name="keywords" content="[vodinfo:name],[vodinfo:typename],{maccms:name}">
+<meta name="description" content="[vodinfo:name],[vodinfo:typename],{maccms:name}">
+<link type="text/css" rel="stylesheet" href="{maccms:templatepath}images/kuniao.css">
+<link type="text/css" rel="stylesheet" href="{maccms:templatepath}images/vod.css">
+<script>var maccms_path = "{maccms:path}"</script>
+<script src="{maccms:path}js/jquery.js"></script>
+<script src="{maccms:path}js/function.js"></script>
+<script src="{maccms:path}js/player.js"></script>
+<script src="{maccms:templatepath}images/js/kuniao.js"></script>
+[vodinfo:history]
+<style>
+#ku_A .left .pp{width:656px;margin:15px auto 0}
+#ku_A .menu .r{padding:5px 0}
+#ku_A .menu .r a{margin:0 6px}
+#clipBlock .pp li{height:180px}
+.subInfo{width:640px;margin:5px auto 10px;text-align:left;line-height:22px}
+.menu .l span {background:url(); width:62px;font-size:12px;margin-left:10px;color:#000; font-weight:bold}
+#ku_A .left .pp span {margin:6px auto 0 15px;}
+.tvCls,.dmCls{display:none;}
+#ku_A .mvCls,#ku_A .tvCls,#ku_A .dmCls {margin:10px auto 0;}
+.blockRB .ku_menuA{margin-top:8px;}
+.blockRB .ku_menuA ul{width:216px;float:left;}
+.blockRB .ku_menuA li{width:42px;}
+#ku_A .blockRB {width:256px;margin:16px auto 0;}
+#ku_A .right .pp li {height:160px;}
+#ku_A .block_ku .noInfo,.noInfo{ text-align:left; margin:10px auto 10px 15px;}
+.noInfo img{border:none; display:inline;}
+</style>
+</head>
+<body>
+{maccms:head}
+<div class="area" id="ku_A">
+<div class="left">
+<div class="block_ku clear">
+<div id="infoId">
+<div class="title">	
+<div class="l"><strong>[vodinfo:name][vodinfo:remarks]</strong> </div>
+<div class="r"><span>[vodinfo:scorepjf]</span>分([vodinfo:scorecount]人评分)</div>
+</div>
+<div class="info clear">
+<div class="l"><a href="[vodinfo:link]" target="_blank"><img src="[vodinfo:pic]" width="120" height="165" alt=""></a></div>
+<div class="r">
+<dl>
+<dt>地区：[vodinfo:area]</dt>
+<dd>类型：<em>[vodinfo:typename]</em></dd></dl>
+<dl><dt>来源：[vodinfo:from]</dt>
+<dt>播放：<em>[vodinfo:hits]次</em></dt></dl>
+<dl><dd>主演：[vodinfo:starringlink]</dd></dl>
+<dl><dt>导演：[vodinfo:directed]</dt>  <dd>语言：[vodinfo:language]</dd> </dl>
+<dl><dd>[vodinfo:scoremark]</dd></dl>
+<dl><dd>[vodinfo:goodmark] [vodinfo:badmark] </dd></dl>
+<h5><a name="pageHot"></a><a href="http://www.baidu.com/s?word=[vodinfo:name] 迅雷下载&tn=35034034_1_hao_pg&ie=gbk" target="_blank" class="playBtn"> 下  载</a><em id="clipHref" style=""><a href="http://www.baidu.com/s?word=[vodinfo:name] 快车下载&tn=35034034_1_hao_pg&ie=gbk" target="_blank" class="playBtn">快车下载</a></em><em id="piczt" style=""><a href="http://www.baidu.com/s?word=[vodinfo:name] BT下载&tn=35034034_1_hao_pg&ie=gbk" target="_blank" class="playBtn">BT下载</a></em><em id="piczt" style=""><a href="javascript:void(0)" onClick="vodError('[vodinfo:id]','[vodinfo:name]');return false;" class="playBtn">我要报错</a></em></h5>	
+</div></div></div></div>
+<div class="blank10B"></div>
+{maccms:playlist}
+<div class="blank10B"></div>
+<div class="block_ku clear">
+<div class="soybox "><h2><span>播放列表：（[playlist:num]）</span>【[playlist:tip]】</h2></div>
+<div class="soyurl"><ul>
+{maccms:urllist order=asc}<li><a href="[urllist:link]" target="_blank">[urllist:name]</a></li>{/maccms:urllist}</ul></div>
+</div>
+{/maccms:playlist}
+
+{maccms:downlist}
+<div class="blank10B"></div>
+<div class="block_ku clear">
+<div class="soybox "><h2><span>下载列表：（[downlist:num]）</span>【[downlist:tip]】</h2>
+<div class="soyurl"><ul>
+{maccms:urllist order=asc}<li><a href="[urllist:path]" target="_blank">[urllist:name]</a></li>{/maccms:urllist}</ul></div></div>
+</div>
+{/maccms:downlist}
+
+<div class="blank10B"></div>
+<div class="block_ku clear">
+<div class="soybox "><h2><span> 剧情介绍:</span>请慢慢解读《[vodinfo:name]》这部好戏</h2><a name="intro"></a>
+<div class="soytxt"> 
+<p>[vodinfo:content]</p>
+</div></div>
+<div class="blank10B"></div>
+</div>
+[vodinfo:comment]</div>
+<div class="right">
+<div class="ad300">
+<!--AD----width="260" height="120"------->
+<script src="{maccms:templatepath}ads/ad6.js"></script>
+<!--AD----width="260" height="120"------->
+</div>
+<div class="blockRA clear">
+<h2><span class="t10">这些[vodinfo:typename]您或许喜欢看</span></h2>
+<div class="pp" id="likeLook">
+<ul>{maccms:vodlist num=6 by=rnd order=desc}
+<li><a href="[vodlist:link]" target="_blank"><img src="[vodlist:pic]" width="90" height="109" alt="[vodlist:name]"></a><span><strong><a href="[vodlist:link]" target="_blank" title="[vodlist:name]">[vodlist:name len=6]</a></strong><br><br><em>[vodinfo:typename]</em></span></li>
+{/maccms:vodlist}
+</ul></div></div>
+<div class="blockRB clear">
+<h2><span>{maccms:name}：分类检索</span></h2>
+<div class="ku_menuA">
+<ul>
+<li><A id=Tab_rebo_0 class=on onMouseOver="switchTab('rebo',0,5,'on','');" href="javascript://">按产地</A> </li>
+<li><A id=Tab_rebo_1 onMouseOver="switchTab('rebo',1,5,'on','');" href="javascript://">按类型</A> </li>
+<li><A id=Tab_rebo_2 onMouseOver="switchTab('rebo',2,5,'on','');" href="javascript://">按年份</A> </li>
+<li><A id=Tab_rebo_3 onMouseOver="switchTab('rebo',3,5,'on','');" href="javascript://">按拼音</A> </li>
+<li><A id=Tab_rebo_4 onMouseOver="switchTab('rebo',4,5,'on','');" href="javascript://">按明星</A> </li>
+</ul>
+</div>
+<div class="mvCls clear" id=List_rebo_0>
+<div class="list clear">
+<!--<h3>按产地|</h3>-->
+<ul>
+<li><a href="{maccms:path}search.php?area=大陆">大陆</a></li>
+<li><a href="{maccms:path}search.php?area=香港">香港</a></li>
+<li><a href="{maccms:path}search.php?area=台湾">台湾</a></li>
+<li><a href="{maccms:path}search.php?area=日本">日本</a></li>
+<li><a href="{maccms:path}search.php?area=韩国">韩国</a></li>
+<li><a href="{maccms:path}search.php?area=美国">美国</a></li>
+<li><a href="{maccms:path}search.php?area=其他">其他</a></li>
+</ul></div>
+</div>
+<div class="tvCls clear" id=List_rebo_1>
+<div class="list clear">
+<!--<h3>按类型|</h3>-->
+<ul>{maccms:menulist  parent=1,2,3 order=asc}
+<li><a title='[menulist:name]' href="[menulist:link]">[menulist:name]</a></li>
+{/maccms:menulist}
+</ul></div>
+</div>
+<div class="dmCls clear" id=List_rebo_2>
+<div class="list clear">
+<!--<h3>按年份|</h3>-->
+<ul>
+<li><a href="{maccms:path}search.php?year=2011">2011年</a></li>
+<li><a href="{maccms:path}search.php?year=2010">2010年</a></li>
+<li><a href="{maccms:path}search.php?year=2009">2009年</a></li>
+<li><a href="{maccms:path}search.php?year=2008">2008年</a></li>
+<li><a href="{maccms:path}search.php?year=2007">2007年</a></li>
+<li><a href="{maccms:path}search.php?year=2006">2006年</a></li>
+<li><a href="{maccms:path}search.php?year=2005">2005年</a></li>
+<li><a href="{maccms:path}search.php?year=2004">2004年</a></li>
+<li><a href="{maccms:path}search.php?year=2003">2003年</a></li>
+<li><a href="{maccms:path}search.php?year=2002">2002年</a></li>
+<li><a href="{maccms:path}search.php?year=2001">2001年</a></li>
+<li><a href="{maccms:path}search.php?year=2000">2000年</a></li>
+<li><a href="{maccms:path}search.php?year=1999">1999年</a></li>
+</ul></div>
+</div>
+<div class="dmCls clear" id=List_rebo_3>
+<div class="list clear">
+<!--<h3>按拼音|</h3>-->
+<ul>
+<li><a href="{maccms:path}search.php?zimu=A">A</a></li>
+<li><a href="{maccms:path}search.php?zimu=B">B</a></li>
+<li><a href="{maccms:path}search.php?zimu=C">C</a></li>
+<li><a href="{maccms:path}search.php?zimu=D">D</a></li>
+<li><a href="{maccms:path}search.php?zimu=E">E</a></li>
+<li><a href="{maccms:path}search.php?zimu=F">F</a></li>
+<li><a href="{maccms:path}search.php?zimu=G">G</a></li>
+<li><a href="{maccms:path}search.php?zimu=H">H</a></li>
+<li><a href="{maccms:path}search.php?zimu=I">I</a></li>
+<li><a href="{maccms:path}search.php?zimu=J">J</a></li>
+<li><a href="{maccms:path}search.php?zimu=K">K</a></li>
+<li><a href="{maccms:path}search.php?zimu=L">L</a></li>
+<li><a href="{maccms:path}search.php?zimu=M">M</a></li>
+<li><a href="{maccms:path}search.php?zimu=N">N</a></li>
+<li><a href="{maccms:path}search.php?zimu=O">O</a></li>
+<li><a href="{maccms:path}search.php?zimu=P">P</a></li>
+<li><a href="{maccms:path}search.php?zimu=Q">Q</a></li>
+<li><a href="{maccms:path}search.php?zimu=R">R</a></li>
+<li><a href="{maccms:path}search.php?zimu=S">S</a></li>
+<li><a href="{maccms:path}search.php?zimu=T">T</a></li>
+<li><a href="{maccms:path}search.php?zimu=U">U</a></li>
+<li><a href="{maccms:path}search.php?zimu=V">V</a></li>
+<li><a href="{maccms:path}search.php?zimu=W">W</a></li>
+<li><a href="{maccms:path}search.php?zimu=X">X</a></li>
+<li><a href="{maccms:path}search.php?zimu=Y">Y</a></li>
+<li><a href="{maccms:path}search.php?zimu=Z">Z</a></li>
+</ul></div>
+</div>
+<div class="dmCls clear" id=List_rebo_4>
+<div class="list clear">
+<!--<h3>按明星|</h3>-->
+<ul>
+<li><a href="{maccms:path}search.php?starring=成龙">成　龙</a></li>
+<li><a href="{maccms:path}search.php?starring=李连杰">李连杰</a></li>
+<li><a href="{maccms:path}search.php?starring=洪金宝">洪金宝</a></li>
+<li><a href="{maccms:path}search.php?starring=甄子丹">甄子丹</a></li>
+<li><a href="{maccms:path}search.php?starring=元彪">元　彪</a></li>
+<li><a href="{maccms:path}search.php?starring=元华">元　华</a></li>
+<li><a href="{maccms:path}search.php?starring=贾静雯">贾静雯</a></li>
+<li><a href="{maccms:path}search.php?starring=章子怡">章子怡</a></li>
+<li><a href="{maccms:path}search.php?starring=范冰冰">范冰冰</a></li>
+<li><a href="{maccms:path}search.php?starring=周星驰">周星驰</a></li>
+<li><a href="{maccms:path}search.php?starring=刘德华">刘德华</a></li>
+<li><a href="{maccms:path}search.php?starring=陈道明">陈道明</a></li>
+<li><a href="{maccms:path}search.php?starring=李丽珍">李丽珍</a></li>
+</ul></div>
+</div>
+
+</div>
+</div>
+<div class="footer"></div>
+</div>
+{maccms:foot}
+</body>
+</html>
