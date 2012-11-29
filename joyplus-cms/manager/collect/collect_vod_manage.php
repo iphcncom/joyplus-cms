@@ -1,6 +1,9 @@
 <?php
 require_once ("../admin_conn.php");
 require_once ("collect_fun.php");
+require_once ("MovieType.php");
+require_once ("collect_vod_cjVideoUrl.php");
+require_once ("tools/ContentManager.php");
 chkLogin();
 $action = be("get","action");
 headAdminCollect ("视频自定义采集项目管理");
@@ -14,15 +17,24 @@ switch(trim($action))
 	case "lastsave" : lastsave();break;
 	case "saveok" : saveok();break;
 	case "del" : del();break;
+	case "collectSimple" : collectSimple();break;
+	case "collectVideo" : collectVideo();break;
 	case "copy" : copynew();break;
 	case "delall" : delall();break;
 	case "export" : export(); break;
 	case "upexp" : upexp(); break;
 	case "upexpsave" : upexpsave(); break;
 	case "breakpoint" : breakpoint(); break;
+	case "collectVideoResult" :collectVideoResult();break;
 	default :  clearSession(); main(); break;
 }
-
+function collectVideoResult(){
+	$webUrl = be("all","site_url");
+	$p_id=be("all","p_id");
+	echo "url :".$webUrl."</br>";
+//	echo "project id :".$p_id."\r\n";
+	echo "<font color='red'>".getVideoUrlByProjectAndUrl($webUrl,$p_id).'</font>';
+}
 function export()
 {
 	global $db;
@@ -124,6 +136,91 @@ function delall()
 	  $db->query("delete from {pre}cj_vod_projects WHERE p_id in (".$ids.")");
 	}
     showmsg ("采集项目删除成功！","collect_vod_manage.php");
+}
+
+function collectSimple(){
+	$p_id=be("all","p_id");
+	$p_name=be("all","p_name");
+	
+?>
+<form action="collect_vod_cj.php?action=collectSimpl" method="post" id="form1" name="form1">
+<INPUT id="p_id" name="p_id" type="hidden" value="<?php echo $p_id?>" >
+<table class="tb">
+    <tr>
+      <td width="20%" >项目：</td>
+      <td>
+      <?php echo $p_name?>
+	  </td>
+	   </tr>
+	   <tr>
+      <td width="20%" >采集视频地址：</td>
+      <td>
+      	<INPUT id="site_url" name="site_url" size="100" value="" >
+	  </td>
+	  </tr>
+	  
+	  <tr>
+      <td width="20%" >视频名字：</td>
+      <td>
+      	<INPUT id="name" name="name" size="100" value="" >
+	  </td>
+	  </tr>
+	  
+	   <tr>
+      <td width="20%" >主演：</td>
+      <td>
+      	<INPUT id="actor" name="actor" size="100" value="" >
+	  </td>
+	  </tr>
+	  
+	   <tr>
+      <td width="20%" >海报地址：</td>
+      <td>
+      	<INPUT id="poster" name="poster" size="100" value="" >
+	  </td>
+	  </tr>
+	  
+	   <tr>
+	<td  colspan="2"  ><input type="submit" class="btn" id="btnNext1" name="btnNext" value="下一步"></td>
+	
+    </tr>
+ </table>
+ </form>   
+<?php 
+
+}
+
+
+function collectVideo(){
+	$p_id=be("all","p_id");
+	$p_name=be("all","p_name");
+	
+?>
+<form action="collect_vod_manage.php?action=collectVideoResult" method="post" id="form1" name="form1">
+<INPUT id="p_id" name="p_id" type="hidden" value="<?php echo $p_id?>" >
+<table class="tb">
+    <tr>
+      <td width="20%" >项目：</td>
+      <td>
+      <?php echo $p_name?>
+	  </td>
+	   </tr>
+	   <tr>
+      <td width="20%" >采集视频地址：</td>
+      <td>
+      	<INPUT id="site_url" name="site_url" size="100" value="" >
+	  </td>
+	  </tr>
+	  
+	  
+	   <tr>
+	<td  colspan="2"  ><input type="submit" class="btn" id="btnNext1" name="btnNext" value="下一步"></td>
+	
+    </tr>
+ </table>
+ </form>   
+<?php 
+
 }
 
 function edit()
@@ -438,6 +535,7 @@ if ($showcode=="1"){
   	<INPUT id="listurl" name="listurl" type="hidden" value="<?php echo $strlisturl?>" >
   	<INPUT id="p_coding" name="p_coding" type="hidden" value="<?php echo $p_coding?>" >
   	<INPUT id="showcode" name="showcode" type="hidden" value="<?php echo $showcode?>" >
+  	<INPUT id="p_playtype" name="p_playtype" type="hidden" value="<?php echo $p_playtype?>" >
 <table class="tb">
   	<tr>
   		<td  colspan="2" align="center">列表连接设置 当前获取的测试地址：<?php echo $strlisturl ?></td>
@@ -590,7 +688,7 @@ function editstep2()
 	$p_picstart = be("post","p_picstart");
 	$p_picend = be("post","p_picend");
 	$showcode = be("post","showcode");
-	
+	$p_playtype = be("post","p_playtype");
 	if( isN($_SESSION["strListCode"] )) {
 		$strListCode = getPage($strlisturl,$p_coding);
 		$_SESSION["strListCode"] = $strListCode;
@@ -615,7 +713,8 @@ function editstep2()
 		$_SESSION["strListCodeCut"]=$strListCodeCut;
 //		var_dump($strListCodeCut);
 		if ($p_starringtype == 1){
-			$starringarr = getArray($strListCodeCut,$p_starringstart,$p_starringend);
+			$starringarrcode = getArray($strListCodeCut,$p_starringstart,$p_starringend);
+//			var_dump($starringarrcode);
 		}
 		if ($p_titletype == 1){
 			$titlearrcode = getArray($strListCodeCut,$p_titlestart,$p_titleend);
@@ -630,25 +729,10 @@ function editstep2()
 				errmsg ("采集提示","<li>在获取链接列表时出错。</li>") ;break;
 			default:
 				$_SESSION["linkarrcode"] = $linkarrcode;
-				$linkarr = explode("{Array}",$linkarrcode);
-				//some time we can't get link like <li class="p_link"><a title="爱情公寓 第三季" href="
-				$tempLinkarr= array();
-				foreach($linkarr as $link){
-					try {
-						$pos = strpos($link, "href=\"");
-						  if ($pos !== false) {
-							$link=substr($link, $pos+6);
-						  }
-						  $pos = strpos($link, "\"");
-						  if ($pos !== false) {
-							$link=substr($link, 0,$pos);
-						  }	
-						$tempLinkarr[]=$link;
-					} catch (Exception $e) {
-					}
-				}
-				$linkarr=$tempLinkarr;
-				$UrlTest = $linkarr[0];
+				$linkarr = explode("{Array}",$linkarrcode);				
+//				$linkarr=getHrefFromLink($tempLinkarr);
+				$UrlTest = getHrefFromLink($linkarr[0]);
+//				var_dump($linkarr[0]);
 				$UrlTest = definiteUrl($UrlTest,$strlisturl);
 				$linkcode = getPage($UrlTest,$p_coding);
 				break;
@@ -673,6 +757,7 @@ function editstep2()
 			default:
 				$starringarr = explode("{Array}",$starringarrcode);
 				$starringcode = $starringarr[0];
+//				var_dump($starringcode);
 				break;
 			}
 		}
@@ -758,12 +843,24 @@ function editstep2()
 	$p_setnametype = $row["p_setnametype"];
 	$p_setnamestart = $row["p_setnamestart"];
 	$p_setnameend = $row["p_setnameend"];
+	$p_playcodeApiUrl= $row["p_playcodeApiUrl"];
+	$p_playcodeApiUrltype= $row["p_playcodeApiUrltype"];
+	$p_playcodeApiUrlParamstart= $row["p_playcodeApiUrlParamstart"];
+	$p_playcodeApiUrlParamend= $row["p_playcodeApiUrlParamend"];
+	$p_videocodeApiUrl= $row["p_videocodeApiUrl"];
+	$p_videocodeApiUrlParamstart= $row["p_videocodeApiUrlParamstart"];
+	$p_videocodeApiUrlParamend= $row["p_videocodeApiUrlParamend"];
+	$p_videourlstart= $row["p_videourlstart"];
+	$p_videourlend= $row["p_videourlend"];
+	$p_videocodeType= $row["p_videocodeType"];
 	
 	if (isN($p_lzcodetype)){$p_lzcodetype=0;}
+	if (isN($p_videocodeType)){$p_videocodeType=0;}
 	if (isN($p_playcodetype)){$p_playcodetype=0;}
 	if (isN($p_playlinktype)){$p_playlinktype=0;}
 	if (isN($p_playspecialtype)){$p_playspecialtype=0;}
 	if (isN($p_setnametype)){$p_setnametype=0;}
+    if (isN($p_playcodeApiUrltype)){$p_playcodeApiUrltype=0;}
 	
 	
 if ($showcode=="1"){
@@ -785,6 +882,8 @@ if ($showcode=="1"){
     <INPUT id="p_starringtype" name="p_starringtype" type="hidden" value="<?php echo $p_starringtype?>" >
     <INPUT id="p_pictype" name="p_pictype" type="hidden" value="<?php echo $p_pictype?>" >
     <INPUT id="showcode" name="showcode" type="hidden" value="<?php echo $showcode?>" >
+    <INPUT id="p_playtype" name="p_playtype" type="hidden" value="<?php echo $p_playtype?>" >
+   
 <table class="tb">
 	<tr>
 	<td  colspan="2" align="center">采集内容设置 当前获取的测试地址：<?php echo $UrlTest?></td>
@@ -962,9 +1061,10 @@ if ($showcode=="1"){
  </tr>
 <tr>
  <td>列表范围：</td>
- <td><input type="radio" value="0" name="p_playcodetype" onClick="ChangeCutPara(0,'trp_playcodestart','trp_playcodeend');" <?php if ($p_playcodetype==0 ){ echo "checked" ;}?>>  
- 关闭&nbsp;&nbsp; <input type="radio" value="1" name="p_playcodetype" onClick="ChangeCutPara(1,'trp_playcodestart','trp_playcodeend');" <?php if ($p_playcodetype==1 ){ echo "checked";} ?>> 
- 开启</td>
+ <td><input type="radio" value="0" name="p_playcodetype" onClick="ChangeCutPara(0,'trp_playcodestart','trp_playcodeend');ChangeCutParaList(0,'trp_playcodeApiUrl,trp_playcodeApiUrltype,trp_playcodeApiUrlParamstart,trp_playcodeApiUrlParamend');" <?php if ($p_playcodetype==0 ){ echo "checked" ;}?>>  
+ 关闭&nbsp;&nbsp; <input type="radio" value="1" name="p_playcodetype" onClick="ChangeCutPara(1,'trp_playcodestart','trp_playcodeend');ChangeCutParaList(0,'trp_playcodeApiUrl,trp_playcodeApiUrltype,trp_playcodeApiUrlParamstart,trp_playcodeApiUrlParamend');" <?php if ($p_playcodetype==1 ){ echo "checked";} ?>> 
+ 开启&nbsp;&nbsp; <input type="radio" value="2" name="p_playcodetype" onClick="ChangeCutParaList(0,'trp_playcodestart,trp_playcodeend');ChangeCutParaList(1,'trp_playcodeApiUrl,trp_playcodeApiUrltype,trp_playcodeApiUrlParamstart,trp_playcodeApiUrlParamend');" <?php if ($p_playcodetype==2 ){ echo "checked" ;}?>>  
+ 来自api</td>
  </tr> 
  <tr id="trp_playcodestart" <?php if ($p_playcodetype !=1 ){ echo "style=\"display:none\"";} ?>>
  <td>播放列表开始代码：</td>
@@ -975,6 +1075,34 @@ if ($showcode=="1"){
  <td>播放列表结束代码：</td>
  <td>&nbsp;&nbsp;输入区域： <span onClick="if(document.Form.p_playcodeend.rows>2)document.Form.p_playcodeend.rows-=1" style='cursor:hand'><b>缩小</b></span> <span onClick="document.Form.p_playcodeend.rows+=1" style='cursor:hand'><b>扩大</b></span><br>
   <textarea name="p_playcodeend" cols="70" rows="3" id="p_playcodeend"><?php echo $p_playcodeend?></textarea></td>
+ </tr>
+ 
+ 
+ <tr id="trp_playcodeApiUrl" <?php if ($p_playcodetype !=2 ){ echo "style=\"display:none\"";} ?>>
+ <td>播放列表API Url：</td>
+ <td>&nbsp;&nbsp;page={PAGE_NO} /channel_id={PROD_ID} /pid={PROD_ID}： <b></b><br>
+  <input name="p_playcodeApiUrl" value=<?php echo $p_playcodeApiUrl?>" size="80">></td>
+ </tr>
+ 
+ <tr id="trp_playcodeApiUrltype" <?php if ($p_playcodetype !=2 ){ echo "style=\"display:none\"";} ?>>
+ <td><font color="#FF0000">获取参数设置：</font></td>
+ <td><input type="radio" value="0" name="p_playcodeApiUrltype"  <?php if ($p_playcodeApiUrltype==0) {echo "checked" ;}?>>
+  内容页直接获取地址&nbsp;&nbsp; 
+<input type="radio" value="1" name="p_playcodeApiUrltype" <?php if ($p_playcodeApiUrltype==1){ echo "checked";}?>>
+  	 链接中获取地址  	
+</td>
+ </tr>
+ 
+ 
+<tr id="trp_playcodeApiUrlParamstart" <?php if ($p_playcodetype !=2 ){ echo "style=\"display:none\"";} ?>>
+ <td>API参数开始代码：</td>
+ <td>&nbsp;&nbsp;输入区域： <br>
+  <textarea name="p_playcodeApiUrlParamstart" cols="70" rows="3" id="p_playcodeApiUrlParamstart"><?php echo $p_playcodeApiUrlParamstart?></textarea></td>
+ </tr>
+ <tr id="trp_playcodeApiUrlParamend" <?php if ($p_playcodetype !=2 ){ echo "style=\"display:none\"";} ?>>
+ <td>API参数结束代码：</td>
+ <td>&nbsp;&nbsp;输入区域：<br>
+  <textarea name="p_playcodeApiUrlParamend" cols="70" rows="3" id="p_playcodeApiUrlParamend"><?php echo $p_playcodeApiUrlParamend?></textarea></td>
  </tr>
  
 <tr>
@@ -1003,7 +1131,9 @@ if ($showcode=="1"){
  <td><input type="radio" value="0" name="p_playspecialtype" checked="checked" onClick="ChangeCutPara(0,'listurl2','listurl3');" <?php if ($p_playspecialtype==0 ){ echo "checked";}?>>
   不作设置&nbsp;&nbsp;
   <input type="radio" value="1" name="p_playspecialtype" onClick="ChangeCutPara(1,'listurl2','listurl3');" <?php if ($p_playspecialtype==1) { echo "checked";}?>>
-  替换地址<br>
+  替换地址&nbsp;&nbsp;
+  <input type="radio" value="2" name="p_playspecialtype" onClick="ChangeCutPara(1,'listurl2','listurl3');" <?php if ($p_playspecialtype==2) { echo "checked";}?>>
+  合并地址<br>
   <font color="red">对于使用了JavaScript:openwindow形式的连接请使用以下格式处理:<br>
   脚本连接:内容[变量] 内容 如:javaScript:OpenWnd([变量])<br>
   实际连接:内容[变量] 内容 如:play.php?id=[变量]</font></td>
@@ -1027,6 +1157,49 @@ if ($showcode=="1"){
  <td>地址结束代码：</td>
  <td>&nbsp;&nbsp;输入区域： <span onClick="if(document.Form.p_playurlend.rows>2)document.Form.p_playurlend.rows-=1" style='cursor:hand'><b>缩小</b></span> <span onClick="document.Form.p_playurlend.rows+=1" style='cursor:hand'><b>扩大</b></span><br>
   <textarea name="p_playurlend" cols="70" rows="3" id="p_playurlend"><?php echo $p_playurlend?></textarea></td>
+ </tr>
+ 
+ 
+
+ 
+ <tr>
+ <td><font color="#FF0000">获取视频地址设置：</font></td>
+ <td><input type="radio" value="0" name="p_videocodeType" onClick="ChangeCutParaList(0,'trp_videourlend,trp_videourlstart,trp_videocodeApiUrl,trp_videocodeApiUrlParamstart,trp_videocodeApiUrlParamend');" <?php if ($p_videocodeType==0) {echo "checked" ;}?>>
+  不能获取
+  	&nbsp;&nbsp; <input type="radio" value="1" name="p_videocodeType" onClick="ChangeCutParaList(0,'trp_videocodeApiUrlParamstart,trp_videocodeApiUrlParamend,trp_videocodeApiUrl');ChangeCutParaList(1,'trp_videourlstart,trp_videourlend');" <?php if ($p_videocodeType==1) {echo "checked" ;}?> >
+  Base64Decode 获得视频地址&nbsp;&nbsp; <input type="radio" value="2" name="p_videocodeType" onClick="ChangeCutParaList(0,'trp_videocodeApiUrlParamstart,trp_videocodeApiUrlParamend');ChangeCutParaList(1,'trp_videocodeApiUrl,trp_videourlstart,trp_videourlend');" <?php if ($p_videocodeType==2){ echo "checked";}?>>
+  	 &nbsp;&nbsp; 直接构造
+<input type="radio" value="3" name="p_videocodeType" onClick="ChangeCutParaList(1,'trp_videourlend,trp_videourlstart,trp_videocodeApiUrl,trp_videocodeApiUrlParamstart,trp_videocodeApiUrlParamend');" <?php if ($p_videocodeType==3){ echo "checked";}?>>
+  	 通过api来获取
+</td>
+ </tr>
+ 
+  <tr id="trp_videocodeApiUrl" <?php if ($p_videocodeType !=3  || $p_videocodeType !=2 ) { echo "style=\"display:none\"";} ?>>
+ <td>视频地址API Url：</td>
+ <td>&nbsp;&nbsp;如果是api：channel_id={PROD_ID} /pid={PROD_ID}： <br>
+ &nbsp;&nbsp;如果是直接构造：/vid/{PROD_ID}/type/mp4/ts/3333333224/useKeyframe/0/v.m3u8  <br>
+  <input name="p_videocodeApiUrl" value="<?php echo $p_videocodeApiUrl?>" size="80"></td>
+ </tr>
+<tr id="trp_videocodeApiUrlParamstart" <?php if ($p_videocodeType !=3) { echo "style=\"display:none\"";} ?>>
+ <td>视频地址API参数开始代码：</td>
+ <td>&nbsp;&nbsp;输入区域： <br>
+  <textarea name="p_videocodeApiUrlParamstart" cols="70" rows="3" id="p_videocodeApiUrlParamstart"><?php echo $p_videocodeApiUrlParamstart?></textarea></td>
+ </tr>
+ <tr id="trp_videocodeApiUrlParamend" <?php if ($p_videocodeType !=3) { echo "style=\"display:none\"";} ?>>
+ <td>视频地址API参数结束代码：</td>
+ <td>&nbsp;&nbsp;输入区域：<br>
+  <textarea name="p_videocodeApiUrlParamend" cols="70" rows="3" id="p_videocodeApiUrlParamend"><?php echo $p_videocodeApiUrlParamend?></textarea></td>
+ </tr>
+ 
+ <tr id="trp_videourlstart" <?php if ($p_videocodeType ==0) { echo "style=\"display:none\"";} ?>>
+ <td>视频地址开始代码：</td>
+ <td>&nbsp;&nbsp;输入区域：<br>
+  <textarea name="p_videourlstart" cols="70" rows="3" id="p_playurlstart"><?php echo $p_videourlstart?></textarea></td>
+ </tr>
+ <tr id="trp_videourlend" <?php if ($p_videocodeType ==0) { echo "style=\"display:none\"";} ?>>
+ <td>视频地址结束代码：</td>
+ <td>&nbsp;&nbsp;输入区域： <br>
+  <textarea name="p_videourlend" cols="70" rows="3" id="p_videourlend"><?php echo $p_videourlend?></textarea></td>
  </tr>
  
  <tr id="tr_SetNameType">
@@ -1072,6 +1245,25 @@ function ChangeCutPara(flag,element1,element2)
 	break;
 	}
 }
+
+function ChangeCutParaList(flag,listElement)
+{   var elments = listElement.split(",");
+    var x;
+    for(x in elments){
+	switch (flag)
+	{
+	case 0 :
+	$("#"+elments[x]).css("display","none");
+	//$("#"+element2).css("display","none");
+	break;
+	case 1 :
+	$("#"+elments[x]).css("display","");
+	//$("#"+element2).css("display","");
+	break;
+	}
+	}
+}
+
 ChangeCutPara(<?php echo $p_lzcodetype?>,'trp_zzcodestart','trp_zzcodeend');
 ChangeCutPara(<?php echo $p_playcodetype?>,'trp_playcodestart','trp_playcodeend');
 ChangeCutPara(<?php echo $p_playlinktype?>,'trp_playlinkstart','trp_playlinkend');
@@ -1118,6 +1310,7 @@ function lastsave()
 	
 	$p_contentend = be("post","p_contentend") ; $p_playcodetype=  be("post","p_playcodetype") ;
 	$p_playcodestart = be("post","p_playcodestart") ; $p_playcodeend=  be("post","p_playcodeend") ;
+	
 	$p_playurlstart = be("post","p_playurlstart") ; $p_playurlend=  be("post","p_playurlend") ;
 	$p_playlinktype = be("post","p_playlinktype") ; $p_playlinkstart=  be("post","p_playlinkstart") ;
 	
@@ -1148,7 +1341,26 @@ function lastsave()
 	$p_setnametype = be("post","p_setnametype"); 
 	$p_setnamestart = be("post","p_setnamestart"); $p_setnameend = be("post","p_setnameend");
 	
-	if (isN($p_starringtype)) { $p_starringtype = 0;}
+	$p_setnametype = be("post","p_setnametype"); 
+	
+	$p_playtype = be("post","p_playtype"); 
+	
+	//api start
+	$playcodeApiUrl = be("post","p_playcodeApiUrl") ; $playcodeApiUrltype=  be("post","p_playcodeApiUrltype") ;
+	$p_playcodeApiUrlParamend = be("post","p_playcodeApiUrlParamend") ; $playcodeApiUrlParamstart=  be("post","p_playcodeApiUrlParamstart") ;
+	 if (isN($playcodeApiUrltype)) { $playcodeApiUrltype = 0;}
+	 
+	 $p_videocodeApiUrl=be("post","p_videocodeApiUrl");
+	$p_videocodeApiUrlParamstart= be("post","p_videocodeApiUrlParamstart");
+	$p_videocodeApiUrlParamend= be("post","p_videocodeApiUrlParamend");
+	$p_videourlstart= be("post","p_videourlstart");
+	$p_videourlend= be("post","p_videourlend");
+	$p_videocodeType=be("post","p_videocodeType");
+	//api end 
+	
+    
+	if (isN($p_videocodeType)) { $p_videocodeType = 0;}
+    if (isN($p_starringtype)) { $p_starringtype = 0;}
 	if (isN($p_titletype)) { $p_titletype = 0;}
 	if (isN($p_pictype)) { $p_pictype = 0;}
 	
@@ -1182,6 +1394,8 @@ function lastsave()
 	}
 
 	$strSet.="p_lzstart='".$p_lzstart."',p_lzend='".$p_lzend."',p_timestart='".$p_timestart."',p_timeend='".$p_timeend."',p_areastart='".$p_areastart."',p_areaend='".$p_areaend."',p_classtype='".$p_classtype."',p_collect_type='".$p_collect_type."',p_typestart='".$p_typestart."',p_typeend='".$p_typeend."',p_contentstart='".$p_contentstart."',p_contentend='".$p_contentend."',p_playcodetype='".$p_playcodetype."',p_playcodestart='".$p_playcodestart."',p_playcodeend='".$p_playcodeend."',p_playurlstart='".$p_playurlstart."',p_playurlend='".$p_playurlend."',p_playlinktype='".$p_playlinktype."',p_playlinkstart='".$p_playlinkstart."',p_playlinkend='".$p_playlinkend."',p_playspecialtype='".$p_playspecialtype."',p_playspecialrrul='".$p_playspecialrrul."',p_playspecialrerul='".$p_playspecialrerul."',p_lzcodetype='".$p_lzcodetype."',p_lzcodestart='".$p_lzcodestart."',p_lzcodeend='".$p_lzcodeend."',p_languagestart='".$p_languagestart."',p_languageend='".$p_languageend."',p_remarksstart='".$p_remarksstart."',p_remarksend='".$p_remarksend."',p_directedstart='".$p_directedstart."',p_directedend='".$p_directedend."',p_setnametype='".$p_setnametype."',p_setnamestart='".$p_setnamestart."',p_setnameend='".$p_setnameend."'";
+	$strSet=$strSet.",p_playcodeApiUrl='".$playcodeApiUrl."',p_playcodeApiUrltype='".$playcodeApiUrltype."',p_playcodeApiUrlParamend='".$p_playcodeApiUrlParamend."',p_playcodeApiUrlParamstart='".$playcodeApiUrlParamstart."'";
+	$strSet=$strSet.",p_videocodeApiUrl='".$p_videocodeApiUrl."',p_videocodeApiUrlParamstart='".$p_videocodeApiUrlParamstart."',p_videocodeApiUrlParamend='".$p_videocodeApiUrlParamend."',p_videourlstart='".$p_videourlstart."',p_videourlend='".$p_videourlend."',p_videocodeType='".$p_videocodeType."'"; 
 	
  	$db->query("update {pre}cj_vod_projects set " .$strSet . " where p_id=" .$p_id);
  	
@@ -1195,9 +1409,10 @@ function lastsave()
 	$p_pagebatchid1 = $row["p_pagebatchid1"];
 	$p_pagebatchid2 = $row["p_pagebatchid2"];
 	$p_server =  $row["p_server"];
+	$UrlTestMoive='';
 	if ($p_server > 0 ) { $p_server_address = $db->getOne("select ds_url from {pre}vod_server where ds_id=".$p_server);}
 	$p_script = $row["p_script"];
-	
+//	echo $p_pagetype;
 	if ($p_pagetype != 3){
 		if( isN($_SESSION["strListCode"] )){
 			$strListCode = getPage($strlisturl,$p_coding);
@@ -1224,7 +1439,7 @@ function lastsave()
 		}
 		
 		if ($p_starringtype ==1){
-			$starringarr = getArray($strListCodeCut,$p_starringstart,$p_starringend);
+			$starringarrcode = getArray($strListCodeCut,$p_starringstart,$p_starringend);
 		}
 		if ($p_titletype ==1) {
 			$titlearrcode = getArray($strListCodeCut,$p_titlestart,$p_titleend);
@@ -1236,12 +1451,16 @@ function lastsave()
 		switch($linkarrcode)
 		{
 			Case False:
-				errmsg ("采集提示","<li>在获取链接列表时出错。</li>");break;
+				errmsg ("采集提示","<li>在获取链接列表时出错。".$linkarrcode."</li>");break;
 			default:
 				$linkarr = explode("{Array}",$linkarrcode);
-				$UrlTest = $linkarr[0];
+				
+				$UrlTest = getHrefFromLink($linkarr[0]);
 				$UrlTest = definiteUrl($UrlTest,$strlisturl);
+//				var_dump($UrlTest);
 				$linkcode = getPage($UrlTest,$p_coding);
+				$UrlTestMoive=$UrlTest;
+				echo ("<li>采集提示：采集页面：".$UrlTest."</li>");
 			break;
 		}
 	
@@ -1273,7 +1492,7 @@ function lastsave()
 	}
 	
 	if ($p_starringtype ==1) {
-		switch($titlearrcode)
+		switch($starringarrcode)
 		{
 		Case False:
 			$starringcode = "获取失败";break;
@@ -1353,6 +1572,56 @@ function lastsave()
 		if ($p_setnametype == 3) {
 			$setnames = getArray($playcode,$p_setnamestart,$p_setnameend);
 		}
+	}else if ($p_playcodetype ==2) { //from api
+//		writetofile("d:\\s.txt",$linkcode) ;
+//		echo $p_playcodeApiUrlParamend .'=='.$playcodeApiUrlParamstart;
+   
+//		echo $playcodeApiUrlParamstart .'\n' .$p_playcodeApiUrlParamend .'  = '.$playcodeApiUrltype;
+		if($playcodeApiUrltype ==0){
+		  $paracode = getBody($linkcode,$playcodeApiUrlParamstart,$p_playcodeApiUrlParamend);
+		}else {
+			 $paracode = getBody($UrlTestMoive,$playcodeApiUrlParamstart,$p_playcodeApiUrlParamend);
+		}
+		
+//		echo $paracode;
+        
+		$p_apibatchurl = replaceStr($playcodeApiUrl,"{PROD_ID}",$paracode);
+		$p_apibatchurls = replaceStr($p_apibatchurl,"{PAGE_NO}",1);
+//		writetofile("d:\\ts.txt", $p_apibatchurls."\n");
+		$playcode=getFormatPage($p_apibatchurls,$p_coding);		
+//		echo $playcode."\n";
+		$weburl = getArray($playcode,$p_playlinkstart,$p_playlinkend);
+//		writetofile("d:\\ts.txt",'aaaaa('.$p_playlinkstart.")\n\t(".$p_playlinkend.")\n\t");
+		$page_num=2;
+//		writetofile("d:\\ts.txt",$weburl);
+//		echo "page 1 :".$weburl .'\n';
+		$flag=true;
+		while ($flag && strpos($playcodeApiUrl, "{PAGE_NO}") !==false){
+			$p_apibatchurls = replaceStr($p_apibatchurl,"{PAGE_NO}",$page_num);
+//			echo $p_apibatchurls .'\n';
+		    $playcode=getFormatPage($p_apibatchurls,$p_coding);		
+		    $weburls = getArray($playcode,$p_playlinkstart,$p_playlinkend);
+//		    writetofile("d:\\ts.txt", "page ".$page_num." :".$weburls .'\n');
+		    if($weburls){
+		    	$weburl=$weburl."{Array}".$weburls;		    	
+		        $page_num=$page_num+1;
+		    }else {
+		    	$flag=false;
+		    }
+		    
+		}
+		
+//		var_dump($weburl);
+//		if ($p_playlinktype >0) {
+//			$weburl = getArray($playcode,$p_playlinkstart,$p_playlinkend);
+//		}
+//		else{
+//			$weburl = getArray($playcode,$p_playurlstart,$p_playurlend);
+//		//	var_dump($playcode);
+//		}
+//		if ($p_setnametype == 3) {
+//			$setnames = getArray($playcode,$p_setnamestart,$p_setnameend);
+//		}
 	}
 	else{
 		if ($p_playlinktype >0) {
@@ -1412,13 +1681,13 @@ function lastsave()
     </tr>
     <tr>
       <td>图片：</td>
-      <td> <?php echo $piccode?> </td>
+      <td> <?php echo getHrefFromImg($piccode)?> </td>
     </tr>
     <tr>
       <td>介绍：</td>
       <td> <?php echo strip_tags($contentcode)?> </td>
     </tr>
-    <?php
+    <?php  
 		 if ($weburl != False) {
 		 	  $webArray=explode("{Array}",$weburl);
 		 	  $setnamesArray=explode("{Array}",$setnames);
@@ -1436,7 +1705,6 @@ function lastsave()
               $webArray=$webArraTemp;
 			  for ($i=0 ;$i<count($webArray);$i++){
 			  	$UrlTest = $webArray[$i];
-			  	
 				if ($p_playspecialtype ==1 && strpos(",".$p_playspecialrrul,"[变量]")) {
 					$Keyurl = explode("[变量]",$p_playspecialrrul);
 					$urli = getBody ($UrlTest,$Keyurl[0],$Keyurl[1]);
@@ -1444,14 +1712,34 @@ function lastsave()
 					$UrlTest = replaceStr($p_playspecialrerul,"[变量]",$urli);
 				}
 				
+			  if ($p_playspecialtype ==2 ) {
+					$urArray = explode("/", $UrlTestMoive);
+//					writetofile("d:\\ts.txt","ss:".$UrlTestMoive);
+					$ur="";
+					for($k=0;$k<count($urArray)-1;$k++){
+						$ur=$ur.$urArray[$k]."/";
+					}
+					$UrlTest=$ur.$UrlTest.".html";
+				}
+				
+			  	
+//				writetofile("d:\\ts.txt", $UrlTest);
+				
 				if ($p_playlinktype ==1) {
+					$UrlTest = getHrefFromLink($UrlTest);
 					$UrlTest = definiteUrl($UrlTest,$strlisturl);
 					$webCode = getPage($UrlTest,$p_coding);
 					$url = getBody($webCode,$p_playurlstart,$p_playurlend);
 					
 					$url = replaceFilters($url,$p_id,3,0);
+					$url = replaceLine($url);
+					$androidUrl = ContentProviderFactory::getContentProvider($p_playtype)->parseAndroidVideoUrlByContent($webCode, $p_coding, $p_script);
+				    $videoAddressUrl = ContentProviderFactory::getContentProvider($p_playtype)->parseIOSVideoUrlByContent($webCode, $p_coding, $p_script);
+				    $videoAddressUrl=$androidUrl.'{====}'.$videoAddressUrl;
+					
 				}
 				else if($p_playlinktype ==2) {
+					$UrlTest = getHrefFromLink($UrlTest);
 					if (isN($p_playurlend)){
 						$tmpA = strpos($UrlTest, $p_playurlstart);
                 		$url = substr($UrlTest,strlen($UrlTest)-$tmpA-strlen($p_playurlstart)+1);
@@ -1461,6 +1749,7 @@ function lastsave()
 					}
 				}
 				else if($p_playlinktype ==3) {
+					$UrlTest = getHrefFromLink($UrlTest);
 					$UrlTest = definiteUrl($UrlTest,$strlisturl);
 					$webCode = getPage($UrlTest,$p_coding);
 					$tmpB = getArray($webCode,$p_playurlstart,$p_playurlend);
@@ -1468,7 +1757,10 @@ function lastsave()
 					foreach($tmpC as $tmpD)
 					{
 						$url = $tmpD;
-						?>
+						?><tr>
+					      <td>播放列表：</td>
+					      <td> <?php echo $p_server_address . $UrlTest?> </td>
+					    </tr>
 						<tr>
 					      <td>地址：</td>
 					      <td> <?php echo $p_server_address . $url?> </td>
@@ -1479,7 +1771,21 @@ function lastsave()
 				}
 				else{
 					$url = replaceFilters($UrlTest,$p_id,3,0);
-					?>
+					$url = replaceLine($url);
+//					echo $url;
+					$webCode = getPage($UrlTestMoive,$p_coding);
+					
+					$androidUrl = ContentProviderFactory::getContentProvider($p_playtype)->parseAndroidVideoUrlByContent($webCode, $p_coding, $p_script);
+				    $videoAddressUrl = ContentProviderFactory::getContentProvider($p_playtype)->parseIOSVideoUrlByContent($webCode, $p_coding, $p_script);
+				    $videoAddressUrl=$androidUrl.'{====}'.$videoAddressUrl;
+					?><tr>
+					      <td>播放列表：</td>
+					      <td> <?php echo $p_server_address . $UrlTestMoive?> </td>
+					    </tr>
+					    <tr>
+					      <td>视频地址列表：</td>
+					      <td> <?php echo $p_server_address .  replaceStr($videoAddressUrl,"\\","")?> </td>
+					    </tr>
 						<tr>
 					      <td>地址：</td>
 					      <td> <?php echo $p_server_address . $url?> </td>
@@ -1489,23 +1795,27 @@ function lastsave()
 				}
 				if ($p_setnametype == 1) {
 					$setname = getBody($url,$p_setnamestart,$p_setnameend);
-					$url = $setname ."$" .$url;
+//					$url = $setname ."$" .$url;
 				}
-				else if($p_setnametype == 1 && $p_playlinktype ==1) {
+				else if($p_setnametype == 2 && $p_playlinktype ==1) {
 					$setname = getBody($webCode,$p_setnamestart,$p_setnameend);
-					$url = $setname ."$" .$url;
+//					$url = $setname ."$" .$url;
 				}
 				else if($p_setnametype==3){
-					$url = $setnamesArray[$i] . "$" .$url;
+					$setname= $setnamesArray[$i];
+//					$url = $setnamesArray[$i] . "$" .$url;
 				}
 		?>
 		    <tr>
 		    <td>播放列表：</td>
 			<td> <?php echo $UrlTest?> </td>
-		    </tr>
+		    </tr><tr>
+					      <td>视频地址列表：</td>
+					      <td> <?php echo $p_server_address . replaceStr($videoAddressUrl,"\\","")?> </td>
+					    </tr>
 		    <tr>
 			<td>地址：</td>
-			<td> <?php echo $url?> </td>
+			<td> <?php echo $url?>  集数： <?php echo filterScriptStar($setname,$p_script)?> </td>
 			</tr>
        <?php
            }
@@ -1550,8 +1860,8 @@ function main()
       <td>项目名称</td>
       <td width="10%">播放类型</td>
       <td width="10%">入库分类</td>
-      <td width="20%">上次采集</td>
-      <td width="25%">操作</td>
+      <td width="10%">上次采集</td>
+      <td width="50%">操作</td>
     </tr>
 	<?php
 	if (!$rs){
@@ -1581,11 +1891,15 @@ function main()
 	  </td>
       <td><?php echo isToDay($row['p_time']) ?></td>
  	  <td>
- 	  <A href="collect_vod_cj.php?p_id=<?php echo  $row["p_id"] ?>">采集</A>｜
+ 	  <A href="collect_vod_cj.php?ignoreExistM=true&p_id=<?php echo  $row["p_id"] ?>">采集</A>｜
+ 	   <A href="collect_vod_cj.php?p_id=<?php echo  $row["p_id"] ?>">采集(包括已经采集过)</A>｜
+ 	  <A href="?action=collectSimple&p_id=<?php echo $row["p_id"]?>&p_name=<?php echo $row["p_name"]?>">采集单个视频</A>｜
+ 	  <A href="?action=collectVideo&p_id=<?php echo $row["p_id"]?>&p_name=<?php echo $row["p_name"]?>">采集视频地址</A>｜
  	  <A href="?action=edit&p_id=<?php echo $row["p_id"]?>">修改</A>｜
  	  <A href="?action=copy&p_id=<?php echo  $row["p_id"] ?>">复制</A>｜
  	  <A href="?action=export&p_id=<?php echo  $row["p_id"] ?>">导出</A>｜
  	  <A href="?action=del&p_id=<?php echo $row["p_id"]?>">删除</A>
+ 	  
  	  </td>
     </tr>
 	<?php

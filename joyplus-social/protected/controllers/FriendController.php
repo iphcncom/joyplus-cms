@@ -3,12 +3,12 @@
 class FriendController extends Controller
 {   
 	/**
-	 * ��ע����
+	 * ???????
 	 * Enter description here ...
 	 */
 	public function actionFollow(){
         header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
+	    if(!Yii::app()->request->isPostRequest){   
 	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
 	   		 return ;
 	   	}
@@ -16,8 +16,8 @@ class FriendController extends Controller
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+        if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
 			return ;
 		}
 		
@@ -35,7 +35,7 @@ class FriendController extends Controller
 	}
 	public function actionLike(){
         header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
+	    if(!Yii::app()->request->isPostRequest){   
 	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
 	   		 return ;
 	   	}
@@ -43,8 +43,8 @@ class FriendController extends Controller
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+        if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
 			return ;
 		}
 		
@@ -81,7 +81,7 @@ class FriendController extends Controller
 		         $dynamic->content_id=$user_id;
 		         $dynamic->status=Constants::OBJECT_APPROVAL;
 		         $dynamic->create_date=new CDbExpression('NOW()');
-		         $dynamic->content_name=$user->username; 
+		         $dynamic->content_name=$user->nickname; 
 		         $dynamic->dynamic_type=Constants::DYNAMIC_TYPE_LIKE_FRIEND;
 		         $dynamic->content_pic_url=$user->user_photo_url;
 		         $dynamic->save();	
@@ -90,7 +90,7 @@ class FriendController extends Controller
 		          $msg = new NotifyMsg();
 			      $msg->author_id=$user_id;
 			      $msg->nofity_user_id=Yii::app()->user->id;
-			      $msg->notify_user_name=Yii::app()->user->getState("username");
+			      $msg->notify_user_name=Yii::app()->user->getState("nickname");
 		          $msg->notify_user_pic_url=Yii::app()->user->getState("pic_url");			      
 			      $msg->created_date=new CDbExpression('NOW()');
 			      $msg->status=Constants::OBJECT_APPROVAL;
@@ -110,12 +110,12 @@ class FriendController extends Controller
 	}
 	
 	/**
-	 * ȡ���ע 
+	 * ????? 
 	 * Enter description here ...
 	 */
 	public function actionDestory(){
         header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
+	    if(!Yii::app()->request->isPostRequest){   
 	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
 	   		 return ;
 	   	}
@@ -123,8 +123,8 @@ class FriendController extends Controller
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+        if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
 			return ;
 		}
 	    $friend_id = Yii::app()->request->getParam("friend_ids");
@@ -142,16 +142,12 @@ class FriendController extends Controller
 	
 	public function actionRecommends(){
         header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+        if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
 			return ;
 		}
         $page_size=Yii::app()->request->getParam("page_size");

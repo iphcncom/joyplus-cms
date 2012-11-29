@@ -1,7 +1,7 @@
 <?php
   class UserVO{
   	 public $id;
-  	 public $username;
+  	 public $nickname;
   	 public $user_pic_url;
   	// public $email;
   }

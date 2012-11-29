@@ -17,6 +17,7 @@ return array(
 		'application.models.*',
 		'application.components.*',
         'application.vo.*',
+        'application.manager.*',
 	),
 
 	'modules'=>array(
@@ -42,22 +43,31 @@ return array(
 		
 		
 //		'cache'=>array(
-//            'class'=>'CMemCache',
-//            'servers'=>array(
-//                array('host'=>'localhost', 'port'=>11211, 'weight'=>100)
-//            ),
-//        ),
+  //          'class'=>'system.caching.CMemCache',
+//		    'useMemcached'=>false,
+  //          'servers'=>array(
+    //            array('host'=>'115.239.196.123', 'port'=>11211, 'weight'=>100)
+      //      ),
+      //  ),
 		
 		// uncomment the following to enable URLs in path-format
 		
 		'urlManager'=>array(
 			'urlFormat'=>'path',
-//			'rules'=>array(
-//				'login'=>'login/login',
-//				'logout'=>'login/logout',
-//				'register'=>'login/register',
-//		        'profile'=>'login/userInfo',
-//			),
+			'rules'=>array(
+				'search'=>'search/search',
+				'topKeywords'=>'search/topKeywords',
+				'video_movies'=>'search/popMovie',
+		        'video_tvs'=>'search/popTV',
+		        'video_shows'=>'search/popShow',
+		        'video_video'=>'search/PopVedio',
+                'tops'=>'top/SystemTop',
+		        'movie_tops'=>'top/SystemMovieTop',
+		        'tv_tops'=>'top/SystemTVTop',
+		        'show_tops'=>'top/SystemShowTop',
+                'top_items'=>'top/TopItems',
+		        'lunbo'=>'search/lunBo',
+			),
 		),
 		
 //		'db'=>array(
@@ -66,14 +76,27 @@ return array(
 		// uncomment the following to use a MySQL database
 		
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=ijoyplus',
+			'connectionString' => 'mysql:host=10.4.5.187;dbname=ijoyplus;port=30306',
 			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => 'ilovetv001',
+			'username' => 'joyplus',
+			'password' => 'ilovetv001', //ilovetv001
 			'charset' => 'utf8',
 		    'enableParamLogging'=>true,
-		
 		),
+		
+		//将session保持在数据库的设置：
+//		'session' => array (
+//		    'class' => 'system.web.CDbHttpSession',
+//		    'connectionID' => 'db',
+//		    'sessionTableName' => 'actual_table_name',
+//		),
+		
+//		 将session保持在cache的设置：
+//		'session' => array (
+//		    'class' => 'system.web.CCacheHttpSession',
+//		    'cacheID' => 'cache',
+//		),
+		
 			
 //		'db'=>array(
 //			'connectionString' => 'mysql:host='.SAE_MYSQL_HOST_M.';port='.SAE_MYSQL_PORT.';dbname='.SAE_MYSQL_DB,
@@ -96,7 +119,6 @@ return array(
 			'routes'=>array(
 				array(
 					'class'=>'CFileLogRoute',
-//					'levels'=>'error, warning',
 				),
 				// uncomment the following to show log messages on web pages
 				
@@ -107,37 +129,37 @@ return array(
 			),
 		),
 	),
-
+    'params'=>require(dirname(__FILE__).'/businessParams.php'),
 	// application-level parameters that can be accessed
 	// using Yii::app()->params['paramName']
-	'params'=>array(
-		// this is used in contact page
-		'adminEmail'=>'webmaster@ijoyplus.com',
-	    'app_key'=>'ijoyplus_android_0001,ijoyplus_ios_001',
-	    'errors'=>array(    
-		// this is used in contact page
-		'10021'=>'HTTP method is not suported for this request',
-	    '10006' =>'Source paramter (appkey) is missing or invalid',
-	    '10001'=>'System error',
-		'00000'=>'Success',
-		'20001'=>'Account not Found',
-	    '20002'=>'Password is invalid',
-	    '20003'=>'Email is invalid',
-	    '20004'=>'Username can\'t be null',
-	    '20005'=>'Password can\'t be null',
-	    '20006'=>'Username exists.',
-	    '20007'=>'Email exists.',
-	    '20008'=>'Session is expired, need relogin.',	
-	    '20009'=>'Third part account type is invalid.',		
-	    '20010'=>'Object not found',
-	    '20011'=>'Param is invalid',
-	    '20012'=>'Result is null.',
-	    '20013'=>'Program is published.',
-	    '20014'=>'Url is invalid.',
-	    '20015'=>'Program is favority.',
-	    '20016'=>'Program is not favority.',
-	    '20017'=>'Person is liked by you.',
-	),
-	),
+//	'params'=>array(
+//		// this is used in contact page
+//		'adminEmail'=>'webmaster@ijoyplus.com',
+//	    'app_key'=>'ijoyplus_android_0001,ijoyplus_ios_001',
+//	    'errors'=>array(    
+//		// this is used in contact page
+//		'10021'=>'HTTP method is not suported for this request',
+//	    '10006' =>'Source paramter (appkey) is missing or invalid',
+//	    '10001'=>'System error',
+//		'00000'=>'Success',
+//		'20001'=>'Account not Found',
+//	    '20002'=>'Password is invalid',
+//	    '20003'=>'Email is invalid',
+//	    '20004'=>'Username can\'t be null',
+//	    '20005'=>'Password can\'t be null',
+//	    '20006'=>'Username exists.',
+//	    '20007'=>'Email exists.',
+//	    '20008'=>'Session is expired, need relogin.',	
+//	    '20009'=>'Third part account type is invalid.',		
+//	    '20010'=>'Object not found',
+//	    '20011'=>'Param is invalid',
+//	    '20012'=>'Result is null.',
+//	    '20013'=>'Program is published.',
+//	    '20014'=>'Url is invalid.',
+//	    '20015'=>'Program is favority.',
+//	    '20016'=>'Program is not favority.',
+//	    '20017'=>'Person is liked by you.',
+//	),
+//	),
 	
 );

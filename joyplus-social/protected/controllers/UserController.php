@@ -1,19 +1,19 @@
 <?php
 
 class UserController extends Controller
-{
-	public function actionThirdpartUsers(){
+{   
+	/**
+	 * 锟斤拷锟斤拷没锟斤拷牡锟斤拷锟斤拷锟斤拷
+	 * Enter description here ...
+	 */
+	public function actionThirdPartyUsers(){
         header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+        if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
 			return ;
 		}
 		$source_type= Yii::app()->request->getParam("source_type");
@@ -39,10 +39,13 @@ class UserController extends Controller
 			IjoyPlusServiceUtils::exportServiceError(Constants::THIRD_PART_SOURCE_TYPE_INVALID);
 		}
 	}
-
-	public function actionPreGenThirdpartUsers(){
+    /**
+     * 预锟斤拷傻锟斤拷锟斤拷锟斤拷锟叫憋拷
+     * Enter description here ...
+     */
+	public function actionPreGenThirdPartyUsers(){
         header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
+	    if(!Yii::app()->request->isPostRequest){   
 	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
 	   		 return ;
 	   	}
@@ -50,8 +53,8 @@ class UserController extends Controller
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+        if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
 			return ;
 		}
 		$sourceid= Yii::app()->request->getParam("source_ids");
@@ -74,23 +77,23 @@ class UserController extends Controller
 			IjoyPlusServiceUtils::exportServiceError(Constants::THIRD_PART_SOURCE_TYPE_INVALID);
 		}
 	}
-
-	public function actionFans(){
-        header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
+    /**
+     * 锟揭的凤拷丝
+     * Enter description here ...
+     */
+	public function actionFans(){		
+	    header('Content-type: application/json');
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
-		}
+		
 		$userid=Yii::app()->request->getParam("userid");
 		if( (!isset($userid)) || is_null($userid)  ){
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
 			$userid=Yii::app()->user->id;
 		}
 		$page_size=Yii::app()->request->getParam("page_size");
@@ -112,23 +115,60 @@ class UserController extends Controller
 			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
 		}
 	}
-
-	public function actionFriends(){
-        header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
+	
+   function actionTops(){
+       header('Content-type: application/json');
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
+		
+        $userid=Yii::app()->request->getParam("userid");
+		if( (!isset($userid)) || is_null($userid)  ){		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
+			$userid=Yii::app()->user->id;
 		}
+		$page_size=Yii::app()->request->getParam("page_size");
+		$page_num=Yii::app()->request->getParam("page_num");
+		if(!(isset($page_size) && is_numeric($page_size))){
+			$page_size=10;
+			$page_num=1;
+		}else if(!(isset($page_num) && is_numeric($page_num))){
+			$page_num=1;
+		}
+		try{
+		  $lists = SearchManager::lists($userid,$page_size,$page_size*($page_num-1),0);
+		  if(isset($lists) && is_array($lists)){				
+		    IjoyPlusServiceUtils::exportEntity(array('tops'=>$lists));
+		    }else {
+			  IjoyPlusServiceUtils::exportEntity(array('tops'=>array()));
+			}
+		}catch (Exception $e){
+		  IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);	
+		}
+	}
+	
+	
+    /**
+     * 锟揭的癸拷注
+     * Enter description here ...
+     */
+	public function actionFriends(){		
+	    header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}
+		
 		$userid=Yii::app()->request->getParam("userid");
-		if( (!isset($userid)) || is_null($userid)  ){
+		if( (!isset($userid)) || is_null($userid)  ){		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
 		   $userid=Yii::app()->user->id;
 		}
 		$page_size=Yii::app()->request->getParam("page_size");
@@ -151,24 +191,69 @@ class UserController extends Controller
 		}
 		IjoyPlusServiceUtils::exportEntity(Friend::model()->searchFriends($userid,$limit,$offset));
 	}
-
-	function actionView(){
+	
+   public function actionPrestiges(){	
+   		
         header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
+		
+        
+		$page_size=Yii::app()->request->getParam("page_size");
+		$page_num=Yii::app()->request->getParam("page_num");
+		if(!(isset($page_size) && is_numeric($page_size))){
+			$page_size=10;
+			$page_num=1;
+		}else if(!(isset($page_num) && is_numeric($page_num))){
+			$page_num=1;
 		}
-	   	$userid=Yii::app()->request->getParam("userid");
+		$userid=0;
+        if(!Yii::app()->user->isGuest){
+			$userid=Yii::app()->user->id;
+		}
+		
+		try {
+			$prestiges=User::model()->userPrestiges($userid, $page_size,$page_size*($page_num-1));			
+			if(isset($prestiges) && !is_null($prestiges) && is_array($prestiges)){	
+				IjoyPlusServiceUtils::exportEntity(array('prestiges'=>$prestiges));
+			}else {
+				  IjoyPlusServiceUtils::exportEntity(array('prestiges'=>array()));
+		    }
+		}catch (Exception $e) {
+//			var_dump($e);
+			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+		}
+		
+	}
+	
+    /**
+     * 锟斤拷目
+     * Enter description here ...
+     */
+	function actionView(){		
+	    header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}
+	    
+		$userid=Yii::app()->request->getParam("userid");
+		$isFollowed = true;
+		if(Yii::app()->user->isGuest){
+			if( (!isset($userid)) || is_null($userid)  ){
+		   		IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);	
+			    return ;
+		   	}			
+		}
+		
 	   	if( (!isset($userid)) || is_null($userid)  ){
 	   		$userid=Yii::app()->user->id;
+	   	}else{
+	   		if( !IjoyPlusServiceUtils::validateUserID()){
+	   	      $isFollowed = Friend::model()->isFollowedByOwn($userid);
+	   		}
 	   	}
 	   	try {
 	   		$user=User::model()->findByPk($userid);
@@ -178,6 +263,7 @@ class UserController extends Controller
 	   			$temp = array(
 				     'id'=>$user->id,
 				     'username'=>$user->username,
+				     'nickname'=>$user->nickname,
 				     'email'=>$user->email,
 				     'phone'=>$user->phone,
 				     'pic_url'=>$user->user_photo_url,
@@ -185,6 +271,11 @@ class UserController extends Controller
 				     'like_num'=>$user->like_number,
 				     'follow_num'=>$user->watch_number,
 				     'fan_num'=>$user->fan_number,
+	   			     'isFollowed'=>$isFollowed,
+	   			     'support_num'=>$user->good_number,
+	   			     'share_num'=>$user->share_number,
+	   			     'favority_num'=>$user->favority_number,
+	   			     'tops_num'=>$user->top_number,
 	   			);
 	   			IjoyPlusServiceUtils::exportEntity($temp);
 	   		}
@@ -192,23 +283,58 @@ class UserController extends Controller
 	   		IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
 	   	}
 	}
-
-	public function actionWatchs(){
-        header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
+	/**
+	 * 锟狡硷拷慕锟侥�	 * Enter description here ...
+	 */
+    public function actionRecommends(){		
+	    header('Content-type: application/json');
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
-		}
    		$userid=Yii::app()->request->getParam("userid");
    		if( (!isset($userid)) || is_null($userid)  ){
+			if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);	
+				return ;
+			}
+   			$userid=Yii::app()->user->id;
+   		}
+   		$page_size=Yii::app()->request->getParam("page_size");
+   		$page_num=Yii::app()->request->getParam("page_num");
+   		if(!(isset($page_size) && is_numeric($page_size))){
+   			$page_size=10;
+   			$page_num=1;
+   		}else if(!(isset($page_num) && is_numeric($page_num))){
+   			$page_num=1;
+   		}
+   		try {
+   			$dynamics=Dynamic::model()->searchUserRecommends($userid,$page_size,$page_size*($page_num-1));
+   			if(isset($dynamics) && !is_null($dynamics) && is_array($dynamics)){
+   				IjoyPlusServiceUtils::exportEntity(array('recommends'=>$dynamics));
+   			}else {
+   				IjoyPlusServiceUtils::exportEntity(array('recommends'=>array()));
+   			}
+   		} catch (Exception $e) {
+   			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+   		}
+	}
+	/**
+	 * 锟矫伙拷锟斤拷锟斤拷慕锟侥�	 * Enter description here ...
+	 */
+	public function actionWatchs(){
+        header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}
+		
+   		$userid=Yii::app()->request->getParam("userid");
+   		if( (!isset($userid)) || is_null($userid)  ){		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
    			$userid=Yii::app()->user->id;
    		}
    		$page_size=Yii::app()->request->getParam("page_size");
@@ -230,23 +356,23 @@ class UserController extends Controller
    			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
    		}
 	}
-	
-	public function actionFriendAndMeDynamics(){
-        header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
+	/**
+	 * 锟斤拷态
+	 * Enter description here ...
+	 */
+	public function actionFriendAndMeDynamics(){		
+	    header('Content-type: application/json');
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
-		}
+		
 		$userid=Yii::app()->request->getParam("user_id");
-		if( (!isset($userid)) || is_null($userid)  ){
+		if( (!isset($userid)) || is_null($userid)  ){		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
 		   $userid=Yii::app()->user->id;
 		}
 		$page_size=Yii::app()->request->getParam("page_size");
@@ -270,24 +396,23 @@ class UserController extends Controller
 		}
 	}
 	
-	
-   public function actionFriendDynamics(){
-        header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
+	/**
+	 * 锟斤拷锟窖讹拷态
+	 * Enter description here ...
+	 */
+   public function actionFriendDynamics(){		
+	    header('Content-type: application/json');
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
-		}
-   
+		
 		$userid=Yii::app()->request->getParam("user_id");
-		if( (!isset($userid)) || is_null($userid)  ){
+		if( (!isset($userid)) || is_null($userid)  ){		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
 		   $userid=Yii::app()->user->id;
 		}
 		$page_size=Yii::app()->request->getParam("page_size");
@@ -299,35 +424,33 @@ class UserController extends Controller
 			$page_num=1;
 		}
 
-		try {
+//		try {
 			$favorities=Dynamic::model()->friendDynamics($userid,$page_size,$page_size*($page_num-1));
+//			var_dump($favorities);
 			if(isset($favorities) && !is_null($favorities) && is_array($favorities)){
 				IjoyPlusServiceUtils::exportEntity(array('dynamics'=>$this->transferDynamic($favorities)));
 			}else {
 				IjoyPlusServiceUtils::exportEntity(array('dynamics'=>array()));
 			}
-		} catch (Exception $e) {
-			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
-		}
+//		} catch (Exception $e) {
+//			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+//		}
 	}
-	
-public function actionOwnDynamics(){
-        header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
+	//锟皆硷拷锟侥讹拷态
+	public function actionOwnDynamics(){		
+	    header('Content-type: application/json');
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
-		}
+		
 
 		$userid=Yii::app()->request->getParam("user_id");
-		if( (!isset($userid)) || is_null($userid)  ){
+		if( (!isset($userid)) || is_null($userid)  ){		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
 		   $userid=Yii::app()->user->id;
 		}
 		$page_size=Yii::app()->request->getParam("page_size");
@@ -354,12 +477,14 @@ public function actionOwnDynamics(){
 	private function transferDynamic($dynamics){
 		$temp =array();
 		foreach ($dynamics as $dynamic){
-			$user=CacheManager::getUserByID($dynamic['author_id']);
+		   $user=CacheManager::getUserByID($dynamic['author_id']);
+		   if((isset($user) && !is_null($user))){			
 			switch ($dynamic['dynamic_type']){
 				case Constants::DYNAMIC_TYPE_WATCH:
-					$temp["watch"] = array(
+					$temp[] = array(
+					    'type'=>'watch',
 		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
+		    	   	    'user_name'=>$user->nickname,
 		    	   	    'user_pic_url'=>$user->user_pic_url,
 		    	   	    'create_date'=>$dynamic['create_date'],
 		    	   	    'prod_type'=>$dynamic['content_type'],
@@ -370,9 +495,10 @@ public function actionOwnDynamics(){
                       break;
 
 				case Constants::DYNAMIC_TYPE_SHARE:
-					$temp["share"] = array(
+					$temp[] = array(
+					    'type'=>'share',
 		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
+		    	   	    'user_name'=>$user->nickname,
 		    	   	    'user_pic_url'=>$user->user_pic_url,
 		    	   	    'create_date'=>$dynamic['create_date'],
 		    	   	    'prod_type'=>$dynamic['content_type'],
@@ -384,9 +510,10 @@ public function actionOwnDynamics(){
 					break;
 
 				case Constants::DYNAMIC_TYPE_COMMENTS:
-					$temp["comment"] = array(
+					$temp[] = array(
+					    'type'=>'comment',
 		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
+		    	   	    'user_name'=>$user->nickname,
 		    	   	    'user_pic_url'=>$user->user_pic_url,
 		    	   	    'create_date'=>$dynamic['create_date'],
 		    	   	    'prod_type'=>$dynamic['content_type'],
@@ -398,9 +525,10 @@ public function actionOwnDynamics(){
 					break;
 
 				case Constants::DYNAMIC_TYPE_FAVORITY:
-					$temp["favority"] = array(
+					$temp[] = array(
+					    'type'=>'favority',
 		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
+		    	   	    'user_name'=>$user->nickname,
 		    	   	    'user_pic_url'=>$user->user_pic_url,
 		    	   	    'create_date'=>$dynamic['create_date'],
 		    	   	    'prod_type'=>$dynamic['content_type'],
@@ -411,9 +539,10 @@ public function actionOwnDynamics(){
 					break;
 
 				case Constants::DYNAMIC_TYPE_LIKE:
-					$temp["like"] = array(
+					$temp[] = array(
+					    'type'=>'like',
 		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
+		    	   	    'user_name'=>$user->nickname,
 		    	   	    'user_pic_url'=>$user->user_pic_url,
 		    	   	    'create_date'=>$dynamic['create_date'],
 		    	   	    'prod_type'=>$dynamic['content_type'],
@@ -424,9 +553,10 @@ public function actionOwnDynamics(){
 					break;
 
 				case Constants::DYNAMIC_TYPE_PUBLISH_PROGRAM:
-					$temp["publish"] = array(
+					$temp[] = array(
+					    'type'=>'publish',
 		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
+		    	   	    'user_name'=>$user->nickname,
 		    	   	    'user_pic_url'=>$user->user_pic_url,
 		    	   	    'create_date'=>$dynamic['create_date'],
 		    	   	    'prod_type'=>$dynamic['content_type'],
@@ -437,9 +567,10 @@ public function actionOwnDynamics(){
 					break;
 
 				case Constants::DYNAMIC_TYPE_UN_FAVORITY:
-					$temp["unfavority"] = array(
+					$temp[] = array(
+					    'type'=>'unfavority',
 		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
+		    	   	    'user_name'=>$user->nickname,
 		    	   	    'user_pic_url'=>$user->user_pic_url,
 		    	   	    'create_date'=>$dynamic['create_date'],
 		    	   	    'prod_type'=>$dynamic['content_type'],
@@ -451,9 +582,10 @@ public function actionOwnDynamics(){
 
 				case Constants::DYNAMIC_TYPE_COMMENT_REPLI:
 					$prod = CacheManager::getCommentProgram($dynamic['content_id']);
-					$temp["reply"] = array(
+					$temp[] = array(
+					    'type'=>'reply',
 		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
+		    	   	    'user_name'=>$user->nickname,
 		    	   	    'user_pic_url'=>$user->user_pic_url,
 		    	   	    'create_date'=>$dynamic['create_date'],
 		    	   	    'prod_type'=>$prod['type'],
@@ -467,9 +599,10 @@ public function actionOwnDynamics(){
 					break;
 
 				case Constants::DYNAMIC_TYPE_FOLLOW:
-					$temp["follow"] = array(
+					$temp[] = array(
+					    'type'=>'follow',
 		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
+		    	   	    'user_name'=>$user->nickname,
 		    	   	    'user_pic_url'=>$user->user_pic_url,
 		    	   	    'create_date'=>$dynamic['create_date'],
 		    	   	    'friend_name'=>$dynamic['content_name'],
@@ -479,22 +612,24 @@ public function actionOwnDynamics(){
 					break;
 					
 					
-				case Constants::DYNAMIC_TYPE_LIKE_FRIEND:
-					$temp["like_person"] = array(
-		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
-		    	   	    'user_pic_url'=>$user->user_pic_url,
-		    	   	    'create_date'=>$dynamic['create_date'],
-		    	   	    'friend_name'=>$dynamic['content_name'],
-		    	   	    'friend_pic_url'=>$dynamic['content_pic_url'],
-		    	   	    'friend_id'=>$dynamic['content_id'],
-					);
-					break;
+//				case Constants::DYNAMIC_TYPE_LIKE_FRIEND:
+//					$temp[] = array(
+//					    'type'=>'like_person',
+//		    	   	    'user_id'=>$user->id,
+//		    	   	    'user_name'=>$user->nickname,
+//		    	   	    'user_pic_url'=>$user->user_pic_url,
+//		    	   	    'create_date'=>$dynamic['create_date'],
+//		    	   	    'friend_name'=>$dynamic['content_name'],
+//		    	   	    'friend_pic_url'=>$dynamic['content_pic_url'],
+//		    	   	    'friend_id'=>$dynamic['content_id'],
+//					);
+//					break;
 
 				case Constants::DYNAMIC_TYPE_UN_FOLLOW:
-					$temp["destory"] = array(
+					$temp[] = array(
+					    'type'=>'destory',
 		    	   	    'user_id'=>$user->id,
-		    	   	    'user_name'=>$user->username,
+		    	   	    'user_name'=>$user->nickname,
 		    	   	    'user_pic_url'=>$user->user_pic_url,
 		    	   	    'create_date'=>$dynamic['create_date'],
 		    	   	    'friend_name'=>$dynamic['content_name'],
@@ -502,26 +637,40 @@ public function actionOwnDynamics(){
 		    	   	    'friend_id'=>$dynamic['content_id'],
 					);
 					break;
+					
+				case Constants::DYNAMIC_TYPE_RECOMMEND:
+	    	   	  $temp[] = array(
+					    'type'=>'recommend',
+	    	   	       'user_id'=>$user->id,
+		    	   	    'user_name'=>$user->nickname,
+		    	   	    'user_pic_url'=>$user->user_pic_url,
+		    	   	    'create_date'=>$dynamic['create_date'],
+		    	   	    'prod_type'=>$dynamic['content_type'],
+		    	   	    'prod_name'=>$dynamic['content_name'],
+		    	   	    'prod_poster'=>$dynamic['content_pic_url'],
+		    	   	    'prod_id'=>$dynamic['content_id'],
+	    	   	        'reason'=>$dynamic['content_desc'],
+					  );
+				  break;
 			}
+		   }
 		  }
 		  return $temp;
-	 }
-	public function actionFavorities(){
-        header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
+	}
+	 
+	public function actionFavorities(){		
+	    header('Content-type: application/json');
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
-		}
+		
    		$userid=Yii::app()->request->getParam("userid");
-   		if( (!isset($userid)) || is_null($userid)  ){
+   		if( (!isset($userid)) || is_null($userid)  ){		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
    			$userid=Yii::app()->user->id;
    		}
    		$page_size=Yii::app()->request->getParam("page_size");
@@ -544,19 +693,85 @@ public function actionOwnDynamics(){
    			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
    		}
 	}
-
-	public function actionMsgs(){
-        header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
+    public function actionShares(){		
+	    header('Content-type: application/json');
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+		
+   		$userid=Yii::app()->request->getParam("userid");
+   		if( (!isset($userid)) || is_null($userid)  ){		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
+   			$userid=Yii::app()->user->id;
+   		}
+   		$page_size=Yii::app()->request->getParam("page_size");
+   		$page_num=Yii::app()->request->getParam("page_num");
+   		if(!(isset($page_size) && is_numeric($page_size))){
+   			$page_size=10;
+   			$page_num=1;
+   		}else if(!(isset($page_num) && is_numeric($page_num))){
+   			$page_num=1;
+   		}
+
+   		try {
+   			$favorities=Dynamic::model()->searchUserShares($userid,$page_size,$page_size*($page_num-1));
+   			if(isset($favorities) && !is_null($favorities) && is_array($favorities)){
+   				IjoyPlusServiceUtils::exportEntity(array('shares'=>$favorities));
+   			}else {
+   				IjoyPlusServiceUtils::exportEntity(array('shares'=>array()));
+   			}
+   		} catch (Exception $e) {
+   			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+   		}
+	}
+    public function actionSupports(){		
+	    header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}
+		
+   		$userid=Yii::app()->request->getParam("userid");
+   		if( (!isset($userid)) || is_null($userid)  ){		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
+   			$userid=Yii::app()->user->id;
+   		}
+   		$page_size=Yii::app()->request->getParam("page_size");
+   		$page_num=Yii::app()->request->getParam("page_num");
+   		if(!(isset($page_size) && is_numeric($page_size))){
+   			$page_size=10;
+   			$page_num=1;
+   		}else if(!(isset($page_num) && is_numeric($page_num))){
+   			$page_num=1;
+   		}
+
+   		try {
+   			$favorities=Dynamic::model()->searchUserSupports($userid,$page_size,$page_size*($page_num-1));
+   			if(isset($favorities) && !is_null($favorities) && is_array($favorities)){
+   				IjoyPlusServiceUtils::exportEntity(array('support'=>$favorities));
+   			}else {
+   				IjoyPlusServiceUtils::exportEntity(array('support'=>array()));
+   			}
+   		} catch (Exception $e) {
+   			Yii::log( CJSON::encode($e), "error");
+   			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+   		}
+	}
+	public function actionMsgs(){		
+	    header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}		
+        if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
 			return ;
 		}
    		$page_size=Yii::app()->request->getParam("page_size");
@@ -584,7 +799,8 @@ public function actionOwnDynamics(){
 		foreach ($msgs as $msg){
 		  switch ($msg['notify_type']){
 			case Constants::NOTIFY_TYPE_COMMENT:
-             $temp["comment"] = array(
+             $temp[] = array(
+                'type'=>'comment',
     	   	    'user_id'=>$msg['notify_user_id'],
     	   	    'user_name'=>$msg['notify_user_name'],
     	   	    'user_pic_url'=>$msg['notify_user_pic_url'],
@@ -596,7 +812,8 @@ public function actionOwnDynamics(){
                       );
 			  break;
 			case Constants::NOTIFY_TYPE_FAVORITY:
-			  $temp["favority"] = array(
+			  $temp[] = array(
+                'type'=>'favority',
     	   	    'user_id'=>$msg['notify_user_id'],
     	   	    'user_name'=>$msg['notify_user_name'],
     	   	    'user_pic_url'=>$msg['notify_user_pic_url'],
@@ -607,7 +824,8 @@ public function actionOwnDynamics(){
                       );
 			  break;
 			case Constants::NOTIFY_TYPE_FOLLOW:
-			  $temp["follow"] = array(
+			  $temp[] = array(
+                'type'=>'follow',
     	   	    'user_id'=>$msg['notify_user_id'],
     	   	    'user_name'=>$msg['notify_user_name'],
     	   	    'user_pic_url'=>$msg['notify_user_pic_url'],
@@ -615,7 +833,8 @@ public function actionOwnDynamics(){
                       );
 			  break;					  
 			case Constants::NOTIFY_TYPE_LIKE_FRIEND:
-			  $temp["like_person"] = array(
+			  $temp[] = array(
+                'type'=>'like_person',
     	   	    'user_id'=>$msg['notify_user_id'],
     	   	    'user_name'=>$msg['notify_user_name'],
     	   	    'user_pic_url'=>$msg['notify_user_pic_url'],
@@ -623,7 +842,8 @@ public function actionOwnDynamics(){
                       );
 			  break;
 			case Constants::NOTIFY_TYPE_UN_FOLLOW:
-			  $temp["destory"] = array(
+			  $temp[] = array(
+                'type'=>'destory',
     	   	    'user_id'=>$msg['notify_user_id'],
     	   	    'user_name'=>$msg['notify_user_name'],
     	   	    'user_pic_url'=>$msg['notify_user_pic_url'],
@@ -631,7 +851,8 @@ public function actionOwnDynamics(){
                       );
 			  break;
 			case Constants::NOTIFY_TYPE_LIKE_PROGRAM:
-			  $temp["like"] = array(
+			  $temp[] = array(
+                'type'=>'like',
     	   	    'user_id'=>$msg['notify_user_id'],
     	   	    'user_name'=>$msg['notify_user_name'],
     	   	    'user_pic_url'=>$msg['notify_user_pic_url'],
@@ -642,7 +863,8 @@ public function actionOwnDynamics(){
                       );
 			  break;
 			case Constants::NOTIFY_TYPE_UN_FAVORITY:
-			  $temp["unfavority"] = array(
+			  $temp[] = array(
+                'type'=>'unfavority',
     	   	    'user_id'=>$msg['notify_user_id'],
     	   	    'user_name'=>$msg['notify_user_name'],
     	   	    'user_pic_url'=>$msg['notify_user_pic_url'],
@@ -653,7 +875,8 @@ public function actionOwnDynamics(){
                       );
 			  break;
 			case Constants::NOTIFY_TYPE_SHARE:					  
-			  $temp["share"] = array(
+			  $temp[] = array(
+                'type'=>'share',
     	   	    'user_id'=>$msg['notify_user_id'],
     	   	    'user_name'=>$msg['notify_user_name'],
     	   	    'user_pic_url'=>$msg['notify_user_pic_url'],
@@ -665,7 +888,8 @@ public function actionOwnDynamics(){
                       );
 			  break;
 			case Constants::NOTIFY_TYPE_WATCH_PROGRAM:
-			  $temp["watch"] = array(
+			  $temp[] = array(
+                'type'=>'watch',
     	   	    'user_id'=>$msg['notify_user_id'],
     	   	    'user_name'=>$msg['notify_user_name'],
     	   	    'user_pic_url'=>$msg['notify_user_pic_url'],
@@ -679,7 +903,8 @@ public function actionOwnDynamics(){
 			  
 			case Constants::NOTIFY_TYPE_REPLIE_COMMENT:
 			  $prod = CacheManager::getCommentProgram($msg['content_id']);									
-			  $temp["reply"] = array(
+			  $temp[] = array(
+                'type'=>'reply',
     	   	    'user_id'=>$msg['notify_user_id'],
     	   	    'user_name'=>$msg['notify_user_name'],
     	   	    'user_pic_url'=>$msg['notify_user_pic_url'],
@@ -698,16 +923,16 @@ public function actionOwnDynamics(){
 		}
 		public function actionUpdatePicUrl(){
 	        header('Content-type: application/json');
-		    if(Yii::app()->request->isPostRequest){   
+		    if(!Yii::app()->request->isPostRequest){   
 		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
 		   		 return ;
 		   	}
 		    if(!IjoyPlusServiceUtils::validateAPPKey()){
 	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 			   return ;
-			}
-			if(Yii::app()->user->isGuest){
-				IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+			}		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
 				return ;
 			}
    			try {
@@ -725,16 +950,16 @@ public function actionOwnDynamics(){
              
 		public function actionUpdateBGPicUrl(){
 	        header('Content-type: application/json');
-		    if(Yii::app()->request->isPostRequest){   
+		    if(!Yii::app()->request->isPostRequest){   
 		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
 		   		 return ;
 		   	}
 		    if(!IjoyPlusServiceUtils::validateAPPKey()){
 	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 			   return ;
-			}
-			if(Yii::app()->user->isGuest){
-				IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+			}		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
 				return ;
 			}
    			try {

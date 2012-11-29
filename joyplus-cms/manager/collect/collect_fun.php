@@ -157,6 +157,32 @@ function filterScriptStar($Content,$p_script)
    return $Content;
 }
 
+function filterScriptSetNum($Content,$p_script)
+{
+   if(($p_script && 1) >0) {$Content=scriptHtml($Content,"iframe",1);}
+   if(($p_script && 2) >0) {$Content=scriptHtml($Content,"object",2);}
+   if(($p_script && 4) >0) {$Content=scriptHtml($Content,"script",2);}
+   if(($p_script && 8) >0) {$Content=scriptHtml($Content,"div",3);}
+   if(($p_script && 16) >0) {$Content=scriptHtml($Content,"class",1);}
+   if(($p_script && 32) >0) {$Content=scriptHtml($Content,"table",3);}
+   if(($p_script && 64) >0) {$Content=scriptHtml($Content,"span",3);}
+   if(($p_script && 128) >0) {$Content=scriptHtml($Content,"img",3);}
+   if(($p_script && 256) >0) {$Content=scriptHtml($Content,"font",3);}
+   if(($p_script && 512) >0) {$Content=scriptHtml($Content,"a",4);}
+   if(($p_script && 1024) >0) {$Content=scriptHtml($Content,"tr",3);}
+   if(($p_script && 2048) >0) {$Content=scriptHtml($Content,"td",3);}
+   if(($p_script && 5096) >0) {$Content=strip_tags($Content);}
+   $temp = str_split( $Content);
+   if(isset($temp) && is_array($temp)){
+  	foreach ($temp as $num){
+  		if(is_numeric($num)){
+  			return $num;
+  		}
+  	}
+   }
+   return $Content;
+}
+
 function scriptHtml($ConStr,$TagName,$FType)
 {
     switch($FType)

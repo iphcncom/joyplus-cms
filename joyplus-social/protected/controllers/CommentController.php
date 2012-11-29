@@ -1,29 +1,25 @@
-﻿<?php
+<?php
 
 class CommentController extends Controller
 {
 
 	function actionView(){
         header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
-		}
+//		if(Yii::app()->user->isGuest){
+//			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+//			return ;
+//		}
 		$thread_id=Yii::app()->request->getParam("thread_id");
 		if( (!isset($thread_id)) || is_null($thread_id)  ){
 			IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
 			return;
 		}
 
-		$comment= Comment::model()->findByPk($thread_id);
+		$comment= CacheManager::getCommentCache($thread_id);
 		if($comment=== null){
 			IjoyPlusServiceUtils::exportEntity(array('comment'=>array()));
 		}else {
@@ -43,17 +39,9 @@ class CommentController extends Controller
 
 	public function  actionReplies(){
         header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
-	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
-	   		 return ;
-	   	}
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
-		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
-			return ;
 		}
 		$thread_id= Yii::app()->request->getParam("thread_id");
 		if( (!isset($thread_id)) || is_null($thread_id)  ){
@@ -85,7 +73,7 @@ class CommentController extends Controller
 
 	function actionReply(){
         header('Content-type: application/json');
-	    if(Yii::app()->request->isPostRequest){   
+	    if(!Yii::app()->request->isPostRequest){   
 	   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
 	   		 return ;
 	   	}
@@ -93,11 +81,15 @@ class CommentController extends Controller
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-		if(Yii::app()->user->isGuest){
-			IjoyPlusServiceUtils::exportServiceError(Constants::SEESION_IS_EXPIRED);	
+        if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
 			return ;
 		}
-	    $transaction = Yii::app()->db->beginTransaction(); 
+		if(!IjoyPlusServiceUtils::checkCSRCToken()){
+		   IjoyPlusServiceUtils::exportServiceError(Constants::DUPLICAT_REQUEST);	
+			return ;			
+		}
+	    $transaction = Yii::app()->db->beginTransaction(); 	    
         try {
           $thread_id=Yii::app()->request->getParam("thread_id");
           $parentComm = Comment::model()->findByPk($thread_id);
@@ -108,7 +100,7 @@ class CommentController extends Controller
 			$model->comments = Yii::app()->request->getParam("content");
 			$model->thread_id = Yii::app()->request->getParam("thread_id");
 			$model->author_id = Yii::app()->user->id;
-			$model->author_username=Yii::app()->user->getState("username");
+			$model->author_username=Yii::app()->user->getState("nickname");
 			$model->author_photo_url=Yii::app()->user->getState("pic_url");
 			$model->save();
                  //add dynamic
@@ -123,21 +115,22 @@ class CommentController extends Controller
 	      $dynamic->content_type=$parentComm->content_type;
 	      $dynamic->content_pic_url=$parentComm->content_pic_url;
 	      $dynamic->save();
-	      
-	      // add notify msg		      
-	      $msg = new NotifyMsg();
-	      $msg->author_id=$parentComm->author_id;
-	      $msg->nofity_user_id=Yii::app()->user->id;
-	      $msg->notify_user_name=Yii::app()->user->getState("username");
-	      $msg->notify_user_pic_url=Yii::app()->user->getState("pic_url");
-	      $msg->content_id=$thread_id;
-	      $msg->content_desc=$model->comments;
-	      $msg->content_type=$parentComm->content_type;
-	      $msg->content_info=$parentComm->content_name;
-	      $msg->created_date=new CDbExpression('NOW()');
-	      $msg->status=Constants::OBJECT_APPROVAL;
-	      $msg->notify_type=Constants::NOTIFY_TYPE_REPLIE_COMMENT;
-	      $msg->save();
+	      if($parentComm->author_id !==Yii::app()->user->id){
+		      // add notify msg		      
+		      $msg = new NotifyMsg();
+		      $msg->author_id=$parentComm->author_id;
+		      $msg->nofity_user_id=Yii::app()->user->id;
+		      $msg->notify_user_name=Yii::app()->user->getState("nickname");
+		      $msg->notify_user_pic_url=Yii::app()->user->getState("pic_url");
+		      $msg->content_id=$thread_id;
+		      $msg->content_desc=$model->comments;
+		      $msg->content_type=$parentComm->content_type;
+		      $msg->content_info=$parentComm->content_name;
+		      $msg->created_date=new CDbExpression('NOW()');
+		      $msg->status=Constants::OBJECT_APPROVAL;
+		      $msg->notify_type=Constants::NOTIFY_TYPE_REPLIE_COMMENT;
+		      $msg->save();
+	      }
         }
 	    $transaction->commit();
 	    IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);

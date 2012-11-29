@@ -3,16 +3,31 @@ ob_implicit_flush(true);
 ini_set('max_execution_time', '0');
 require_once ("../admin_conn.php");
 require_once ("collect_fun.php");
-chkLogin();
+require_once ("MovieType.php");
+require_once ("tools/ContentManager.php");
+//chkLogin();
 $action = be("get","action");
 headAdminCollect ("视频自定义采集");
 
-$p_ids = be("get","p_id");
+$p_ids = be("all","p_id");
+//if (isN($p_id)){
+//	$p_ids = be("all","p_id");
+//}
 $num = be("get","num");
 $listnum = be("get","listnum");
 $viewnum = be("get","viewnum");
 $sb = be("get","sb");
 $cg = be("get","cg");
+
+$reCollExistMovie = true;
+
+$collExiM= be("all","ignoreExistM");
+
+if(!isN($collExiM)){
+	$reCollExistMovie=false;
+}
+
+writetofile("crawel_info.log", $p_id.'{=====}'.$listnum ."{=====}Project===start");
 
 if (isn($num)){ $num =0;} else {$num = intval($num);}
 if (isN($listnum)) { $listnum=0;} else {$listnum = intval($listnum);}
@@ -113,74 +128,146 @@ $p_setnametype = $row["p_setnametype"];
 $p_setnamestart = $row["p_setnamestart"];
 $p_setnameend = $row["p_setnameend"];
 
-switch($p_pagetype)
-{
-	case 0 :
-		if ($listnum < 1) { $strListUrl = $p_url;} else {$ListEnd = 1;}
-		break;
-	case 1:
-	case 3:
-		if ($p_collecorder ==1 ){
-			if (($p_pagebatchid2-$listnum)< $p_pagebatchid1 || ($p_pagebatchid2-($listnum+1)) < 0){
-				$ListEnd=1;
-			}
-			else{
-				$strListUrl= replaceStr($p_pagebatchurl,"{ID}",($p_pagebatchid2-$listnum));
-			}
-		}
-		else{
-			if (($p_pagebatchid1+$listnum)> $p_pagebatchid2){
-				$ListEnd=1;
-			}
-			else{
-				$strListUrl=replaceStr($p_pagebatchurl,"{ID}",($p_pagebatchid1+$listnum));
-			}
-		}
-		break;
-	case 2:
-		$ListArray=explode("|",$p_manualurl);
-		if (($listnum)>count($ListArray)) {
-			$ListEnd=1;
-		}
-		else{
-			$strListUrl = $ListArray[$listnum];
-		}
-		break;
-}
-
-echo "采集中...  第" .($listnum+1). "页， 成功". $cg."条，失败". $sb."条";
-
-switch($ListEnd)
-{
-	case 1:
-		if ($action != "pl"){
-			dBreakpoint ("../../upload/vodbreakpoint");
-			showmsg ("采集完成","collect_vod_manage.php");
-		}
-		else{
-			if ($num >= $arrcount){
-				dBreakpoint ("../../upload/vodbreakpoint");
-				showmsg ("批量采集完成","collect_vod_manage.php");
-			}
-			else{
-			echo "此数据采集完毕 ---   暂停3秒后继续采集<script language=\"javascript\">setTimeout(\"makeNextPage();\",2000);function makeNextPage(){location.href='collect_vod_cj.php?p_id=".$p_ids."&listnum=0&num=".($num+1)."&action=".$action."';}</script>";
-			}
-		}
-		break;
-	default:
-		cjList();break;
-}
-
-
-$starringarr=array();
+$p_videocodeApiUrl= $row["p_videocodeApiUrl"];
+	$p_videocodeApiUrlParamstart= $row["p_videocodeApiUrlParamstart"];
+	$p_videocodeApiUrlParamend= $row["p_videocodeApiUrlParamend"];
+	$p_videourlstart= $row["p_videourlstart"];
+	$p_videourlend= $row["p_videourlend"];
+$p_videocodeType= $row["p_videocodeType"];
+//api start
+	$playcodeApiUrl =$row["p_playcodeApiUrl"] ; $playcodeApiUrltype= $row["p_playcodeApiUrltype"] ;
+	$p_playcodeApiUrlParamend = $row["p_playcodeApiUrlParamend"] ; $playcodeApiUrlParamstart=  $row["p_playcodeApiUrlParamstart"] ;
+	 if (isN($playcodeApiUrltype)) { $playcodeApiUrltype = 0;}
+	  if (isN($p_videocodeType)) { $p_videocodeType = 0;}
+	//api end 
+	
+	  
+	  $starringarr=array();
 $titlearr=array();
 $picarr=array();
 $strdstate = "";
+$flag=true;
+if(isset($action) && $action ==='collectSimpl'){
+//	echo $action;
+	$webUrl = be("all","site_url");
+	$name = be("all","name");
+	$actor = be("all","actor");
+	$poster = be("all","poster");
+//	$strListUrl=$webUrl;
+	if( isset($name) && !is_null($name)){
+		$titlearr[]=$name;
+	}
+	if( isset($actor) && !is_null($actor)){
+		$starringarr[]=$actor;
+	}
+	if( isset($poster) && !is_null($poster)){
+		$picarr[]=$name;
+	}
+//	echo $name;
+	cjView(getHrefFromLink($webUrl),0);
+//	break;
+}else if(isset($action) && $action ==='collectListUrl'){
+	$flag=false;
+//	echo $action;
+	$webUrl = be("all","site_urls");
+    $strListUrl=$webUrl;
+	writetofile("crawel_info.log", $p_id.'{=====}'.$strListUrl ."{=====}start");
+	cjList();
+	writetofile("crawel_info.log", $p_id.'{=====}'.$strListUrl ."{=====}end");
+    break;
+}else if(isset($action) && $action ==='collect'){
+	$flag=false;
+//	echo $action;  
+//  var_dump($action);
+	$pagenum = be("all","pagenum");
+    $strListUrl= replaceStr($p_pagebatchurl,"{ID}",$pagenum);
+//    var_dump($pagenum);
+//     var_dump($strListUrl);
+	writetofile("crawel_info.log", $p_id.'{=====}'.$strListUrl ."{=====}start");
+	cjList();
+	writetofile("crawel_info.log", $p_id.'{=====}'.$strListUrl ."{=====}end");
+    break;
+}else if(isset($action) && $action ==='collectAll'){
+	$flag=false;
+	for($pagenum=$p_pagebatchid2;$pagenum>=$p_pagebatchid1;$pagenum--){
+	    $strListUrl= replaceStr($p_pagebatchurl,"{ID}",$pagenum);
+		writetofile("crawel_info.log", $p_id.'{=====}'.$strListUrl ."{=====}start");
+		cjList();
+		writetofile("crawel_info.log", $p_id.'{=====}'.$strListUrl ."{=====}end");
+	}
+    break;
+}else{
+	writetofile("crawel_info.log", $p_id.'{=====}'.$listnum ."{=====}Project===start===".$p_pagetype);
+	switch($p_pagetype)
+	{
+		case 0 :
+			if ($listnum < 1) { $strListUrl = $p_url;} else {$ListEnd = 1;}
+			break;
+		case 1:
+		case 3:
+			if ($p_collecorder ==1 ){
+				if (($p_pagebatchid2-$listnum)< $p_pagebatchid1 || ($p_pagebatchid2-($listnum+1)) < 0){
+					$ListEnd=1;
+				}
+				else{
+					$strListUrl= replaceStr($p_pagebatchurl,"{ID}",($p_pagebatchid2-$listnum));
+				}
+			}
+			else{
+				if (($p_pagebatchid1+$listnum)> $p_pagebatchid2){
+					$ListEnd=1;
+				}
+				else{
+					$strListUrl=replaceStr($p_pagebatchurl,"{ID}",($p_pagebatchid1+$listnum));
+				}
+			}
+			break;
+		case 2:
+			$ListArray=explode("|",$p_manualurl);
+			if (($listnum)>count($ListArray)) {
+				$ListEnd=1;
+			}
+			else{
+				$strListUrl = $ListArray[$listnum];
+			}
+			break;
+	}
+	
+	echo "采集中...  第" .($listnum+1). "页， 成功". $cg."条，失败". $sb."条 </br>";
+	
+	switch($ListEnd)
+	{
+		case 1:
+			if ($action != "pl"){
+				dBreakpoint ("../../upload/vodbreakpoint");
+				showmsg ("采集完成","collect_vod_manage.php");
+			}
+			else{
+				if ($num >= $arrcount){
+					dBreakpoint ("../../upload/vodbreakpoint");
+					showmsg ("批量采集完成","collect_vod_manage.php");
+				}
+				else{
+				  echo "此数据采集完毕 ---   暂停3秒后继续采集<script language=\"javascript\">setTimeout(\"makeNextPage();\",2000);function makeNextPage(){location.href='collect_vod_cj.php?p_id=".$p_ids."&listnum=0&num=".($num+1)."&action=".$action."';}</script>";
+				}
+			}
+			break;
+		default:
+			writetofile("crawel_info.log", $p_id.'{=====}'.$strListUrl ."{=====}start");
+			cjList();
+			writetofile("crawel_info.log", $p_id.'{=====}'.$strListUrl ."{=====}end");
+			break;
+	}
+	
+	
+
+}
+
 
 function cjList()
 {
-	global $listnum,$strListUrl,$p_pagetype,$p_collecorder,$p_listcodestart,$p_listcodeend,$p_listlinkstart,$p_listlinkend,$p_starringstart,$p_starringend,$p_titlestart,$p_titleend,$p_picstart,$p_picend,$p_starringtype,$p_titletype,$p_pictype,$p_coding,$p_showtype,$viewnum,$p_ids,$sb,$cg,$p_savefiles,$p_pagebatchid2,$p_pagebatchid1;
-	global $starringarr,$titlearr,$picarr,$strdstate,$action,$p_pagebatchurl,$p_colleclinkorder;
+	global $db,$reCollExistMovie, $flag,$listnum,$strListUrl,$p_pagetype,$p_collecorder,$p_listcodestart,$p_listcodeend,$p_listlinkstart,$p_listlinkend,$p_starringstart,$p_starringend,$p_titlestart,$p_titleend,$p_picstart,$p_picend,$p_starringtype,$p_titletype,$p_pictype,$p_coding,$p_showtype,$viewnum,$p_ids,$sb,$cg,$p_savefiles,$p_pagebatchid2,$p_pagebatchid1;
+	global  $p_playspecialtype,$starringarr,$titlearr,$picarr,$strdstate,$action,$p_pagebatchurl,$p_colleclinkorder,$p_id;
 	
 	if (isN($_SESSION["strListCode"])) {
 		$strListCode = getPage($strListUrl,$p_coding);
@@ -192,8 +279,10 @@ function cjList()
 	
 	if ($strListCode == false) {
 		echo "<tr><td colspan=\"2\">在获取:".$strListUrl."网页源码时发生错误！</TD></TR>";
+		writetofile("crawel_error.log", $p_id.'{=====}'.$strListUrl);
 		exit;
 	}
+	writetofile("crawel_info.log", $p_id.'{=====}'.$strListUrl ."{=====}List===start");
 	$listnum =$listnum+1; $tempStep = 1;
 	
 	
@@ -216,12 +305,14 @@ function cjList()
 			for ($i=$startnum ;$i<= $endnum;$i++)
 			{
 				$UrlTest = replaceStr($p_pagebatchurl,"{ID}",$i);
-				echo "<tr><td colspan=\"2\"></TD>正在采集列表：".$UrlTest."的数据 </TR>";
+				echo "<tr><td colspan=\"2\"></TD>正在采集列表：".$UrlTest."的数据 </TR>";				
 				cjView($UrlTest,$i);
 				$j = $j + 1;
 			}
 			wtablefoot();
-			echo "<br> 此分页数据采集完毕 --- <script language=\"javascript\">setTimeout(\"makeNextPage();\",2000);function makeNextPage(){location.href='collect_vod_manage.php';}</script>";
+			if($flag){
+			  echo "<br> 此分页数据采集完毕 --- <script language=\"javascript\">setTimeout(\"makeNextPage();\",2000);function makeNextPage(){location.href='collect_vod_manage.php';}</script>";
+			}
 			break;
 		default:			
 			if( isN($_SESSION["strListCodeCut"] )){
@@ -240,7 +331,7 @@ function cjList()
 			}
 			
 			if ($p_starringtype ==1) {
-				$starringarr = getArray($strListCodeCut,$p_starringstart,$p_starringend);
+				$starringarrcode = getArray($strListCodeCut,$p_starringstart,$p_starringend);
 			}
 			if ($p_titletype ==1) {
 				$titlearrcode = getArray($strListCodeCut,$p_titlestart,$p_titleend);
@@ -252,6 +343,7 @@ function cjList()
 			if ($linkarrcode ==false) {
 				echo "<tr><td colspan=\"2\"></TD>在获取链接列表时出错！'.$strListUrl.’</TR>";
 				$sb = $sb+1;
+				writetofile("crawel_error.log", $p_id.'{=====}'.$strListUrl);
 				return;
 			}
 			
@@ -271,15 +363,18 @@ function cjList()
 			if ($p_showtype==1) {
 				if ($viewnum >= $viewcount){
 					clearSession();
-					echo "<br> 此分页数据采集完毕 ---   暂停2秒后继续采集<script language=\"javascript\">setTimeout(\"makeNextPage();\",2000);function makeNextPage(){location.href='collect_vod_cj.php?p_id=".$p_ids."&listnum=".$listnum."&sb=".$sb."&cg=".$cg."&num=".$num."&action=".$action."';}</script>";
+			        if($flag){
+					 echo "<br> 此分页数据采集完毕 ---   暂停2秒后继续采集<script language=\"javascript\">setTimeout(\"makeNextPage();\",2000);function makeNextPage(){location.href='collect_vod_cj.php?p_id=".$p_ids."&listnum=".$listnum."&sb=".$sb."&cg=".$cg."&num=".$num."&action=".$action."';}</script>";
+			       }
 				}
 				else{
 					if ($p_savefiles==1){ $strdstate = "false"; }else{ $strdstate = "true"; }
 					wtablehead();
-					cjView($linkarr[$viewnum],$viewnum);
+					cjView(getHrefFromLink($linkarr[$viewnum]),$viewnum);
 					wtablefoot();
-					echo "数据采集完毕 --- 稍后继续采集<script language=\"javascript\">var dstate=".$strdstate.";setInterval(\"makeNextPage();\",500);function makeNextPage(){if(dstate){dstate=false;location.href='collect_vod_cj.php?p_id=".$p_ids."&listnum=".($listnum-1)."&sb=".$sb."&cg=".$cg."&num=".$num."&viewnum=".($viewnum+1)."&action=".$action."';}}</script>";
-					exit;
+					if($flag){
+					  echo "数据采集完毕 --- 稍后继续采集<script language=\"javascript\">var dstate=".$strdstate.";setInterval(\"makeNextPage();\",500);function makeNextPage(){if(dstate){dstate=false;location.href='collect_vod_cj.php?p_id=".$p_ids."&listnum=".($listnum-1)."&sb=".$sb."&cg=".$cg."&num=".$num."&viewnum=".($viewnum+1)."&action=".$action."';}}</script>";
+					}exit;
 				}
 			}
 			else{
@@ -289,7 +384,18 @@ function cjList()
 						if ($i==$viewcount){
 							echo "<tr><td colspan=\"2\"></TD>正在采集列表：".$strListUrl."的数据 </TR>";
 						}
-						cjView($linkarr[$i],$i);
+						$urlMo=getHrefFromLink($linkarr[$i]);
+						if($reCollExistMovie){
+							cjView($urlMo,$i);
+						}else {
+							$sql="select m_id from {pre}cj_vod where m_urltest='".$urlMo."' order by m_id desc";
+		                    $rowvod=$db->getRow($sql);		
+	                        if (!$rowvod) {
+	                           cjView($urlMo,$i);                     	
+	                        }else {	                        	
+	                           writetofile("crawel_info.log", $p_id.'{=====}'.$urlMo ."{=====}View===is collected.");
+	                        }	                       
+						}
 						wtablefoot();
 					}
 				}
@@ -299,20 +405,33 @@ function cjList()
 						if ($i==0){
 							echo "<tr><td colspan=\"2\"></TD>正在采集列表：".$strListUrl."的数据 </TR>";
 						}
-						cjView($linkarr[$i],$i);
+					    $urlMo=getHrefFromLink($linkarr[$i]);
+						if($reCollExistMovie){
+							cjView($urlMo,$i);
+						}else {
+							$sql="select m_id from {pre}cj_vod where m_urltest='".$urlMo."' order by m_id desc";
+		                    $rowvod=$db->getRow($sql);		
+	                        if (!$rowvod) {
+	                           cjView($urlMo,$i);                     	
+	                        }else {	                        	
+	                           writetofile("crawel_info.log", $p_id.'{=====}'.$urlMo ."{=====}View===is collected.");
+	                        }	                       
+						}
 						wtablefoot();
 					}
 				}
 				clearSession();
-				echo "<br> 此分页数据采集完毕 ---   暂停2秒后继续采集<script language=\"javascript\">setTimeout(\"makeNextPage();\",2000);function makeNextPage(){location.href='collect_vod_cj.php?p_id=".$p_ids."&listnum=".$listnum."&sb=".$sb."&cg=".$cg."&num=".$num."&action=".$action."';}</script>";
+				if($flag){
+				  echo "<br> 此分页数据采集完毕 ---   暂停2秒后继续采集<script language=\"javascript\">setTimeout(\"makeNextPage();\",2000);function makeNextPage(){location.href='collect_vod_cj.php?p_id=".$p_ids."&listnum=".$listnum."&sb=".$sb."&cg=".$cg."&num=".$num."&action=".$action."';}</script>";
+				}
 			}
 	}
 }
 
 function cjView($strlink,$num)
 {
-	global $db,$strListUrl,$p_titletype,$starringarr,$titlearr,$picarr,$p_id,$p_titlestart,$p_titleend,$p_lzstart,$p_lzend,$p_hitsstart,$p_hitsend,$p_starringtype,$p_starringstart,$p_starringend,$p_picstart,$p_picend,$p_typestart,$p_typeend,$p_pictype,$p_classtype,$p_collect_type,$p_timestart,$p_timeend,$p_areastart,$p_areaend,$p_contentstart,$p_contentend,$p_playcodestart,$p_playcodeend,$p_playlinkstart,$p_playlinkend,$p_playurlstart,$p_playurlend,$p_playcodetype,$p_playlinktype,$p_playtype,$p_coding,$p_lzstart,$p_lzend,$p_lzcodetype,$p_lzcodestart,$p_lzcodeend,$p_languagestart,$p_languageend,$p_remarksstart,$p_remarksend,$p_script,$p_showtype,$p_savefiles,$strdstate,$p_server,$p_setnametype,$p_setnamestart,$p_setnameend,$p_directedstart,$p_directedend,$cache;
-	
+	global $starringarr,$titlearr,$picarr,$strListUrl,$p_playspecialtype,$p_playtype, $p_videocodeType,$p_videocodeApiUrl,$p_id,$p_videocodeApiUrlParamstart,$p_videocodeApiUrlParamend,$p_videourlstart,$p_videourlend, $playcodeApiUrl,$playcodeApiUrlParamstart,$p_playcodeApiUrlParamend,$playcodeApiUrltype,$db,$strListUrl,$p_titletype,$starringarr,$titlearr,$picarr,$p_id,$p_titlestart,$p_titleend,$p_lzstart,$p_lzend,$p_hitsstart,$p_hitsend,$p_starringtype,$p_starringstart,$p_starringend,$p_picstart,$p_picend,$p_typestart,$p_typeend,$p_pictype,$p_classtype,$p_collect_type,$p_timestart,$p_timeend,$p_areastart,$p_areaend,$p_contentstart,$p_contentend,$p_playcodestart,$p_playcodeend,$p_playlinkstart,$p_playlinkend,$p_playurlstart,$p_playurlend,$p_playcodetype,$p_playlinktype,$p_playtype,$p_coding,$p_lzstart,$p_lzend,$p_lzcodetype,$p_lzcodestart,$p_lzcodeend,$p_languagestart,$p_languageend,$p_remarksstart,$p_remarksend,$p_script,$p_showtype,$p_savefiles,$strdstate,$p_server,$p_setnametype,$p_setnamestart,$p_setnameend,$p_directedstart,$p_directedend,$cache;
+	$androidUrl="";
 	//var_dump($strlink);var_dump($strListUrl);
     try {
 	  $pos = strpos($strlink, "href=\"");
@@ -327,34 +446,37 @@ function cjView($strlink,$num)
 	} catch (Exception $e) {
 	}
 	$strlink = definiteUrl($strlink,$strListUrl);
-	echo "<tr><td colspan=\"2\">开始采集：".$strlink." / '.$strListUrl.' </TD></TR>";
+	writetofile("crawel_info.log", $p_id.'{=====}'.$strlink ."{=====}View===start");
+	echo "<tr><td colspan=\"2\">开始采集：".$strlink." / '.$strListUrl.'</br> </TD></TR>";
 	$strViewCode = getPage($strlink,$p_coding);
 	
 	if ($strViewCode ==false) {
 		$strdstate = "true";
-		echo "<tr><td colspan=\"2\">在获取内容页时出错：".$strlink." / '.$strListUrl.' </TD></TR>";
+		echo "<tr><td colspan=\"2\">在获取内容页时出错：".$strlink." / '.$strListUrl.' </br></TD></TR>";
+		writetofile("crawel_error.log", $p_id.'{=====}'.$strlink.'{=====}'.$strListUrl);
 		$sb=$sb+1;
 		return;
 	}
 	else{
-		echo "<tr><td colspan=\"2\">在获取内容页时success ：".$strlink." / '.$strListUrl.' </TD></TR>";
+		echo "<tr><td colspan=\"2\">在获取内容页时success ：".$strlink." / '.$strListUrl.'</br> </TD></TR>";
 		//节目名称，来自列表或者来自内容页 
 		if ($p_titletype ==1) {
 			$titlecode = $titlearr[$num];
+			
 		}
 		else{
 			$titlecode = getBody($strViewCode,$p_titlestart,$p_titleend);
 		}
-		
+//		var_dump($titlearr[$num]);
 		$titlecode = filterScript($titlecode,$p_script);
 		$titlecode = replaceFilters($titlecode,$p_id,1,0);
 		$titlecode = replaceStr(replaceStr(replaceStr($titlecode,","," "),"'",""),"\"\"","");
 		$titlecode = trim($titlecode);
 		
-		$sql="select count(*) as cc from {pre}cj_vod where m_name='".$titlecode."'";
-		$row=$db->getOne($sql);
-		//var_dump($row);var_dump($titlecode);
-		$rowcount = $row;
+//		$sql="select count(*) as cc from {pre}cj_vod where m_name='".$titlecode."' and m_playfrom='".$p_playtype."'";
+//		$row=$db->getOne($sql);
+//		//var_dump($row);var_dump($titlecode);
+//		$rowcount = $row;
 		
 		//先缩小范围
 		if ($p_lzcodetype ==1){
@@ -373,11 +495,12 @@ function cjView($strlink,$num)
 			$lzcode = intval($lzcode);
 		}
 		
-		if (($lzcode == 0) && ($rowcount>0)) {
-			$strdstate = "true";
-			echo "<tr><td colspan=\"2\">遇到重复电影数据跳过采集!</TD></TR>";
-			return;
-		}
+//		if ($p_playcodetype !=2 &&($lzcode == 0) && ($rowcount>0)) {
+//			$strdstate = "true";
+//			echo "<tr><td colspan=\"2\">遇到重复电影数据跳过采集!</TD></TR>";
+//			return;
+//		}
+
 		
 		if (isN($p_hitsstart) || !isnum($p_hitsstart) ){ $p_hitsstart = 0 ;}
 		if (isN($p_hitsend)  || !isnum($p_hitsend)) { $p_hitsend = 0 ;}
@@ -402,7 +525,7 @@ function cjView($strlink,$num)
 		}
 		//图片
 		$piccode = trim($piccode);
-		$piccode = definiteUrl($piccode,$strListUrl);
+		$piccode = getHrefFromImg(definiteUrl($piccode,$strListUrl));
 		//栏目设置
 		if ($p_classtype ==1) {
 			$typecode = filterScript(getBody($strViewCode,$p_typestart,$p_typeend),$p_script);
@@ -415,6 +538,9 @@ function cjView($strlink,$num)
 			$m_typeid = $p_collect_type;
 			$typearr = getValueByArray($cache[0], "t_id" ,$typecode );
 			$typecode = $typearr["t_name"];
+		}
+		if($m_typeid==0){
+			$m_typeid = $p_collect_type;
 		}
 		$typecode = filterScript($typecode,$p_script);
 		
@@ -462,14 +588,65 @@ function cjView($strlink,$num)
 			if ($p_setnametype == 3) {
 				$setnames = getArray($playcode,$p_setnamestart,$p_setnameend);
 			}
+		}else if ($p_playcodetype ==2) { //from api
+//		writetofile("d:\\s.txt",$linkcode) ;
+//		echo $p_playcodeApiUrlParamend .'=='.$playcodeApiUrlParamstart;
+   
+//		echo $playcodeApiUrlParamstart .'\n' .$p_playcodeApiUrlParamend .'  = '.$playcodeApiUrltype;
+		if($playcodeApiUrltype ==0){
+		  $paracode = getBody($strViewCode,$playcodeApiUrlParamstart,$p_playcodeApiUrlParamend);
+		}else {
+			 $paracode = getBody($UrlTestMoive,$playcodeApiUrlParamstart,$p_playcodeApiUrlParamend);
 		}
+//		echo $paracode;
+        
+		$p_apibatchurl = replaceStr($playcodeApiUrl,"{PROD_ID}",$paracode);
+		$p_apibatchurls = replaceStr($p_apibatchurl,"{PAGE_NO}",1);
+		$playcode=getFormatPage($p_apibatchurls,$p_coding);		
+		
+		$weburl = getArray($playcode,$p_playlinkstart,$p_playlinkend);
+		$page_num=2;
+//		echo "page 1 :".$weburl .'\n';
+		$flag=true;
+	
+		while ($flag && $page_num<15 && strpos($playcodeApiUrl, "{PAGE_NO}") !==false){
+			$p_apibatchurls = replaceStr($p_apibatchurl,"{PAGE_NO}",$page_num);
+//			echo $p_apibatchurls .'\n';
+		    $playcode=getFormatPage($p_apibatchurls,$p_coding);		
+		    $weburls = getArray($playcode,$p_playlinkstart,$p_playlinkend);
+//		    echo "page ".$page_num." :".$weburls .'\n';
+		    if($weburls){
+		    	$weburl=$weburl."{Array}".$weburls;		    	
+		        $page_num=$page_num+1;
+		    }else {
+		    	$flag=false;
+		    }
+		    
+		}
+		
+//		var_dump($weburl);
+//		if ($p_playlinktype >0) {
+//			$weburl = getArray($playcode,$p_playlinkstart,$p_playlinkend);
+//		}
+//		else{
+//			$weburl = getArray($playcode,$p_playurlstart,$p_playurlend);
+//		//	var_dump($playcode);
+//		}
+//		if ($p_setnametype == 3) {
+//			$setnames = getArray($playcode,$p_setnamestart,$p_setnameend);
+//		}
+	}
 		else{
 			
 			if ($p_playlinktype >0) {
 				$weburl = getArray($strViewCode,$p_playlinkstart,$p_playlinkend);
-			}
-			else{
+//				var_dump($weburl);
+			}else{ 
 				$weburl = getArray($strViewCode,$p_playurlstart,$p_playurlend);
+				$androidUrl = ContentProviderFactory::getContentProvider($p_playtype)->parseAndroidVideoUrlByContent($strViewCode, $p_coding, $p_script);
+				$videoAddressUrl = ContentProviderFactory::getContentProvider($p_playtype)->parseIOSVideoUrlByContent($strViewCode, $p_coding, $p_script);
+				writetofile("android_log.txt", $strlink.'{===}'.$androidUrl .'{===}'.$videoAddressUrl );
+
 			}
 			if ($p_setnametype == 3) {
 				$setnames = getArray($strViewCode,$p_setnamestart,$p_setnameend);
@@ -499,7 +676,8 @@ function cjView($strlink,$num)
 	}
 	
 	if ($weburl ==false) {
-			echo "<tr><td colspan=\"2\">在获取播放列表链接时出错 ".$strlink." / '.$strListUrl.'</TD></TR>";
+			echo "<tr><td colspan=\"2\">在获取播放列表链接时出错 ".$strlink." / '.$strListUrl.'</TD></TR>";			
+		    writetofile("crawel_error.log", $p_id.'{=====}'.$strlink.'{=====}'.$strListUrl);
 			$sb=$sb+1;
 			return;
 	}
@@ -511,16 +689,29 @@ function cjView($strlink,$num)
 	    if ($rowvod) {
 			$cg=$cg+1;
 			$movieid=$rowvod["m_id"];
-			$sql = "update {pre}cj_vod set m_type='".$typecode."',m_area='".$areacode."',m_urltest='".$strlink."',m_name='".$titlecode."',m_starring='".$starringcode."',m_directed='".$directedcode."',m_year='".$timecode."',m_playfrom='".$p_playtype."',m_content='".$contentcode."',m_addtime='".date('Y-m-d H:i:s',time())."',m_zt='0',m_pid='".$p_id."',m_typeid='".$m_typeid."',m_playserver='".$p_server."',m_state='".$lzcode."',m_language='".$languagecode."',m_remarks='".$remarkscode."' where m_id=".$rowvod["m_id"];
-			
+			if(isN($titlecode)){
+				$titlecode = $rowvod["m_name"];
+			}
+	    
+			if(isN($starringcode)){
+				$starringcode = $rowvod["m_starring"];
+			}
+	    
+			if(isN($piccode)){
+				$piccode = $rowvod["m_pic"];
+			}
+			$sql = "update {pre}cj_vod set m_pic='".$piccode."', m_type='".$typecode."',m_area='".$areacode."',m_urltest='".$strlink."',m_name='".$titlecode."',m_starring='".$starringcode."',m_directed='".$directedcode."',m_year='".$timecode."',m_playfrom='".$p_playtype."',m_content='".$contentcode."',m_addtime='".date('Y-m-d H:i:s',time())."',m_zt='0',m_pid='".$p_id."',m_typeid='".$m_typeid."',m_playserver='".$p_server."',m_state='".$lzcode."',m_language='".$languagecode."',m_remarks='".$remarkscode."' where m_id=".$rowvod["m_id"];
+			writetofile("sql.txt", $sql);
 			$db->query($sql);
-			
+//			$sql="delete from {pre}cj_vod_url where u_movieid=".$rowvod["m_id"];
+//			writetofile("sql.txt", $sql);
+//			$db->query($sql);
 		}
 		else{
 			
 			$cg=$cg+1;
 			$sql="insert {pre}cj_vod (m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state,m_addtime,m_language,m_remarks) values('".$titlecode."','".$typecode."','".$areacode."','".$p_playtype."','".$starringcode."','".$directedcode."','".$piccode."','".$contentcode."','".$timecode."','".$strlink."','0','".$p_id."','".$m_typeid."','".$m_hits."','".$p_server."','".$lzcode."','".date('Y-m-d H:i:s',time())."','".$languagecode."','".$remarkscode."')";
-			
+			writetofile("sql.txt", $sql);
  			$db->query($sql);
 			$movieid= $db->insert_id();
 		}
@@ -538,11 +729,12 @@ function cjView($strlink,$num)
 	 		$index++;
 	 	  }
 	    }
+//	    writetofile("d:\\ssssss.txt","p_videocodeType:".$p_videocodeType);
         $webArray=$webArraTemp;
+        	
 		//http://www.youku.com/show_episode/id_zc16d0492e81411e196ac.html?dt=json&divid=reload_1&__rt=1&__ro=reload_1
 		for ($i=0 ;$i< count($webArray);$i++){
 			$WebTestx = $webArray[$i];
-			
 			if ($p_playspecialtype ==1 && strpos(",".$p_playspecialrrul,"[变量]")) {
 					$Keyurl = explode("[变量]",$p_playspecialrrul);
 					$urli = getBody ($UrlTest,$Keyurl[0],$Keyurl[1]);
@@ -550,12 +742,35 @@ function cjView($strlink,$num)
 					$WebTestx = replaceStr($p_playspecialrerul,"[变量]",$urli);
 			}
 			
+						
+			  if ($p_playspecialtype ==2 ) {
+					$urArray = explode("/", $strlink);
+					
+					$ur="";
+					for($k=0;$k<count($urArray)-1;$k++){
+						$ur=$ur.$urArray[$k]."/";
+					}
+					$WebTestx=$ur.$WebTestx.".html";
+				}
+				
+			writetofile("crawel_info.log", $p_id.'{=====}'.$WebTestx ."{=====}ViewList===start");
+			
 			if ($p_playlinktype == 1){ //播放页获取地址
+				$WebTestx=getHrefFromLink($WebTestx);
 			    $WebTestx = definiteUrl($WebTestx,$strListUrl);
 			    $playCode = getPage($WebTestx,$p_coding);
+			    
+			    $androidUrl = ContentProviderFactory::getContentProvider($p_playtype)->parseAndroidVideoUrlByContent($playCode, $p_coding, $p_script);
+				$videoAddressUrl = ContentProviderFactory::getContentProvider($p_playtype)->parseIOSVideoUrlByContent($playCode, $p_coding, $p_script);
+				writetofile("android_log.txt", $strlink.'{===}'.$androidUrl .'{===}'.$videoAddressUrl );
+			    
 			    $url = getBody($playCode,$p_playurlstart,$p_playurlend);
+			    $url = replaceLine($url);
+			    
+			        
 			}
 			else if($p_playlinktype == 2){ //播放链接中获取地址
+				$WebTestx=getHrefFromLink($WebTestx);
 				if (isN($p_playurlend)){
 					$tmpA = strpos($WebTestx, $p_playurlstart);
                 	$url = substr($WebTestx,strlen($WebTestx)-$tmpA-strlen($p_playurlstart)+1);
@@ -566,6 +781,7 @@ function cjView($strlink,$num)
 				
 			}
 			else if($p_playlinktype == 3){ //单播放页获取所有播放地址
+				$WebTestx=getHrefFromLink($WebTestx);
 				$playCode = getPage($WebTestx,$p_coding);
 				$tmpB = getArray($webCode,$p_playurlstart,$p_playurlend);
 				$tmpC = explode("$Array$",$tmpB);
@@ -581,32 +797,40 @@ function cjView($strlink,$num)
 			}
 			else{
 				$url= $WebTestx;
+				$url = replaceLine($url);
+				
 			}
 				
 			   $url = replaceFilters($url,$p_id,3,0);
 			   if ($p_setnametype == 1){
 					$setname = getBody($url,$p_setnamestart,$p_setnameend);
-					$url = $setname . "$" . $url;
+//					$url = $setname . "$" . $url;
 			   }
-			   else if($p_setnametype == 1 && $p_playlinktype ==1) {
-					$setname = getBody($playCode,$p_setnamedtart,$p_setnameend);
-					$url = $setname ."$" .$url;
+			   else if($p_setnametype == 2 && $p_playlinktype ==1) {
+					$setname = getBody($playCode,$p_setnamestart,$p_setnameend);
+//					$url = $setname ."$" .$url;
 				}
 				else if($p_setnametype == 3){
-					$url = $setnamesArray[$i] . "$" .$url;
+					$setname= $setnamesArray[$i];
 				}
-			   $sql="SELECT {pre}cj_vod_url.u_url FROM ({pre}cj_vod_url INNER JOIN {pre}cj_vod ON {pre}cj_vod_url.u_movieid = {pre}cj_vod.m_id)  where {pre}cj_vod_url.u_url='" . $url . "' and {pre}cj_vod.m_pid=" . $p_id;
+			   $sql="SELECT {pre}cj_vod_url.u_url FROM ({pre}cj_vod_url INNER JOIN {pre}cj_vod ON {pre}cj_vod_url.u_movieid = {pre}cj_vod.m_id)  where {pre}cj_vod_url.u_url='" . $url . "' and {pre}cj_vod.m_pid=" . $p_id . " and {pre}cj_vod.m_id=" . $movieid;
 			   
      		   $rowurl = $db->getRow($sql);
+     		//   writetofile("d:\\sql.txt",$sql);
+//     		   var_dump($sql);
+//			    return ;
 			   if (!$rowurl) {
 				   if ($p_playlinktype ==1) {
 					  $strTempUrl .=  $url . "<br>";
 					  $url = replaceStr($url,"'","''");
-					  $db->query("insert into {pre}cj_vod_url(u_url,u_movieid,u_weburl) values('".$url."','".$movieid."','".$WebTestx."')");
+					 writetofile("sql.txt","insert into {pre}cj_vod_url(u_url,u_movieid,u_weburl,iso_video_url,name,android_vedio_url) values('".$url."','".$movieid."','".getHrefFromLink($WebTestx)."','".getHrefFromLink($videoAddressUrl)."','".filterScriptStar($setname,$p_script)."' ,'".$androidUrl."' )");
+					  $db->query("insert into {pre}cj_vod_url(u_url,u_movieid,u_weburl,iso_video_url,name,android_vedio_url) values('".$url."','".$movieid."','".getHrefFromLink($WebTestx)."','".getHrefFromLink($videoAddressUrl)."','".filterScriptStar($setname,$p_script)."' ,'".$androidUrl."' )");
 					}
 				   else{
 					  $strTempUrl .= $url . "<br>";
-					  $db->query("insert into {pre}cj_vod_url(u_url,u_movieid) values('".$url."','".$movieid."')");
+					  writetofile("sql.txt","insert into {pre}cj_vod_url(u_url,u_movieid,iso_video_url,u_weburl,android_vedio_url) values('".$url."','".$movieid."','".getHrefFromLink($videoAddressUrl)."','".getHrefFromLink($strlink)."', '".$androidUrl."')");
+					 
+					  $db->query("insert into {pre}cj_vod_url(u_url,u_movieid,iso_video_url,u_weburl,android_vedio_url) values('".$url."','".$movieid."','".getHrefFromLink($videoAddressUrl)."','".getHrefFromLink($strlink)."', '".$androidUrl."')");
 				   }
 			   }
 		}
