@@ -45,7 +45,7 @@ class SearchManager {
    
    const LUN_BO_SQL='SELECT  vod.d_name as prod_name,
       vod.d_id as prod_id ,a.ipad_pic_url as ipad_pic, a.iphone_pic_url  as
-       iphone_pic,a.info_desc as memo ,vod.d_type as prod_type from mac_vod_popular a,mac_vod vod  where  a.vod_id=vod.d_id ORDER BY a.disp_order,a.id ASC ';
+       iphone_pic,a.info_desc as memo ,vod.d_type as prod_type from mac_vod_popular a,mac_vod vod  where vod.d_hide=0 and  a.vod_id=vod.d_id ORDER BY a.disp_order,a.id ASC ';
    
    public static function lunbo(){
          $key =SearchManager::CACHE_LUN_BO;
@@ -254,7 +254,7 @@ class SearchManager {
 		->select('items.id as id, vod.d_id as prod_id,vod.d_name as prod_name, vod.d_type as prod_type, vod.d_pic as prod_pic_url,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area ')
 		->from('mac_vod_topic_items as items')
 		->join("mac_vod as vod","items.vod_id=vod.d_id")
-		->where('items.flag=:t_flag and items.topic_id=:topic_id', array(
+		->where('items.flag=:t_flag and items.topic_id=:topic_id and  vod.d_hide=0 ', array(
 			    ':t_flag'=>1,
 			    ':topic_id'=>$top_id,
 		))->order('items.disp_order desc, vod.d_level desc ,vod.d_good desc,vod.d_time DESC ')->limit($limit)->offset($offset)
@@ -278,7 +278,7 @@ class SearchManager {
 		->select('items.id as id, vod.d_id as prod_id,vod.d_name as prod_name, vod.d_type as prod_type, vod.d_pic_ipad as prod_pic_url,vod.webUrls as cur_item_url ,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area')
 		->from('mac_vod_topic_items as items')
 		->join("mac_vod as vod","items.vod_id=vod.d_id")
-		->where('items.flag=:t_flag and items.topic_id=:topic_id', array(
+		->where('items.flag=:t_flag and items.topic_id=:topic_id and vod.d_hide=0 ', array(
 			    ':t_flag'=>1,
 			    ':topic_id'=>$top_id,
 		))->order('items.disp_order desc, vod.d_level desc ,vod.d_good desc,vod.d_time DESC ')->limit($limit)->offset($offset)
@@ -321,7 +321,6 @@ class SearchManager {
 	
 	
    public static function searchProgram($keyword,$limit,$offset){
-//   	    echo 'ss';
 	    $key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_'.$keyword.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
 	    $prods = CacheManager::getValueFromCache($key);
 	    if($prods){
@@ -330,8 +329,7 @@ class SearchManager {
 	    
 	    $keyword='%'.$keyword.'%';
 //	    $keyword= iconv("iso-8859-1","UTF-8",$keyword);
-	    
-//	    echo 'ss';
+
 	    $prods= Yii::app()->db->createCommand()
 		->select('d_id as prod_id, d_name as prod_name, d_type as prod_type,d_pic as prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area')
 		->from('mac_vod ')
@@ -339,7 +337,30 @@ class SearchManager {
 			    ':d_hide'=>0,
 		))->order('d_type asc ,d_level desc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
 		->queryAll();
-//		var_dump($prods)
+	    if(isset($prods) && !is_null($prods)){
+	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
+	  	    CacheManager::setValueToCache($key, $prods,$prodExpired);
+	    }
+	    return $prods;
+	}
+	
+ public static function searchProgramByType($keyword,$type,$limit,$offset){
+	    $key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_'.$keyword.'_type_'.$type.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+	    $prods = CacheManager::getValueFromCache($key);
+	    if($prods){
+	    	return $prods;
+	    }
+	    
+	    $keyword='%'.$keyword.'%';
+//	    $keyword= iconv("iso-8859-1","UTF-8",$keyword);
+
+	    $prods= Yii::app()->db->createCommand()
+		->select('d_id as prod_id, d_name as prod_name, d_type as prod_type,d_pic as prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area')
+		->from('mac_vod ')
+		->where('d_hide=:d_hide and d_type in ('.$type.') and ( d_name like \''.$keyword.'\' or d_enname like \''.$keyword.'\'   )', array(
+			    ':d_hide'=>0,
+		))->order('d_type asc ,d_level desc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
+		->queryAll();
 	    if(isset($prods) && !is_null($prods)){
 	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
 	  	    CacheManager::setValueToCache($key, $prods,$prodExpired);

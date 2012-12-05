@@ -74,8 +74,13 @@ class SearchController extends Controller
 		}else if(!(isset($page_num) && is_numeric($page_num))){
 			$page_num=1;
 		}
+		$type= Yii::app()->request->getParam("type");	
 		try{
-		  $prods = SearchManager::searchProgram($keyword,$page_size,$page_size*($page_num-1));
+		  if (is_null($type) || $type==''){
+		    $prods = SearchManager::searchProgram($keyword,$page_size,$page_size*($page_num-1));
+		  }else {
+		    $prods = SearchManager::searchProgramByType($keyword,$type,$page_size,$page_size*($page_num-1));
+		  }
 		  if(isset($prods) && is_array($prods)){				
 		    IjoyPlusServiceUtils::exportEntity(array('results'=>$prods));
 		    }else {
