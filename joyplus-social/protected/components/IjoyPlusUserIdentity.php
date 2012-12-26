@@ -4,7 +4,7 @@
 {
     private $_id;
     public function authenticate(){
-        $record=User::model()->find('(LOWER(email)=?) and status=?',array(strtolower($this->username),Constants::USER_APPROVAL));
+        $record=User::model()->find('(LOWER(username)=?) and status=?',array(strtolower($this->username),Constants::USER_APPROVAL));
         if($record===null){
             $this->errorCode=Constants::USER_NOT_EXIST;
             return false;
@@ -14,7 +14,7 @@
         } else {
             $this->_id=$record->id;
             $this->setState('pic_url', $record->user_photo_url);
-            $this->setState('username', $record->username);
+            $this->setState('nickname', $record->nickname);
             $this->setState('lastLoginDate', $record->last_login_date);
             $this->errorCode=Constants::SUCC;
             return true;

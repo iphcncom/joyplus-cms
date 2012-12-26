@@ -27,7 +27,22 @@ class Friend extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-
+   public function isFollowedByOwn($friend_id){
+     $userid=Yii::app()->user->id;
+     $friend= $this->find(array(
+			'condition'=>'author_id=:author_id and friend_id=:friend_id and status=:status',
+			'params'=>array(
+			    ':author_id'=>$userid,
+			    ':status'=>Constants::OBJECT_APPROVAL,
+			    ':friend_id'=>$friend_id,
+			 ),
+		));
+		if(isset($friend) && !is_null($friend)){
+		  return true;
+		}else {
+		  return false;
+		}
+   }
 	/**
 	 * @return string the associated database table name
 	 */
@@ -54,7 +69,7 @@ class Friend extends CActiveRecord
 		    $user = new UserVO();
 		    $user->id=$friend->friend_id;
 		    $user->user_pic_url=$friend->friend_photo_url;
-		    $user->username=$friend->friend_username;
+		    $user->nickname=$friend->friend_username;
 		    $friendT[$count]=$user;
 		    $count++;
 		  }
@@ -71,18 +86,13 @@ class Friend extends CActiveRecord
 		));
 	}
 	
-    public function searchFans($userid,$limit=20,$offset=0){	   
-		return Yii::app()->db->createCommand()
-    ->select('u.id, u.username, u.user_photo_url')
-    ->from('tbl_user u')
-    ->join('tbl_my_friend p', 'u.id=p.author_id')
-    ->where('p.friend_id=:author_id and p.status=:status', array(
-			    ':author_id'=>$userid,
-			    ':status'=>Constants::OBJECT_APPROVAL,
-			 ))->order('p.create_date DESC')->limit($limit)->offset($offset)
-    ->queryAll();
-		
-		
+    public function searchFans($userid,$limit=20,$offset=0){
+    	$sql = "SELECT user.id, user.nickname, user.user_photo_url AS user_pic_url, (case when f.id is null then 0 else 1 end) as is_follow FROM 
+ (select u.id as id, u.nickname as nickname, u.user_photo_url as user_photo_url from tbl_user u,tbl_my_friend p where 
+u.id=p.author_id and p.friend_id=".$userid." and p.status=1 and u.status=1 ) as user LEFT JOIN tbl_my_friend f ON user.id = f.friend_id and f.status=1 
+             AND f.author_id =".$userid." and f.status=1 limit ".$offset .", ".$limit;	   
+		return Yii::app()->db->createCommand($sql)	   
+	    ->queryAll();		
 	}
 	
 	public function followFriends($friends){
@@ -108,7 +118,7 @@ class Friend extends CActiveRecord
 		                 $friend->author_id=$userid;
 		                 $friend->friend_id=$id;
 		                 $friend->friend_photo_url=$user->user_photo_url;
-		                 $friend->friend_username=$user->username;                 
+		                 $friend->friend_username=$user->nickname;                 
 					     $friend->create_date=new CDbExpression('NOW()');
 					     $friend->status=Constants::OBJECT_APPROVAL;
 					     $friend->save();
@@ -122,7 +132,7 @@ class Friend extends CActiveRecord
 			         $dynamic->content_id=$id;
 			         $dynamic->status=Constants::OBJECT_APPROVAL;
 			         $dynamic->create_date=new CDbExpression('NOW()');
-			         $dynamic->content_name=$user->username; 
+			         $dynamic->content_name=$user->nickname; 
 			         $dynamic->dynamic_type=Constants::DYNAMIC_TYPE_FOLLOW;
 			         $dynamic->content_pic_url=$user->user_photo_url;
 			         $dynamic->save();	
@@ -131,7 +141,7 @@ class Friend extends CActiveRecord
 			          $msg = new NotifyMsg();
 				      $msg->author_id=$id;
 				      $msg->nofity_user_id=Yii::app()->user->id;
-				      $msg->notify_user_name=Yii::app()->user->getState("username");
+				      $msg->notify_user_name=Yii::app()->user->getState("nickname");
 			          $msg->notify_user_pic_url=Yii::app()->user->getState("pic_url");			      
 				      $msg->created_date=new CDbExpression('NOW()');
 				      $msg->status=Constants::OBJECT_APPROVAL;
@@ -208,35 +218,41 @@ class Friend extends CActiveRecord
                  	 if(isset($friendt) && !is_null($friendt) && $friendt->status ==Constants::OBJECT_APPROVAL){   
                  	 	             	              	 
 		                 $friendt->status =Constants::OBJECT_DELETE;
-                 	      $friendt->save();
+                 	     $friendt->save();		                 
+		                 $count++;
+		                 if( $user->fan_number >=1){
+		                   $user->fan_number=$user->fan_number-1;
+		                   $user->save();
+		                 }
+		                 if( $user->fan_number <0){
+		                 	$user->fan_number=0;
+		                    $user->save();
+		                 }
 		                 
-		                  $count++;
-		                 $user->fan_number=$user->fan_number-1;
-		                 $user->save();
 					    // $friend->save();
 		//			     User::model()->updateFanCount($id, -1);
 		//			     User::model()->up
 					     //add dynamic
-					     $dynamic = new Dynamic();
-				         $dynamic->author_id=$userid;
-				         $dynamic->content_id=$id;
-				         $dynamic->status=Constants::OBJECT_APPROVAL;
-				         $dynamic->create_date=new CDbExpression('NOW()');
-				         $dynamic->content_name=$user->username; 
-				         $dynamic->dynamic_type=Constants::DYNAMIC_TYPE_UN_FOLLOW;
-				         $dynamic->content_pic_url=$user->user_photo_url;
-				         $dynamic->save();	
+//					     $dynamic = new Dynamic();
+//				         $dynamic->author_id=$userid;
+//				         $dynamic->content_id=$id;
+//				         $dynamic->status=Constants::OBJECT_APPROVAL;
+//				         $dynamic->create_date=new CDbExpression('NOW()');
+//				         $dynamic->content_name=$user->nickname; 
+//				         $dynamic->dynamic_type=Constants::DYNAMIC_TYPE_UN_FOLLOW;
+//				         $dynamic->content_pic_url=$user->user_photo_url;
+//				         $dynamic->save();	
 				         
 				         //ADD NOTIFY MSG
-				          $msg = new NotifyMsg();
-					      $msg->author_id=$id;
-					      $msg->nofity_user_id=Yii::app()->user->id;
-					      $msg->notify_user_name=Yii::app()->user->getState("username");
-				          $msg->notify_user_pic_url=Yii::app()->user->getState("pic_url");			      
-					      $msg->created_date=new CDbExpression('NOW()');
-					      $msg->status=Constants::OBJECT_APPROVAL;
-					      $msg->notify_type=Constants::NOTIFY_TYPE_UN_FOLLOW;
-					      $msg->save();
+//				          $msg = new NotifyMsg();
+//					      $msg->author_id=$id;
+//					      $msg->nofity_user_id=Yii::app()->user->id;
+//					      $msg->notify_user_name=Yii::app()->user->getState("username");
+//				          $msg->notify_user_pic_url=Yii::app()->user->getState("pic_url");			      
+//					      $msg->created_date=new CDbExpression('NOW()');
+//					      $msg->status=Constants::OBJECT_APPROVAL;
+//					      $msg->notify_type=Constants::NOTIFY_TYPE_UN_FOLLOW;
+//					      $msg->save();
                  	 }
                }
               }

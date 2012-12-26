@@ -4,7 +4,7 @@
     protected function afterLogin($fromCookie)
 	{   
 		parent::afterLogin($fromCookie);
-		User::model()->updateLastLoginDate(Yii::app()->user->id);
+		//User::model()->updateLastLoginDate(Yii::app()->user->id);
 	}
   }
 ?>

@@ -251,9 +251,9 @@ class UserController extends Controller
 	   	if( (!isset($userid)) || is_null($userid)  ){
 	   		$userid=Yii::app()->user->id;
 	   	}else{
-	   		if( !IjoyPlusServiceUtils::validateUserID()){
-	   	      $isFollowed = Friend::model()->isFollowedByOwn($userid);
-	   		}
+//	   		if( !IjoyPlusServiceUtils::validateUserID()){
+//	   	      $isFollowed = Friend::model()->isFollowedByOwn($userid);
+//	   		}
 	   	}
 	   	try {
 	   		$user=User::model()->findByPk($userid);
@@ -921,6 +921,54 @@ class UserController extends Controller
 		  }
 		  return  $temp;
 		}
+		
+		
+		
+       public function actionFeedback(){
+	        header('Content-type: application/json');
+		    if(!Yii::app()->request->isPostRequest){   
+		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+		   		 return ;
+		   	}
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}	
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				$owner_id=0;
+				$ownerName="";
+			}else {
+			   $owner_id=Yii::app()->user->id;
+			   $ownerName=Yii::app()->user->getState("nickname");
+			}
+			
+   			try {
+   				$userAgent= isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:"";
+   				$ip = $_SERVER["REMOTE_ADDR"];;
+   				$email = Yii::app()->request->getParam("email");
+   				$content = Yii::app()->request->getParam("content");
+//   				if(isset($email) && !is_null($email) && strlen(trim($email))>0){
+//		   			$emailValidator = new CEmailValidator;
+//		        	if(!$emailValidator->validateValue($email)){
+//		        		IjoyPlusServiceUtils::exportServiceError(Constants::EMAIL_INVALID);
+//		        		return ;
+//		        	}
+//   				}
+   				$feedBack = new Feedback();
+   				$feedBack->author_id=$owner_id;
+   				$feedBack->author_name=$ownerName;
+   				$feedBack->email=$email;
+   				$feedBack->content=$content;
+   				$feedBack->ip=$ip;
+   				$feedBack->user_agent=$userAgent;
+   				$feedBack->create_time=new CDbExpression('NOW()');
+   				$feedBack->save();
+   				IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
+   			} catch (Exception $e) {
+   				IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+   			}
+		}
+		
 		public function actionUpdatePicUrl(){
 	        header('Content-type: application/json');
 		    if(!Yii::app()->request->isPostRequest){   

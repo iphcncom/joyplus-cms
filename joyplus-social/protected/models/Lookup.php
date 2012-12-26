@@ -29,7 +29,25 @@ class Lookup extends CActiveRecord
 	{
 		return 'tbl_lookup';
 	}
-
+    
+	public function saveLookup($key){
+	  try{
+	  	$lookup = $this->find('content=:content',array(':content'=>$key));
+	  	if(isset($lookup) && !is_null($lookup)){
+	  	  $lookup->search_count= $lookup->search_count+1;
+	  	  $lookup->last_search_date= new CDbExpression('NOW()');
+	  	  $lookup->save();
+	  	}else {
+	  	  $lookup = new Lookup;
+	  	  $lookup->search_count=1;
+	  	  $lookup->last_search_date= new CDbExpression('NOW()');
+	  	  $lookup->content=$key;
+	  	  $lookup->keyword_order=1;
+	  	  $lookup->save();
+	  	}
+	  }catch(Exception $e){
+	  }
+	}
 	/**
 	 * @return array validation rules for model attributes.
 	 */

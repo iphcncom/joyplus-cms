@@ -94,8 +94,10 @@ class Comment extends CActiveRecord
        $transaction = Yii::app()->db->beginTransaction(); 
        try {
        	 if($this->save()){
-       	  $program = Program::model()->findByPk($this->content_id);
+       	  $program = CacheManager::getProgramVOByID($this->content_id);
+       	  Program::model()->incCommentCount($this->content_id);
 	      if($program !== null){
+//	      	var_dump(($program->name));
 		      $dynamic = new Dynamic();
 		      $dynamic->author_id=$this->author_id;
 		      $dynamic->content_id=$program->id;
@@ -107,23 +109,29 @@ class Comment extends CActiveRecord
 		      $dynamic->dynamic_type=Constants::DYNAMIC_TYPE_COMMENTS;
 		      $dynamic->content_pic_url=$program->poster;
 		      $dynamic->save();	 
-//              var_dump($program);
-		      if(isset($program->publish_owner_id) && !is_null($program->publish_owner_id) && $program->publish_owner_id !== Yii::app()->user->id ){
-			      // add notify msg		      
-			      $msg = new NotifyMsg();
-			      $msg->author_id=$program->publish_owner_id;
-			      $msg->nofity_user_id=Yii::app()->user->id;
-			      $msg->notify_user_name=Yii::app()->user->getState("username");
-		          $msg->notify_user_pic_url=Yii::app()->user->getState("pic_url");
-			      $msg->content_id=$program->id;
-			      $msg->content_info=$program->name;
-		          $msg->content_type=$program->pro_type;
-			      $msg->created_date=new CDbExpression('NOW()');
-			      $msg->status=Constants::OBJECT_APPROVAL;
-			      $msg->notify_type=Constants::NOTIFY_TYPE_COMMENT;
-			      $msg->content_desc=$this->comments;
-			      $msg->save();
-		      }     
+		      
+		      $recommendOwnerId = Dynamic::model()->getRecommendOwnsForProd($this->content_id);
+		      if(isset($recommendOwnerId) && is_array($recommendOwnerId)){
+		        foreach ($recommendOwnerId as $id){
+		          if($id['author_id'] !== Yii::app()->user->id){
+		        	// add notify msg		      
+			          $msg = new NotifyMsg();
+				      $msg->author_id=$id['author_id'];
+				      $msg->nofity_user_id=Yii::app()->user->id;
+				      $msg->notify_user_name=Yii::app()->user->getState("nickname");
+			          $msg->notify_user_pic_url=Yii::app()->user->getState("pic_url");
+				      $msg->content_id=$program->id;
+				      $msg->content_info=$program->name;
+			          $msg->content_type=$program->pro_type;
+				      $msg->created_date=new CDbExpression('NOW()');
+				      $msg->status=Constants::OBJECT_APPROVAL;
+				      $msg->notify_type=Constants::NOTIFY_TYPE_COMMENT;
+				      $msg->content_desc=$this->comments;
+				      $msg->save();									
+		          }
+		        }
+		      }
+		          
 	      }
 	      $transaction->commit();
 	      return true;

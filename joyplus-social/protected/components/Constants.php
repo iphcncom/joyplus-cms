@@ -1,5 +1,8 @@
 <?php
   class Constants{
+  	
+  	
+  	
   	const SUCC='00000';
 	const USER_NOT_EXIST='20001';
 	const ERROR_PASSWORD_INVALID='20002';
@@ -21,61 +24,74 @@
 	const PROGRAM_IS_FAVORITY='20015';	
 	const PROGRAM_IS_UN_FAVORITY='20016';
 	const PERSON_IS_LIKED='20017';
+	const NICKNAME_IS_NULL='20018';
+	const NICKNAME_IS_EXSTING='20019';
+	const KEYWORD_IS_NULL='20020';
+	const DUPLICAT_REQUEST='20021';
+	const OBJECT_EXIST='20022';
+	const NO_RIGHT='20023';	
+	const USER_ID_INVALID='20024';
 	
+	const USER_IS_PRESTIGE_FLAG=1;
 	
-	
-	
+	const CRSC_TOKEN_KEY="CRSC_TOKEN_KEY";
 	
 	
 	const THIRD_PART_ACCOUNT_SINA='1'; //sina
 	const THIRD_PART_ACCOUNT_QQ='2';//QQ
 	const THIRD_PART_ACCOUNT_REN_REN='3';//REN REN
 	const THIRD_PART_ACCOUNT_DOUBAN='4';// dou ban
-	const THIRD_PART_ACCOUNT_LOCAL_CONTACT='5';// ����ͨ��¼
+	const THIRD_PART_ACCOUNT_LOCAL_CONTACT='5';// local contact
 	
 	const USER_APPROVAL=1;
 	const USER_DELETE=-1;
 	
-	const DYNAMIC_CONTENT_TYPE_MOVIE=1; //��Ӱ 
-	const DYNAMIC_CONTENT_TYPE_TV=2;   //���� 
-	const DYNAMIC_CONTENT_TYPE_SHOW=3;  //���ս�Ŀ 
-	const DYNAMIC_CONTENT_TYPE_COMMENTS=4; //���� 
+	const DYNAMIC_CONTENT_TYPE_MOVIE=1; // 电影
+	const DYNAMIC_CONTENT_TYPE_TV=2;   //        电视剧
+	const DYNAMIC_CONTENT_TYPE_SHOW=3;  //综艺节目
+	const DYNAMIC_CONTENT_TYPE_COMMENTS=4; //评论
 	
-	const DYNAMIC_TYPE_WATCH=1;//���� ��Ŀ
-	const DYNAMIC_TYPE_FAVORITY=2; //�ղؽ�Ŀ
-	const DYNAMIC_TYPE_LIKE=3;//ϲ�� ��Ŀ
-	const DYNAMIC_TYPE_PUBLISH_PROGRAM=4;//������Ŀ
-	const DYNAMIC_TYPE_SHARE=5;//�����Ŀ
-	const DYNAMIC_TYPE_COMMENTS=6;//��������  
-	const DYNAMIC_TYPE_COMMENT_REPLI=7;//�ظ�����  
-	const DYNAMIC_TYPE_FOLLOW=8;//��ע ��
-	const DYNAMIC_TYPE_UN_FOLLOW=9;//ȡ���ע�� 
+	const DYNAMIC_TYPE_WATCH=1;//观看节目
+	const DYNAMIC_TYPE_FAVORITY=2; //收藏节目
+	const DYNAMIC_TYPE_LIKE=3;//喜欢节目
+	const DYNAMIC_TYPE_PUBLISH_PROGRAM=4;//发布节目
+	const DYNAMIC_TYPE_SHARE=5;//分享节目
+	const DYNAMIC_TYPE_COMMENTS=6;//评论节目 
+	const DYNAMIC_TYPE_COMMENT_REPLI=7;//回复评论  
+	const DYNAMIC_TYPE_FOLLOW=8;//关注人
+	const DYNAMIC_TYPE_UN_FOLLOW=9;//取消关注
 	
-	const DYNAMIC_TYPE_UN_FAVORITY=10; //ȡ���ղؽ�Ŀ
-	const DYNAMIC_TYPE_LIKE_FRIEND=11;//ϲ�� REN
+	const DYNAMIC_TYPE_UN_FAVORITY=10; //取消收藏
 	
-	const DYNAMIC_CONTENT_STATUS_APPROVAL=1; //
-	const DYNAMIC_CONTENT_STATUS_DELETE=2;   //ɾ��
+	const DYNAMIC_CONTENT_STATUS_APPROVAL=1; // 正常
+	const DYNAMIC_CONTENT_STATUS_DELETE=2;   //删除
+	const DYNAMIC_TYPE_RECOMMEND=12;//推荐节目
+	
+	const DYNAMIC_TYPE_MAKE_GOOD=13;//顶节目
+	
 	
 	const OBJECT_APPROVAL=1;
 	const OBJECT_DELETE=-1;
 	
-	const NOTIFY_TYPE_FAVORITY=1;//�ղ�
-	const NOTIFY_TYPE_SHARE=2; //����
-	const NOTIFY_TYPE_COMMENT=3; //��������
-	const NOTIFY_TYPE_FOLLOW=4;//��ע��
-	const NOTIFY_TYPE_REPLIE_COMMENT=5;//�ظ��������
-	const NOTIFY_TYPE_LIKE_PROGRAM=8;//ϲ��program
-	const NOTIFY_TYPE_LIKE_PERSON=10;//ϲ��REN
-	const NOTIFY_TYPE_WATCH_PROGRAM=9;//����
-	const NOTIFY_TYPE_LIKE_FRIEND=11;//ϲ��REN
+	const NOTIFY_TYPE_FAVORITY=1;//收藏
+	const NOTIFY_TYPE_SHARE=2; //分享
+	const NOTIFY_TYPE_COMMENT=3; //评论
+	const NOTIFY_TYPE_FOLLOW=4;//关注
+	const NOTIFY_TYPE_REPLIE_COMMENT=5;//回复评论
+	const NOTIFY_TYPE_LIKE_PROGRAM=8;//喜欢节目
+	const NOTIFY_TYPE_RECOMMEND_PROGRAM=12;//推荐节目
+	const NOTIFY_TYPE_MAKE_GOOD=13;//顶节目
+	const NOTIFY_TYPE_LIKE_PERSON=10;//喜欢某人
+	const NOTIFY_TYPE_WATCH_PROGRAM=9;//观看节目
+	const NOTIFY_TYPE_LIKE_FRIEND=11;//喜欢好友
 	
-	const NOTIFY_TYPE_UN_FAVORITY=6;//ȡ���ղ�
-	const NOTIFY_TYPE_UN_FOLLOW=7;//ȡ���ע
+	const NOTIFY_TYPE_UN_FAVORITY=6;//取消收藏
+	const NOTIFY_TYPE_UN_FOLLOW=7;//取消关注
 	
-	const PROGRAM_TYPE_MOVIE=1; //��Ӱ 
-	const PROGRAM_TYPE_TV=2;   //���� 
-	const PROGRAM_TYPE_SHOW=3;  //���ս�Ŀ 
+	const PROGRAM_TYPE_MOVIE=1; //电影
+	const PROGRAM_TYPE_TV=2;   //电视剧
+	const PROGRAM_TYPE_SHOW=3;  //综艺节目
+	const PROGRAM_TYPE_VIDEO=4;  //视频
 	
   }
 ?>

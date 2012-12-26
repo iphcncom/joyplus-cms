@@ -13,7 +13,8 @@
   		}
   		return false;
   	}
-  	public static function transferComments($comment){
+  	
+  public static function transferComments($comment){
   		$vo = new CommentVO;
   		if($comment instanceof Comment){
   			$vo->content=$comment->comments;
@@ -25,6 +26,21 @@
   		}
   		return $vo;
   	} 
+  	
+  public static function checkCSRCToken(){
+  	$token = Yii::app()->request->getParam("token");
+  	if(isset($token) && !is_null($token)){
+  	  $tokenKey = Yii::app()->user->getState(Constants::CRSC_TOKEN_KEY);
+  	  if(isset($tokenKey) && !is_null($tokenKey) && $tokenKey ===$token){
+  	  	return false;
+  	  }
+  	  Yii::app()->user->setState(Constants::CRSC_TOKEN_KEY,$token);
+  	  return true;
+  	}else {
+  		return false;
+  	}
+  }
+  	
   	public static function validateThirdPartSource($source){
   		if(Constants::THIRD_PART_ACCOUNT_DOUBAN === $source){
   			return true;
@@ -41,12 +57,42 @@
   	}
   	
   	public static function validateAPPKey(){
-  	  $appKey = Yii::app()->request->getParam("app_key");
+   	  $appKey= isset($_SERVER['HTTP_APP_KEY'])?$_SERVER['HTTP_APP_KEY']:"";
+   	  if(!(isset($appKey) && !is_null($appKey) && strlen($appKey) >0)){
+   	  	 $appKey = Yii::app()->request->getParam("app_key");
+//        return false;
+   	  }
   	  if(! IjoyPlusServiceUtils::validate( $appKey)   ){
 	   	return false;
   	  }
   	  return true; 		
   	}
+  	
+   public static function validateUserID(){
+   	  $userid= isset($_SERVER['HTTP_USER_ID'])?$_SERVER['HTTP_USER_ID']:"";
+   	  if(!(isset($userid) && !is_null($userid) && strlen($userid) >0)){
+   	  	 $userid = Yii::app()->request->getParam("user_id");
+   	  }   	  
+   	  if(isset($userid) && !is_null($userid) && strlen($userid) >0){
+   	  	return IjoyPlusServiceUtils::login($userid);
+  	  }
+  	  return true; 		
+  	}
+  	
+  	private static function login($userid){
+  		$user = User::model()->findUser($userid);
+  		if($user!==false && isset($user) && !is_null($user)) {  						
+	       	$identity=new IjoyPlusUserIdentity($user['username'],'');
+	       	$identity->setId($userid);
+	       	$identity->setState('nickname', $user['nickname']);
+	       	$identity->setState('pic_url', $user['user_photo_url']);
+	       	Yii::app()->user->login($identity);
+	       	return false;	
+  		}else {
+  			return true;
+  		}
+  	}
+  	
   	public static function exportServiceError($errorCode){
   		$repsonse = new IJoyPlusResponse;	
 	   	$repsonse->res_code=$errorCode;

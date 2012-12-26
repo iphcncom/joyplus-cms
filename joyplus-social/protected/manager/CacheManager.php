@@ -201,6 +201,8 @@ class CacheManager {
 	    }
 	}
 	
+  
+	
    public static function synUserCache($user){
 		$key =CacheManager::CACHE_PROD_BY_PROD_ID.'_'.$prod->d_id;
 	    if(isset($user) && !is_null($user)){

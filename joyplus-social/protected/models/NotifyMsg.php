@@ -70,12 +70,10 @@ class NotifyMsg extends CActiveRecord
 		$command= Yii::app()->db->createCommand()
 		->select('nofity_user_id as notify_user_id ,notify_user_name, notify_user_pic_url, notify_type,content_type,content_info,content_id,created_date,content_desc')
 		->from($this->tableName())
-		->where('status=:status and author_id=:author_id', array(
+		->where('status=:status and author_id=:author_id and notify_type in (3,4,5)', array(
 			    ':status'=>Constants::OBJECT_APPROVAL,
 		        ':author_id'=>$userid,
 		));
-		
-//		$command ->where(array('in', 'notify_type',array(1,2,3,4,5,6)));
 		return $command->order('created_date DESC')->limit($limit)->offset($offset)
 		->queryAll();
 	}

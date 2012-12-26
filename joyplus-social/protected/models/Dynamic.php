@@ -56,24 +56,75 @@ class Dynamic extends CActiveRecord
 
 	public function searchUserWatchs($userid,$limit=20,$offset=0){
 		return Yii::app()->db->createCommand()
-		->select('content_id, content_name, content_pic_url,content_type,create_date')
-		->from('tbl_my_dynamic ')
-		->where('author_id=:author_id and status=:status and dynamic_type=:type', array(
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,
+		 vod.d_pic as content_pic_url,	a.create_date,vod.d_starring as stars,
+		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
+		->from('tbl_my_dynamic as a')
+		->join('mac_vod vod', "a.content_id=vod.d_id")
+		->where('author_id=:author_id  and dynamic_type=:type', array(
 			    ':author_id'=>$userid,
-			    ':status'=>Constants::OBJECT_APPROVAL,
+//			    ':status'=>Constants::OBJECT_APPROVAL,
                 ':type'=>Constants::DYNAMIC_TYPE_WATCH,
+		))->order('create_date DESC')->limit($limit)->offset($offset)
+		->queryAll();
+	}
+	
+public function searchUserRecommends($userid,$limit=20,$offset=0){
+		return Yii::app()->db->createCommand()
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,
+		 vod.d_pic as content_pic_url,	a.create_date,vod.d_starring as stars,
+		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
+		->from('tbl_my_dynamic as a')
+		->join('mac_vod vod', "a.content_id=vod.d_id")
+		->where('author_id=:author_id and dynamic_type=:type', array(
+			    ':author_id'=>$userid,
+//			    ':status'=>Constants::OBJECT_APPROVAL,
+                ':type'=>Constants::DYNAMIC_TYPE_RECOMMEND,
 		))->order('create_date DESC')->limit($limit)->offset($offset)
 		->queryAll();
 	}
 	
   public function searchUserFavorities($userid,$limit=20,$offset=0){
 		return Yii::app()->db->createCommand()
-		->select('content_id, content_name, content_pic_url,content_type,create_date')
-		->from('tbl_my_dynamic ')
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,
+		 vod.d_pic as content_pic_url,	a.create_date,vod.d_starring as stars,
+		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
+		->from('tbl_my_dynamic as a')
+		->join('mac_vod vod', "a.content_id=vod.d_id")
 		->where('author_id=:author_id and status=:status and dynamic_type=:type', array(
 			    ':author_id'=>$userid,
 			    ':status'=>Constants::OBJECT_APPROVAL,
                 ':type'=>Constants::DYNAMIC_TYPE_FAVORITY,
+		))->order('create_date DESC')->limit($limit)->offset($offset)
+		->queryAll();
+	}
+	
+   public function searchUserShares($userid,$limit=20,$offset=0){
+		return Yii::app()->db->createCommand()
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,
+		 vod.d_pic as content_pic_url,	a.create_date,vod.d_starring as stars,
+		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
+		->from('tbl_my_dynamic as a')
+		->join('mac_vod vod', "a.content_id=vod.d_id")
+		->where('author_id=:author_id and status=:status and dynamic_type=:type', array(
+			    ':author_id'=>$userid,
+			    ':status'=>Constants::OBJECT_APPROVAL,
+                ':type'=>Constants::DYNAMIC_TYPE_SHARE,
+		))->order('create_date DESC')->limit($limit)->offset($offset)
+		->queryAll();
+	}
+	
+   public function searchUserSupports($userid,$limit=20,$offset=0){
+		return Yii::app()->db->createCommand()
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,
+		 vod.d_pic as content_pic_url,	a.create_date,vod.d_starring as stars,
+		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
+		->from('tbl_my_dynamic as a')
+		->join('mac_vod vod', "a.content_id=vod.d_id")
+		->where('a.author_id=:author_id and a.status=:status and a.dynamic_type=:type', array(
+			    ':author_id'=>$userid,
+			    ':status'=>Constants::OBJECT_APPROVAL,
+                ':type'=>Constants::DYNAMIC_TYPE_MAKE_GOOD,
 		))->order('create_date DESC')->limit($limit)->offset($offset)
 		->queryAll();
 	}
@@ -88,6 +139,17 @@ class Dynamic extends CActiveRecord
 			 ),
 		));
 	}	
+	
+	public function getDynamicByProd($userid,$prod_id,$dynamicType){
+		return  $this->find(array(
+			'condition'=>'author_id=:author_id and content_id=:content_id and dynamic_type=:type',
+			'params'=>array(
+			    ':author_id'=>$userid,
+			    ':type'=>$dynamicType,
+			    ':content_id'=>$prod_id,
+			 ),
+		));
+	}	
 
 	public function friendRecommends($userid,$limit=20,$offset=0){
 		
@@ -95,10 +157,11 @@ class Dynamic extends CActiveRecord
 		->select('dy.content_id, dy.content_name, dy.content_pic_url,dy.content_type,count(dy.content_id) as recommendRate')
 		->from('tbl_my_dynamic dy')
 		->join('tbl_my_friend fr', 'fr.friend_id=dy.author_id ')
-		->where('fr.status=:status and dy.status=:dystatus and dy.author_id=fr.friend_id and fr.author_id=:author_id and dy.dynamic_type =:type', array(
+		->where('fr.status=:status and dy.author_id=fr.friend_id and fr.author_id=:author_id and dy.dynamic_type =:type', array(
+//			    ->where('fr.status=:status and dy.status=:dystatus and dy.author_id=fr.friend_id and fr.author_id=:author_id and dy.dynamic_type =:type', array(
 			    ':status'=>Constants::OBJECT_APPROVAL,
-			    ':dystatus'=>Constants::OBJECT_APPROVAL,
-		        ':type' =>Constants::DYNAMIC_TYPE_LIKE,
+//			    ':dystatus'=>Constants::OBJECT_APPROVAL,
+		        ':type' =>Constants::DYNAMIC_TYPE_RECOMMEND,
 		        ':author_id'=>$userid,
 		));
 		
@@ -122,7 +185,7 @@ class Dynamic extends CActiveRecord
 		->select('dy.content_desc,dy.dynamic_type,fr.friend_id,fr.friend_photo_url,fr.friend_username,dy.create_date')
 		->from('tbl_my_dynamic dy')
 		->join('tbl_my_friend fr', 'fr.friend_id=dy.author_id ')
-		->where('dy.status=:status and dy.content_id=:content_id and fr.status=:frstatus and fr.author_id=:author_id and dy.dynamic_type in (1,2,3,4,5,6)', array(
+		->where('dy.status=:status and dy.content_id=:content_id and fr.status=:frstatus and fr.author_id=:author_id and dy.dynamic_type in (1,2,3,4,5,6,12)', array(
 			    ':status'=>Constants::OBJECT_APPROVAL,
 		        ':frstatus'=>Constants::OBJECT_APPROVAL,
 		        ':content_id'=>$prod_id,
@@ -133,16 +196,26 @@ class Dynamic extends CActiveRecord
 		->queryAll();
 	}
 	
-public function friendAndMeDynamics($userid,$limit=20,$offset=0){
+	public function getRecommendOwnsForProd($prod_id){
+		return $command= Yii::app()->db->createCommand()
+		->select('author_id')
+		->from('tbl_my_dynamic ')
+		->where('status=:status and content_id=:content_id and dynamic_type =:type', array(
+			    ':status'=>Constants::OBJECT_APPROVAL,
+		        ':content_id'=>$prod_id,
+		        ':type'=>Constants::DYNAMIC_TYPE_RECOMMEND,
+		))->queryAll();	
+	}
+	
+    public function friendAndMeDynamics($userid,$limit=20,$offset=0){
 		$command= Yii::app()->db->createCommand()
 		->select('dy.*')
 		->from('tbl_my_dynamic dy')
 		->join('tbl_my_friend fr', 'fr.friend_id=dy.author_id ')
-		->where('fr.status=:status and dy.status=:dystatus and dy.author_id=fr.friend_id and fr.author_id=:author_id  or dy.author_id=:dyauthor_id', array(
+		->where('fr.status=:status and dy.status=:dystatus and dy.author_id=fr.friend_id and fr.author_id=:author_id and dynamic_type in (1,2,8,12)', array(
 			    ':status'=>Constants::OBJECT_APPROVAL,
 			    ':dystatus'=>Constants::OBJECT_APPROVAL,
 		        ':author_id'=>$userid,
-		        ':dyauthor_id'=>$userid,
 		));		
 		
 		return $command->order('dy.create_date DESC,dy.dynamic_type')->limit($limit)->offset($offset)
@@ -166,7 +239,7 @@ public function friendAndMeDynamics($userid,$limit=20,$offset=0){
 		->select('dy.*')
 		->from('tbl_my_dynamic dy')
 		->join('tbl_my_friend fr', 'fr.friend_id=dy.author_id ')
-		->where('fr.status=:status and dy.status=:dystatus and dy.author_id=fr.friend_id and fr.author_id=:author_id ', array(
+		->where('fr.status=:status and dy.status=:dystatus and dy.author_id=fr.friend_id and fr.author_id=:author_id and  dy.dynamic_type in (1,4,8,12)', array(
 			    ':status'=>Constants::OBJECT_APPROVAL,
 			    ':dystatus'=>Constants::OBJECT_APPROVAL,
 		        ':author_id'=>$userid,

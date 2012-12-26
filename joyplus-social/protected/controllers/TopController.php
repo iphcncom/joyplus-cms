@@ -177,6 +177,7 @@ function actionSystemShowTop(){
                     $top->t_userid=$owner_id;
                     $top->t_pic=Yii::app()->request->getParam("pic");
                     $top->t_des=Yii::app()->request->getParam("content");
+                    $top->t_type=Yii::app()->request->getParam("type");
                     $top->save();
                     User::model()->updateTopBDCount($owner_id, 1);
 					$transaction->commit();

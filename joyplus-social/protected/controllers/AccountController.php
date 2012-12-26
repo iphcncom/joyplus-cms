@@ -169,7 +169,7 @@ class AccountController extends Controller{
 	   		    	$identity->setState('nickname', $user->nickname);
 	   		    	$identity->setState('pic_url', $user->user_photo_url);
 	   		    	Yii::app()->user->login($identity);					
-					IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
+					IjoyPlusServiceUtils::exportEntity(array("user_id"=>$user->id));
 				}else {
 					IjoyPlusServiceUtils::exportServiceError(Constants::USER_NOT_EXIST);
 				}

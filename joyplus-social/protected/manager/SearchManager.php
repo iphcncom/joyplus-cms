@@ -5,7 +5,8 @@ class SearchManager {
 	const POPULAR_TV_SET_SPECIAL_ID=2;
 	const POPULAR_TV_SHOW_SPECIAL_ID=3;
 	const POPULAR_TV_VEDIO_SPECIAL_ID=4;
-	const TOPS_LIST_ITEM_NUM=3; //悦单
+	const TOPS_LIST_ITEM_NUM=5; //悦单	
+	const USER_TOPS_LIST_ITEM_NUM=7; //悦单
 	const BD_TOPS_LIST_ITEM_NUM=10; //悦榜
 	const CACHE_POPULAR_PROD_BY_TYPE_LIMIT_OFFSET="CACHE_POPULAR_PROD_BY_TYPE_LIMIT_OFFSET";
 	const CACHE_LISTS_BY_TYPE_LIMIT_OFFSET="CACHE_LISTS_BY_TYPE_LIMIT_OFFSET";
@@ -43,10 +44,21 @@ class SearchManager {
 	    return $prods;
 	}
    
-   const LUN_BO_SQL='SELECT  vod.d_name as prod_name,
-      vod.d_id as prod_id ,a.ipad_pic_url as ipad_pic, a.iphone_pic_url  as
-       iphone_pic,a.info_desc as memo ,vod.d_type as prod_type from mac_vod_popular a,mac_vod vod  where vod.d_hide=0 and  a.vod_id=vod.d_id ORDER BY a.disp_order,a.id ASC ';
-   
+   const LUN_BO_SQL='select * from (
+SELECT vod.d_name AS prod_name, vod.d_id AS prod_id, a.ipad_pic_url AS ipad_pic, a.iphone_pic_url AS iphone_pic, a.info_desc AS memo, vod.d_type AS prod_type, a.type AS
+type ,a.disp_order as disp_order FROM mac_vod_popular a, mac_vod vod
+WHERE vod.d_hide =0
+AND a.type =0
+AND a.vod_id = vod.d_id
+
+union 
+
+SELECT vod.t_name AS prod_name, vod.t_id AS prod_id, a.ipad_pic_url AS ipad_pic, a.iphone_pic_url AS iphone_pic, a.info_desc AS memo, NULL AS prod_type, a.type AS
+type,a.disp_order as disp_order FROM mac_vod_popular a, mac_vod_topic vod
+WHERE a.type =1 AND a.vod_id = vod.t_id
+) as d 
+ORDER BY d.disp_order asc ';
+  
    public static function lunbo(){
          $key =SearchManager::CACHE_LUN_BO;
 	    $lists = CacheManager::getValueFromCache($key);
@@ -54,6 +66,7 @@ class SearchManager {
 	    	return $lists;
 	    }	    
 	    $lists= Yii::app()->db->createCommand(SearchManager::LUN_BO_SQL)->queryAll();
+	    
 	    if(isset($lists) && !is_null($lists)){
 	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
 	  	    CacheManager::setValueToCache($key, $lists,$prodExpired);
@@ -69,11 +82,11 @@ class SearchManager {
 	    	return $lists;
 	    }
 	    $lists= Yii::app()->db->createCommand()
-			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
+			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content,t_toptype as toptype')
 			->from('mac_vod_topic ')
 			->where('t_flag=:t_flag and t_id>4 and t_bdtype=1', array(
 				    ':t_flag'=>1,
-			))->order('t_sort desc ')->limit($limit)->offset($offset)
+			))->order('t_toptype desc ,t_sort desc ,create_date desc')->limit($limit)->offset($offset)
 			->queryAll();	   
 	  $temp = array();
 	  if(isset($lists) && is_array($lists)){	  	
@@ -109,7 +122,7 @@ class SearchManager {
 			->from('mac_vod_topic ')
 			->where('t_flag=:t_flag and t_id>4 and t_bdtype=2 and t_type='.Constants::PROGRAM_TYPE_MOVIE, array(
 				    ':t_flag'=>1,
-			))->order('t_sort desc ')->limit($limit)->offset($offset)
+			))->order('t_sort desc ,create_date desc')->limit($limit)->offset($offset)
 			->queryAll();	   
 	  $temp = array();
 	  if(isset($lists) && is_array($lists)){	  	
@@ -142,7 +155,7 @@ class SearchManager {
 			->from('mac_vod_topic ')
 			->where('t_flag=:t_flag and t_id>4 and t_bdtype=2 and t_type='.Constants::PROGRAM_TYPE_SHOW, array(
 				    ':t_flag'=>1,
-			))->order('t_sort desc ')->limit($limit)->offset($offset)
+			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
 			->queryAll();
 	  $temp = array();
 	  if(isset($lists) && is_array($lists)){	  	
@@ -176,7 +189,7 @@ class SearchManager {
 			->from('mac_vod_topic ')
 			->where('t_flag=:t_flag and t_id>4 and t_bdtype=2 and t_type='.Constants::PROGRAM_TYPE_TV, array(
 				    ':t_flag'=>1,
-			))->order('t_sort desc ')->limit($limit)->offset($offset)
+			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
 			->queryAll();
 	  $temp = array();
 	  if(isset($lists) && is_array($lists)){	  	
@@ -210,7 +223,7 @@ class SearchManager {
 			->from('mac_vod_topic ')
 			->where('t_userid=:t_userid and t_id>4', array(
 				    ':t_userid'=>$userid,
-			))->order('t_sort desc ')->limit($limit)->offset($offset)
+			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
 			->queryAll();
 	    } else {
 	    	$lists= Yii::app()->db->createCommand()
@@ -219,14 +232,14 @@ class SearchManager {
 			->where('t_flag=:t_flag and t_id>4 and t_bdtype=:type', array(
 				    ':t_flag'=>1,
 			        ':type'=>$type,
-			))->order('t_sort desc ')->limit($limit)->offset($offset)
+			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
 			->queryAll();
 	    }
 	    
 	    $temp = array();
 	  if(isset($lists) && is_array($lists)){	  	
 	  	 foreach ($lists as $list){	  	 	
-	  	 	$items = SearchManager::listItems($list['id'], SearchManager::TOPS_LIST_ITEM_NUM, 0);	  	 	
+	  	 	$items = SearchManager::listItems($list['id'], SearchManager::USER_TOPS_LIST_ITEM_NUM, 0);	  	 	
 	  	 	if(isset($items) && is_array($items) && count($items)>0){
 	  	 		$list['items']=$items;
 	  	 		if(!(isset($list['pic_url']) && is_null($list['pic_url']))){
@@ -289,6 +302,13 @@ class SearchManager {
 	    if(isset($items) && !is_null($items) && is_array($items)){
 	    	foreach ($items as $item){
 	    	  $weburls = $item['cur_item_url'];
+	    	  $prod_pic_url = $item['prod_pic_url'];
+	    	  if(isset($prod_pic_url) && !is_null($prod_pic_url)){
+	    	  	$prodPicArray = explode("{Array}", $prod_pic_url);
+	    	  	if(count($prodPicArray)>1){
+	    	  		$item['prod_pic_url']=$prodPicArray[1];
+	    	  	}
+	    	  }
 	    	  $cur_name='';
 	    	  $cur_url='';
 	    	  if(isset($weburls) && !is_null($weburls)){
@@ -333,7 +353,7 @@ class SearchManager {
 	    $prods= Yii::app()->db->createCommand()
 		->select('d_id as prod_id, d_name as prod_name, d_type as prod_type,d_pic as prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area')
 		->from('mac_vod ')
-		->where('d_hide=:d_hide and ( d_name like \''.$keyword.'\' or d_enname like \''.$keyword.'\'   )', array(
+		->where('d_hide=:d_hide  and d_type in (1,2,3,4) and ( d_name like \''.$keyword.'\' or d_enname like \''.$keyword.'\'   )', array(
 			    ':d_hide'=>0,
 		))->order('d_type asc ,d_level desc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
 		->queryAll();

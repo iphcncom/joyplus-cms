@@ -1,20 +1,21 @@
 <?php
 
 /**
- * This is the model class for table "label".
+ * This is the model class for table "tbl_lookup".
  *
- * The followings are the available columns in table 'label':
+ * The followings are the available columns in table 'tbl_lookup':
  * @property integer $id
- * @property string $name
- * @property string $last_update_time
- * @property integer $enable
+ * @property string $content
+ * @property integer $search_count
+ * @property string $last_search_date
+ * @property integer $keyword_order
  */
-class Label extends CActiveRecord
+class Lookup extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return Label the static model class
+	 * @return Lookup the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -26,9 +27,27 @@ class Label extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'label';
+		return 'tbl_lookup';
 	}
-
+    
+	public function saveLookup($key){
+	  try{
+	  	$lookup = $this->find('content=:content',array(':content'=>$key));
+	  	if(isset($lookup) && !is_null($lookup)){
+	  	  $lookup->search_count= $lookup->search_count+1;
+	  	  $lookup->last_search_date= new CDbExpression('NOW()');
+	  	  $lookup->save();
+	  	}else {
+	  	  $lookup = new Lookup;
+	  	  $lookup->search_count=1;
+	  	  $lookup->last_search_date= new CDbExpression('NOW()');
+	  	  $lookup->content=$key;
+	  	  $lookup->keyword_order=1;
+	  	  $lookup->save();
+	  	}
+	  }catch(Exception $e){
+	  }
+	}
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -37,12 +56,12 @@ class Label extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('enable', 'numerical', 'integerOnly'=>true),
-			array('name', 'length', 'max'=>255),
-			array('last_update_time', 'safe'),
+			array('search_count, keyword_order', 'numerical', 'integerOnly'=>true),
+			array('content', 'length', 'max'=>50),
+			array('last_search_date', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, last_update_time, enable', 'safe', 'on'=>'search'),
+			array('id, content, search_count, last_search_date, keyword_order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,12 +83,20 @@ class Label extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'last_update_time' => 'Last Update Time',
-			'enable' => 'Enable',
+			'content' => 'Content',
+			'search_count' => 'Search Count',
+			'last_search_date' => 'Last Search Date',
+			'keyword_order' => 'Keyword Order',
 		);
 	}
-
+    public function topKeypwords($num){
+		return Yii::app()->db->createCommand()
+		->select('content,search_count,last_search_date')
+		->from($this->tableName())
+		 ->order('keyword_order DESC,search_count DESC,last_search_date DESC ')->limit($num)
+		->queryAll();
+    }
+    
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -82,9 +109,10 @@ class Label extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('last_update_time',$this->last_update_time,true);
-		$criteria->compare('enable',$this->enable);
+		$criteria->compare('content',$this->content,true);
+		$criteria->compare('search_count',$this->search_count);
+		$criteria->compare('last_search_date',$this->last_search_date,true);
+		$criteria->compare('keyword_order',$this->keyword_order);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
