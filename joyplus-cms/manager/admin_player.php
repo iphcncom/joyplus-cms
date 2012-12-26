@@ -87,7 +87,7 @@ function edit(id)
       <td width="10%">状态</td>
       <td width="13%">备注</td>
       <td>提示信息</td>
-      <td width="15%">操作</td>
+<!--      <td width="15%">操作</td>-->
     </tr>
 	<?php
 		if(count($nodes)==0){
@@ -112,13 +112,19 @@ function edit(id)
       <td><?php echo $des?></td>
       <td><?php echo $tip?></td>
       <td>
-	  <a href="javascript:void(0)" onclick="edit('<?php echo $from?>');return false;">修改</a> |
-	  <a href="admin_ajax.php?action=delxml&tab=vodplay&val=<?php echo $from?>" onClick="return confirm('确定要删除吗?');">删除</a></td>
+	  <a href="javascript:void(0)" onclick="edit('<?php echo $from?>');return false;">修改</a> 
+	|  <a href="admin_ajax.php?action=delxml&tab=vodplay&val=<?php echo $from?>" onClick="return confirm('确定要删除吗?');">删除</a>
+	  </td>
     </tr>
 	<?php
 			}
 		}
 	?>
+	
+	<tr>
+	<td  colspan="7">
+	&nbsp;<input type="button" value="添加" id="btnAdd" class="input" />
+	</td></tr>
 </table>
 </form>
 

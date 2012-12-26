@@ -37,7 +37,7 @@ function appendplay(i,playStr,serverStr){
 	}
 	var obj = $("#playurldiv" + i)[0];
 	if(obj ==undefined){
-	var area="<table width='100%' class='tb2'><tr><td width='11%'><input id='urlid"+i+"' name='urlid[]' type='hidden' value='0'/>&nbsp;播放器"+i+"：</td><td>&nbsp;播放器：<select id='urlfrom"+i+"' name='urlfrom[]'><option value='no'>暂无数据"+i+"</option>"+playStr+"</select>&nbsp;服务器组：<select id='urlserver"+i+"' name='urlserver[]'><option value='0'>暂无数据"+i+"</option>"+serverStr+"</select>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"removeplay("+i+")\">删除</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveUp("+i+")\">上移</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveDown("+i+")\">下移</a>说明:每行一个地址，不能有空行。</td></tr><tr><td>&nbsp;数据地址"+i+":<br><input type='button' value='校正' title='校正右侧文本框中的数据格式' class='btn' onclick='repairUrl("+i+")' /><input type='button' value='倒序' title='把右侧文本框中的数据倒序排列' class='btn' onclick='orderUrl("+i+")' /><input type='button' value='去前缀' title='把右侧文本框中的数据前缀去掉' class='btn' onclick='delnameUrl("+i+")' /></td><td><textarea id='url"+i+"' name='url[]' style='width:700px;height:150px;'></textarea></td></tr></table>"
+	var area="<table width='100%' class='tb2'><tr><td width='11%'><input id='urlid"+i+"' name='urlid[]' type='hidden' value='0'/>&nbsp;网页播放器"+i+"：</td><td>&nbsp;播放器：<select id='urlfrom"+i+"' name='urlfrom[]'><option value='no'>暂无数据"+i+"</option>"+playStr+"</select>&nbsp;服务器组：<select id='urlserver"+i+"' name='urlserver[]'><option value='0'>暂无数据"+i+"</option>"+serverStr+"</select>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"removeplay("+i+")\">删除</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveUp("+i+")\">上移</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveDown("+i+")\">下移</a>说明:每行一个地址，不能有空行。(如果是电视剧，剧集数$网友播放地址) <input type=\"button\" value=\"采集视频地址\" class=\"input\" onclick=\"collect('url"+i+"','urlfrom"+i+"');return false;\" /></td></tr><tr><td>&nbsp;网页播放地址"+i+":<br><input type='button' value='校正' title='校正右侧文本框中的数据格式' class='btn' onclick='repairUrl("+i+")' /><input type='button' value='倒序' title='把右侧文本框中的数据倒序排列' class='btn' onclick='orderUrl("+i+")' /><input type='button' value='去前缀' title='把右侧文本框中的数据前缀去掉' class='btn' onclick='delnameUrl("+i+")' /></td><td><textarea id='url"+i+"' name='url[]' style='width:700px;height:150px;'></textarea></td></tr></table>"
 	var urldiv=document.createElement("div");
 	urldiv.id = "playurldiv"+i;
 	urldiv.className="playurldiv";
@@ -61,7 +61,7 @@ function appenddown(i,downStr){
 	}
 	var obj = $("#downurldiv" + i)[0];
 	if(obj ==undefined){
-	var area="<table width='100%' class='tb2'><tr><td width='11%'><input id='downurlid"+i+"' name='downurlid[]' type='hidden' value='0'/>&nbsp;下载"+i+"：</td><td>&nbsp;类型：<select id='downurlfrom"+i+"' name='downurlfrom[]'><option value='no'>暂无数据"+i+"</option>"+downStr+"</select>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"removedown("+i+")\">删除</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveUp('down',"+i+")\">上移</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveDown('down',"+i+")\">下移</a>说明:每行一个地址，不能有空行。</td></tr><tr><td>&nbsp;数据地址"+i+":</td><td><textarea id='downurl"+i+"' name='downurl[]' rows='8' cols='120'></textarea></td></tr></table>"
+	var area="<table width='100%' class='tb2'><tr><td width='11%'><input id='downurlid"+i+"' name='downurlid[]' type='hidden' value='0'/>&nbsp;视频下载"+i+"：</td><td>&nbsp;类型：<select id='downurlfrom"+i+"' name='downurlfrom[]'><option value='no'>暂无数据"+i+"</option>"+downStr+"</select>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"removedown("+i+")\">删除</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveUp('down',"+i+")\">上移</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveDown('down',"+i+")\">下移</a>说明:每行一个地址，不能有空行。（如果是电视剧，剧集数$视频地址)</td></tr><tr><td>&nbsp;视频播放地址"+i+":</td><td><textarea id='downurl"+i+"' name='downurl[]' rows='8' cols='120'></textarea></td></tr></table>"
 	var urldiv=document.createElement("div");
 	urldiv.id = "downurldiv"+i;
 	urldiv.className="downurldiv";
@@ -195,6 +195,45 @@ function plset(type,flag)
 	}
 }
 
+function plsetBD(type,flag,dbtype)
+{
+	var ids = "",tid="";
+	if(flag=="art"){ tid="a_id[]"; }else{ tid="d_id[]";	}
+	$("input[name='"+tid+"']").each(function() {
+		if(this.checked){ ids =  ids + this.value + ","; }
+	});
+	if (ids != ""){
+		ids = ids.substring(0,ids.length-1);
+		var topicName=$("#"+type);
+		var offset=topicName.offset();
+		var topicTop=offset.top;
+		var topicLeft=offset.left;
+	    creatediv(99997,250,20);
+		var ShowDiv=$("#confirm");
+		ShowDiv.css('border','1px solid #55BBFF').css('background','#C1E7FF').css('padding',' 3px 0px 3px 4px').css('top',topicTop-4+'px').css('left',topicLeft-100+'px').html('正在加载内容......');
+		ShowDiv.load("admin_ajax.php?id="+ ids +"&show=1&flag="+flag+"&action="+ type+"&dbtype="+ dbtype);
+	}
+	else{
+		alert("请至少选择一个数据!");
+	}
+}
+
+function plsetLuobo()
+{
+	var ids = "",tid="";
+	 tid="d_id[]";
+	$("input[name='"+tid+"']").each(function() {
+		if(this.checked){ ids =  ids + this.value + ","; }
+	});
+	if (ids != ""){
+		ids = ids.substring(0,ids.length-1);
+		ajaxsubmit(ids,'plluobo','vod');
+	}
+	else{
+		alert("请至少选择一个数据!");
+	}
+}
+
 function setday(type,movieid,flag)
 { 
 	var topicName=$("#"+type+movieid);
@@ -205,6 +244,53 @@ function setday(type,movieid,flag)
 	var ShowDiv=$("#confirm");
 	ShowDiv.css('border','1px solid #55BBFF').css('background','#C1E7FF').css('padding',' 3px 0px 3px 4px').css('top',topicTop-4+'px').css('left',topicLeft-100+'px').html('正在加载内容......');
 	ShowDiv.load("admin_ajax.php?id="+ movieid +"&show=1&flag="+flag+"&action="+ type);
+}
+
+function setdayBD(type,movieid,flag,dbtype)
+{ 
+	var topicName=$("#"+type+movieid);
+	var offset=topicName.offset();
+	var topicTop=offset.top;
+	var topicLeft=offset.left;
+    creatediv(99997,250,20);
+	var ShowDiv=$("#confirm");
+	ShowDiv.css('border','1px solid #55BBFF').css('background','#C1E7FF').css('padding',' 3px 0px 3px 4px').css('top',topicTop-4+'px').css('left',topicLeft-100+'px').html('正在加载内容......');
+	ShowDiv.load("admin_ajax.php?id="+ movieid +"&show=1&flag="+flag+"&action="+ type+"&dbtype="+ dbtype);
+}
+
+function setdayBDkewyowrd(type,movieid,flag,dbtype,keyword)
+{ 
+	var topicName=$("#"+type+movieid);
+	var offset=topicName.offset();
+	var topicTop=offset.top;
+	var topicLeft=offset.left;
+    creatediv(99997,250,20);
+	var ShowDiv=$("#confirm");
+	ShowDiv.css('border','1px solid #55BBFF').css('background','#C1E7FF').css('padding',' 3px 0px 3px 4px').css('top',topicTop-4+'px').css('left',topicLeft-100+'px').html('正在加载内容......');
+	ShowDiv.load("admin_ajax.php?id="+ movieid +"&show=1&flag="+flag+"&action="+ type+"&dbtype="+ dbtype+"&keyword="+ keyword);
+}
+
+function plsetBDkewyowrd(type,flag,dbtype,keyword)
+{
+	var ids = "",tid="";
+	if(flag=="art"){ tid="a_id[]"; }else{ tid="d_id[]";	}
+	$("input[name='"+tid+"']").each(function() {
+		if(this.checked){ ids =  ids + this.value + ","; }
+	});
+	if (ids != ""){
+		ids = ids.substring(0,ids.length-1);
+		var topicName=$("#"+type);
+		var offset=topicName.offset();
+		var topicTop=offset.top;
+		var topicLeft=offset.left;
+	    creatediv(99997,250,20);
+		var ShowDiv=$("#confirm");
+		ShowDiv.css('border','1px solid #55BBFF').css('background','#C1E7FF').css('padding',' 3px 0px 3px 4px').css('top',topicTop-4+'px').css('left',topicLeft-100+'px').html('正在加载内容......');
+		ShowDiv.load("admin_ajax.php?id="+ ids +"&show=1&flag="+flag+"&action="+ type+"&dbtype="+ dbtype+"&keyword="+ keyword);
+	}
+	else{
+		alert("请至少选择一个数据!");
+	}
 }
 
 function ajaxsubmit(movieid,type,flag)
@@ -219,6 +305,7 @@ function ajaxsubmit(movieid,type,flag)
 	else{
 		var ajaxcontent = $("#ajaxcontent").val();
 		$.get("admin_ajax.php","id="+movieid+"&show=2&ajaxcontent="+ajaxcontent+"&action="+type+"&flag="+flag, function(obj) {
+//			alert(obj);
 			oncomplete(obj);
 		});
 	}

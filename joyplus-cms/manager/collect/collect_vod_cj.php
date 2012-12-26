@@ -161,8 +161,9 @@ if(isset($action) && $action ==='collectSimpl'){
 		$starringarr[]=$actor;
 	}
 	if( isset($poster) && !is_null($poster)){
-		$picarr[]=$name;
+		$picarr[]=$poster;
 	}
+	
 //	echo $name;
 	cjView(getHrefFromLink($webUrl),0);
 //	break;
@@ -559,7 +560,7 @@ function cjView($strlink,$num)
 		$languagecode = trim($languagecode);
 		//时间
 		$timecode = filterScript(getBody($strViewCode,$p_timestart,$p_timeend),$p_script);
-		if ($timecode ==false){ $timecode = date('Y-m-d',time()); ;}
+		if ($timecode ==false){ $timecode == "未知" ;}
 		$timecode = trim($timecode);
 		//地区
 		$areacode = filterScript(getBody($strViewCode,$p_areastart,$p_areaend),$p_script);
@@ -682,7 +683,7 @@ function cjView($strlink,$num)
 			return;
 	}
 	else{
-		$sql="select m_id,m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_addtime,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state from {pre}cj_vod where m_urltest='".$strlink."' order by m_id desc";
+		$sql="select m_id,m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_addtime,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state from {pre}cj_vod where m_pid='".$p_id."' and m_name='".$titlecode."' order by m_id desc";
 		
 		$rowvod=$db->getRow($sql);
 		

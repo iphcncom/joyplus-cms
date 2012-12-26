@@ -447,6 +447,7 @@ $(document).ready(function(){
       <td width="7%">播放器</td>
       <td width="10%">栏目分类</td>
       <td width="10%">地区</td>
+      <td width="10%">上映日期</td>
       <td width="15%">所属采集项目</td> 
       <td width="13%">更新时间</td>
       <td width="8%">操作</td>
@@ -481,6 +482,7 @@ $(document).ready(function(){
 	?>
 	</td>
 	<td><?php echo $row["m_area"]?> </td>
+	<td><?php echo $row["m_year"]?> </td>
 	<td><?php echo $row["p_name"]?></td>
 	<td>
 	<?php echo isToDay( $row['m_addtime'] ) ?>
@@ -511,6 +513,7 @@ $(document).ready(function(){
     <input type="radio" name="CCTV" value="0" checked>自动处理
     <input type="radio" name="CCTV" value="1">始终新增数据
     <input type="radio" name="CCTV" value="2">新增播放器组
+     <input type="radio" name="CCTV" value="3">不处理
     <br />
     强制覆盖数据:
 	<input type="checkbox" name="CCTV1" value="1">年份
@@ -576,9 +579,11 @@ function MovieInflow($sql_collect,$MovieNumW)
 	{
 		$flag=false;
 		$title = $row["m_name"];
+		$d_type = $row["m_typeid"];
 		$title= replaceStr($title, "&lt;", "<<");
 		$title= replaceStr($title, "&gt;", ">>");
 		$testUrl = $row["m_urltest"];
+		$year=$row['m_year'];
 		$title = replaceStr($title,"'","''");
 		$strSet="";
 		$sql = "SELECT * FROM {pre}vod WHERE d_name = '".$title."' and d_type = '".$d_type."' ";
@@ -619,6 +624,10 @@ function MovieInflow($sql_collect,$MovieNumW)
 		}
 		//插入新数据结束
 		else{
+			if( be("post","CCTV")=="3"){
+				//var_dump("dd");
+				continue;
+			}
 		//更新数据开始
 			if ($row["m_typeid"] > 0) {
 				$d_type = $row["m_typeid"];
@@ -848,12 +857,12 @@ function MovieInflow($sql_collect,$MovieNumW)
 		
 		$MovieInflowNum=$MovieInflowNum+1;
 		if ($MovieInflowNum >= $MovieNumW){
-			echo "<script type=\"text/javascript\" language=\"javascript\">";
-			echo "document.getElementById(\"refreshlentext\").style.width = \"100%\";";
-			echo "document.getElementById(\"refreshlentext\").innerHTML = \"100%\";";
-			echo "document.getElementById(\"storagetext\").innerHTML = \"入库完毕 <a href='collect_vod.php'>返回</a>\";";
-			echo "alert('入库完毕'); location.href='collect_vod.php';";
-			echo "</script>";
+//			echo "<script type=\"text/javascript\" language=\"javascript\">";
+//			echo "document.getElementById(\"refreshlentext\").style.width = \"100%\";";
+//			echo "document.getElementById(\"refreshlentext\").innerHTML = \"100%\";";
+//			echo "document.getElementById(\"storagetext\").innerHTML = \"入库完毕 <a href='collect_vod.php'>返回</a>\";";
+//			echo "alert('入库完毕'); location.href='collect_vod.php';";
+//			echo "</script>";
 		}
 		elseif (  fmod($MovieInflowNum,$rscount) == 0) {
 		    echo "<script type=\"text/javascript\" language=\"javascript\">";
@@ -863,7 +872,12 @@ function MovieInflow($sql_collect,$MovieNumW)
 			echo "</script>";
 		}
 	}
-	
+	echo "<script type=\"text/javascript\" language=\"javascript\">";
+			echo "document.getElementById(\"refreshlentext\").style.width = \"100%\";";
+			echo "document.getElementById(\"refreshlentext\").innerHTML = \"100%\";";
+			echo "document.getElementById(\"storagetext\").innerHTML = \"入库完毕 <a href='collect_vod.php'>返回</a>\";";
+			echo "alert('入库完毕'); location.href='collect_vod.php';";
+			echo "</script>";
 	unset($rs);
 }
 

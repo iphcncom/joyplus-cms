@@ -10,6 +10,7 @@ require_once ("tools/ContentManager.php");
 	/**
 	 * p_id=1_1-3 pid is 1 and page from 1 to 3
 	 * p_id=1_1,3,5 pid is 1 and page is 1,3,5
+	 * http://cmsdev.joyplus.tv/manager/collect/auto_collect_vod_cj.php?p_id=1_1-3
 	 */ 
 	
 	writetofile("crawel_auto_info.log", $p_id.'{=====}Project===start');
@@ -132,23 +133,25 @@ require_once ("tools/ContentManager.php");
 			$nums= explode("-", $pagenums);
 			writetofile("crawel_auto_info.log", $nums[1].'{=====}'.$nums[0]);
 			for($i=$nums[1];$i>=$nums[0];$i--){
-				writetofile("crawel_auto_info.log", 'Current Number{=====}'.$i);
+				writetofile("crawel_auto_info.log", $p_id.'===Current Number{=====}'.$i);
 				$strListUrl= replaceStr($p_pagebatchurl,"{ID}",$i);
 				writetofile("crawel_auto_info.log", $p_id.'{=====}'.$strListUrl ."{=====}start");
 				clearSession();
 				cjList();
 				writetofile("crawel_auto_info.log", $p_id.'{=====}'.$strListUrl ."{=====}end");
+				writetofile("crawel_auto_info.log", $p_id.'===Current Number{=====}'.$i."{=====}end");
 			}		
 		}else {
 			$nums= explode(",", $pagenums);
 			writetofile("crawel_auto_info.log", 'Pagenums{=====}'.$pagenums);
 			for($j=0;$j<count($nums);$j++){
-				writetofile("crawel_auto_info.log", 'Current Number{=====}'.$nums[$j]);
+				writetofile("crawel_auto_info.log", $p_id.'===Current Number{=====}'.$i);
 				$strListUrl= replaceStr($p_pagebatchurl,"{ID}",$nums[$j]);
 				writetofile("crawel_auto_info.log", $p_id.'{=====}'.$strListUrl ."{=====}start");
 				clearSession();
 				cjList();
-				writetofile("crawel_auto_info.log", $p_id.'{=====}'.$strListUrl ."{=====}end");			
+				writetofile("crawel_auto_info.log", $p_id.'{=====}'.$strListUrl ."{=====}end");	
+				writetofile("crawel_auto_info.log", $p_id.'===Current Number{=====}'.$i."{=====}end");		
 			}
 		}
 	}else if($action ==='updateLZ'){
@@ -407,7 +410,7 @@ function cjView($strlink,$num)
 		$languagecode = trim($languagecode);
 		//时间
 		$timecode = filterScript(getBody($strViewCode,$p_timestart,$p_timeend),$p_script);
-		if ($timecode ==false){ $timecode = date('Y-m-d',time()); ;}
+		if ($timecode ==false){ $timecode == "未知" ;}
 		$timecode = trim($timecode);
 		//地区
 		$areacode = filterScript(getBody($strViewCode,$p_areastart,$p_areaend),$p_script);
@@ -530,7 +533,7 @@ function cjView($strlink,$num)
 	}
 	else{
 		
-		$sql="select m_id,m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_addtime,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state from {pre}cj_vod where m_urltest='".$strlink."' order by m_id desc";
+		$sql="select m_id,m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_addtime,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state from {pre}cj_vod where  m_pid='".$p_id."' and m_name='".$titlecode."'  order by m_id desc";
 		
 		$rowvod=$db->getRow($sql);
 		

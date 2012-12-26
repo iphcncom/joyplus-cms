@@ -43,12 +43,12 @@ return array(
 		
 		
 //		'cache'=>array(
-  //          'class'=>'system.caching.CMemCache',
+//            'class'=>'system.caching.CMemCache',
 //		    'useMemcached'=>false,
-  //          'servers'=>array(
-    //            array('host'=>'115.239.196.123', 'port'=>11211, 'weight'=>100)
-      //      ),
-      //  ),
+//            'servers'=>array(
+//                array('host'=>'115.239.196.123', 'port'=>11211, 'weight'=>100)
+//            ),
+//        ),
 		
 		// uncomment the following to enable URLs in path-format
 		
@@ -76,12 +76,13 @@ return array(
 		// uncomment the following to use a MySQL database
 		
 		'db'=>array(
-			'connectionString' => 'mysql:host=10.4.5.187;dbname=ijoyplus;port=30306',
+			'connectionString' => 'mysql:host=localhost;dbname=ijoyplus;port=30306',
 			'emulatePrepare' => true,
 			'username' => 'joyplus',
 			'password' => 'ilovetv001', //ilovetv001
 			'charset' => 'utf8',
 		    'enableParamLogging'=>true,
+		
 		),
 		
 		//将session保持在数据库的设置：
@@ -119,6 +120,7 @@ return array(
 			'routes'=>array(
 				array(
 					'class'=>'CFileLogRoute',
+//					'levels'=>'error, warning',
 				),
 				// uncomment the following to show log messages on web pages
 				

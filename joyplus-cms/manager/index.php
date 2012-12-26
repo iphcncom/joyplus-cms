@@ -67,15 +67,15 @@ function wel()
     <script type="text/javascript">
     function checkVersion()
 	{
-		$("#update").html("<font color='red'>请稍等，正在检测新版本...</font>");
-		var getUrl = "admin_update.php?action=checkversion&rnd=" + Math.random();
-		$.get(getUrl,function(obj){
-			if (obj == "False"){
-				$("#update").html("<font color='red'>当前已是最新版本!</font>");
-			}else{
-				updatediv(obj);
-			}
-		});
+//		$("#update").html("<font color='red'>请稍等，正在检测新版本...</font>");
+//		var getUrl = "admin_update.php?action=checkversion&rnd=" + Math.random();
+//		$.get(getUrl,function(obj){
+//			if (obj == "False"){
+//				$("#update").html("<font color='red'>当前已是最新版本!</font>");
+//			}else{
+//				updatediv(obj);
+//			}
+//		});
 	}
 	function getUpdate(){
 		$("#update").html("<font color='red'>正在升级中，请不要刷新页面...!</font>");
@@ -264,11 +264,11 @@ function main()
 var menu = {
 	"m1":{"text":"首页快捷","default":"welcome","children":{<?php echo $menudiy;?> }},
 	
-	"m2":{"text":"系统管理","default":"basic_config","children":{"basic_config":{"text":"站点配置","url":"admin_config.php"},"play_config":{"text":"播放器配置","url":"admin_config.php?action=configplay"},"connect_config":{"text":"一键登录配置","url":"admin_config.php?action=configconnect"},"leftdim_config":{"text":"快捷菜单配置","url":"admin_leftdim.php"},"timming_config":{"text":"定时任务配置","url":"admin_timming.php"},"database":{"text":"数据库管理","url":"admin_db.php"},"cache":{"text":"缓存管理","url":"admin_cache.php"}}},
+	"m2":{"text":"系统管理","default":"basic_config","children":{"basic_config":{"text":"站点配置","url":"admin_config.php"},"player_config":{"text":"播放器管理","url":"admin_player.php"},"play_config":{"text":"播放器配置","url":"admin_config.php?action=configplay"},"connect_config":{"text":"一键登录配置","url":"admin_config.php?action=configconnect"},"leftdim_config":{"text":"快捷菜单配置","url":"admin_leftdim.php"},"timming_config":{"text":"定时任务配置","url":"admin_timming.php"},"database":{"text":"数据库管理","url":"admin_db.php"},"cache":{"text":"缓存管理","url":"admin_cache.php"}}},
 	
 	"m3":{"text":"扩展功能","default":"sql","children":{"sql":{"text":"执行SQL语句","url":"admin_sql.php"},"pic":{"text":"图片管理","url":"admin_pic.php"},"link":{"text":"友情链接","url":"admin_link.php"},"ads":{"text":"自定广告","url":"admin_ads.php"},"tongji":{"text":"流量统计","url":"admin_ads.php?action=tj"},"htmltojs":{"text":"HTML互转JS","url":"editor/htmltojs.html"},"urlencode":{"text":"URL汉字编码","url":"editor/urlencode.html"},"gbook":{"text":"留言本","url":"admin_gbook.php"},"comment":{"text":"评论","url":"admin_comment.php"}}},
 	
-	"m4":{"text":"视频管理","default":"vod","children":{"vodtype":{"text":"视频分类","url":"admin_vod_type.php"},"arealang":{"text":"地区语言","url":"admin_vod_arealang.php"},"vodtopic":{"text":"视频专题","url":"admin_vod_topic.php"},"server":{"text":"服务器组","url":"admin_vod_server.php"},"player_config":{"text":"播放器管理","url":"admin_player.php"},"vod":{"text":"视频数据","url":"admin_vod.php"},"vodadd":{"text":"添加视频","url":"admin_vod.php?action=add"},"vodpse":{"text":"伪原创","url":"admin_vod.php?action=pse"},"vodbatch":{"text":"批量操作","url":"admin_vod_batch.php"}}},
+	"m4":{"text":"视频管理","default":"vod","children":{"vodtype":{"text":"视频分类","url":"admin_vod_type.php"},"arealang":{"text":"地区语言","url":"admin_vod_arealang.php"},"vodtopic":{"text":"视频榜单","url":"admin_vod_topic.php"},"vodpopular":{"text":"视频轮播图","url":"admin_vod_popular.php"},"server":{"text":"服务器组","url":"admin_vod_server.php"},"vod":{"text":"视频数据","url":"admin_vod.php"},"vodadd":{"text":"添加视频","url":"admin_vod.php?action=add"},"vodpse":{"text":"伪原创","url":"admin_vod.php?action=pse"},"vodbatch":{"text":"批量操作","url":"admin_vod_batch.php"}}},
 	
 	"m5":{"text":"文章管理","default":"art","children":{"arttype":{"text":"文章分类","url":"admin_art_type.php"},"arttopic":{"text":"文章专题","url":"admin_art_topic.php"},"art":{"text":"文章数据","url":"admin_art.php"},"artadd":{"text":"添加文章","url":"admin_art.php?action=add"}}},
 	
@@ -296,7 +296,7 @@ var levels = '1, <?php echo getCookie("adminlevels")?>';
     <div class="close_float"><img src="../images/adm/close2.gif" /></div>
 </div>
 <div id="head">
-    <div id="logo"><img src="../images/adm/logo.png" /></div>
+    <div id="logo"><img  src="../images/adm/logo.png" /></div>
     <div id="menu"><span>您好，<strong><?php echo getCookie("adminname")?></strong> [欢迎使用MacCMS 7.x] [<a href="?action=logout" title="注销登陆">注销登陆</a>]</span>
     <a href="javascript:;" class="menu_btn1" id="iframe_refresh" title="刷新工作区页面">刷新页面</a>
     <a href="../" target="_blank" class="menu_btn1" title="返回网站首页">站点首页</a>

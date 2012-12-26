@@ -1,5 +1,5 @@
 <?php
-require_once ("../../inc/pinyin.php");
+require_once (dirname(__FILE__)."/../../inc/pinyin.php");
 
 function headAdminCollect($title)
 {

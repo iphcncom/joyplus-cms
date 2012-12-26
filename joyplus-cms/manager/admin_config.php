@@ -1,5 +1,6 @@
 <?php
 require_once ("admin_conn.php");
+require_once ("tools/Crontab.php");
 chkLogin();
 $action = be("get","action");
 switch(trim($action))
@@ -14,8 +15,7 @@ switch(trim($action))
 dispseObj();
 
 function config()
-{
-	require_once ("../inc/ftp.php");
+{  require_once ("../inc/ftp.php");
 ?>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -779,6 +779,15 @@ function configsave()
 		SpecialChar( be("post","app_arttopicpath") );
 	}
 	
+	$timming = trim(be("post","app_timming"));
+    if(strpos(strtolower(PHP_OS), 'linux') !==false){
+    	$command= "*/5 * * * * wget http://".$_SERVER['HTTP_HOST'].'/inc/timming.php >> /dev/null 2>&1';
+		if($timming ==='0'){
+			Crontab::deleteCommand($command, 'http://'.$_SERVER['HTTP_HOST'].'/inc/timming.php');
+		}else {
+			Crontab::replaceCommand($command, 'http://'.$_SERVER['HTTP_HOST'].'/inc/timming.php');
+		}
+	}
 	$str = "<" . "?php" . "\n";
 	$str.= "define(\"app_sitename\"," . chr(34) . trim(be("post","app_sitename")) . chr(34) . ");      //网站名称" . "\n";
 	$str.= "define(\"app_installdir\"," . chr(34) . trim(be("post","app_installdir")) . chr(34) . ");        //网站路径" . "\n";

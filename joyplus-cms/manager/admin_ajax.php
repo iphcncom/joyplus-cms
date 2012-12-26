@@ -7,9 +7,10 @@ $flag = be("all","flag");
 $show = be("all","show");
 $id = be("all","id");
 $name = be("all","name");
+$dbtype=be("all","dbtype");
 $ajaxcontent = be("all","ajaxcontent");
+//var_dump($action .'==='.$id);
 $ajaxcontent=trim($ajaxcontent);
-
 if ($flag=="vod"){
     $tid ="d_id";
     $ttype="d_type";
@@ -32,13 +33,18 @@ switch($action)
 	case "save" : save();break;
 	case "savexml" : savexml();break;
 	case "del" : del();break;
+	case "lunbo" : lunbo();break;
 	case "delxml" : delxml();break;
 	case "tj" : mtuijian();break;
 	case "lz" : mstatus();break;
 	case "zt" : mtopic();break;
+	case "lunboForTopic" : lunboForTopic();break;
+	 case "plluobo" : plluobo();break;
+	case "bd" : bdtopic();break;
 	case "pltj" : mpltuijian();break;
 	case "plfl" : mplfenlei();break;
 	case "plzt" : mplzhuanti();break;
+	case "plbd" : mplbangdan();break;
 	case "plrq" : mplrenqi();break;
 	case "plyc" : mplyinccang();break;
 	case "ckname" : mname();break;
@@ -361,7 +367,19 @@ function getinfo()
 	$tab = be("all","tab");
 	$col = be("all","col");
 	$val = be("all","val");
-	$row = $db->queryArray("SELECT * from ".$tab." WHERE ".$col."=".$val,false);
+	if($tab ==='{pre}vod_popular'){
+		$type = be("all","type");
+		if($type ==='0'){
+		  $row = $db->queryArray("SELECT a.id as id,a.iphone_pic_url as iphone_pic_url,a.vod_id as vod_id,a.ipad_pic_url as ipad_pic_url,a.disp_order as disp_order,a.status as status,a.info_desc ,b.d_name as vod_name from ".$tab." a ,{pre}vod as b  WHERE a.vod_id=b.d_id and ".$col."=".$val,false);
+		}else {
+			 $row = $db->queryArray("SELECT a.id as id,a.iphone_pic_url as iphone_pic_url,a.vod_id as vod_id,a.ipad_pic_url as ipad_pic_url,a.disp_order as disp_order,a.status as status,a.info_desc ,b.t_name as vod_name from ".$tab." a ,{pre}vod_topic as b  WHERE a.vod_id=b.t_id and ".$col."=".$val,false);
+		
+		}
+	}else {
+		$row = $db->queryArray("SELECT * from ".$tab." WHERE ".$col."=".$val,false);
+	}
+//	var_dump("SELECT a.id as id,a.iphone_pic_url as iphone_pic_url,a.vod_id as vod_id,a.ipad_pic_url as ipad_pic_url,a.disp_order as disp_order,a.status as status,a.info_desc ,b.d_name as vod_name from ".$tab." a ,{pre}vod as b  WHERE a.id=b.d_id and".$col."=".$val);
+//	$row = $db->queryArray("SELECT * from ".$tab." WHERE ".$col."=".$val,false);
 	$str = json_encode($row);
 	echo substr($str,1,strlen($str)-2);
 	unset($row);
@@ -407,17 +425,34 @@ function save()
 		case "{pre}vod_topic" :
 			$t_id = be("all","t_id");
 			$t_name = be("post","t_name");
-			$t_enname = be("post","t_enname");
+			$t_toptype = be("post","t_toptype");
 			$t_sort = be("post","t_sort");
 			$t_pic = be("post","t_pic");
+			$t_bdtype=be("post","t_bdtype");
 			$t_template = be("post","t_template");
 			$t_des = be("post","t_des");
-			if (!isNum($t_sort)) { $t_sort= $db->getOne("select max(t_sort) from {pre}vod_topic")+1; }
-			$colarr = array("t_name","t_enname","t_sort","t_pic","t_template","t_des");
-			$valarr = array($t_name,$t_enname,$t_sort,$t_pic,$t_template,$t_des);
+			$t_flag = be("post","t_flag" .$id);$t_type= be("post","t_type" .$id);
+			if (!isNum($t_sort)) { $t_sort= 0; }
+			$colarr = array("t_name","t_toptype","t_sort","t_pic","t_template","t_des","t_flag","t_type","t_bdtype");
+			$valarr = array($t_name,$t_toptype,$t_sort,$t_pic,$t_template,$t_des,$t_flag,$t_type,$t_bdtype);
 			$where = "t_id=".$t_id;
 			$upcache=true;
 			break;
+		case "{pre}vod_popular" :
+			$t_id = be("all","id");
+			$iphone_pic_url = be("post","iphone_pic_url");
+			$ipad_pic_url = be("post","ipad_pic_url");
+			$status = be("post","status");
+			$disp_order = be("post","disp_order");
+			$info_desc=be("post","info_desc");
+//			if (!isNum($disp_order)) { $disp_order= $db->getOne("select max(disp_order) from {pre}vod_popular")+1; }
+			$colarr = array("iphone_pic_url","ipad_pic_url","info_desc","disp_order");
+			$valarr = array($iphone_pic_url,$ipad_pic_url,$info_desc,$disp_order);
+			$where = "id=".$t_id;
+//			var
+			$upcache=true;
+			break;	
+			
 		case "{pre}art_type" :
 			$t_id = be("all","t_id");
 			$t_name = be("post","t_name");
@@ -541,11 +576,13 @@ function save()
 			break;
 	}
 	if ($flag=="add"){
-		$db->Add($tab,$colarr,$valarr);
+		 $db->Add($tab,$colarr,$valarr);
 	}
 	else if ($flag=="edit"){
+		
 		$db->Update($tab,$colarr,$valarr,$where);
 	}
+//	var_dump($flag);
 	if ($upcache){ updateCacheFile();}
     echo "保存完毕";
 }
@@ -580,7 +617,9 @@ function del()
 				$ids= be("arr","t_id");
 			}
 			$upcache=true;
+	        if (!isN($ids)) { $db->Delete("{pre}vod_topic_items", "topic_id"." in (".$ids.")"); }
 			break;
+			
 		case "{pre}art":
 			$col="a_id";
 			$ids = be("get","a_id");
@@ -603,6 +642,7 @@ function del()
 				$ids= be("arr","t_id");
 			}
 			$upcache=true;
+	        
 			break;
 		case "{pre}gbook":
 			$col="g_id";
@@ -647,6 +687,22 @@ function del()
 				$ids= be("arr","c_id");
 			}
 			break;
+		case "{pre}vod_topic_items":
+			$col="id";
+			$ids = be("get","ids");
+			if(isN($ids)){
+				$ids= be("arr","ids");
+			}
+			
+			break;
+			case "{pre}vod_popular":
+			$col="id";
+			$ids = be("get","t_id");
+			if(isN($ids)){
+				$ids= be("arr","t_id");
+			}
+			
+			break;
 	}
 	if (!isN($ids)) { $db->Delete($tab, $col." in (".$ids.")"); }
 	if ($upcache){ updateCacheFile();}
@@ -656,6 +712,38 @@ function del()
 	else{
 		echo "删除完毕";
 	}
+}
+
+
+function lunboForTopic(){
+	global $db;
+	$tab = be("all","tab");
+	$flag = be("all","flag");
+	$upcache=false;
+	switch($tab)
+	{
+		case "{pre}vod_popular" :
+	       $ids = be("get","t_id");
+			if(isN($ids)){
+				$ids= be("arr","t_id");
+			}			
+			$colarr = array("vod_id","type","status");
+			$ids=explode(",", $ids);
+			foreach ($ids as $t_id){
+					if(isNum($t_id)){
+				       $valarr=array($t_id,'1','1');
+				     $db->Add($tab,$colarr,$valarr);
+					}
+		    }
+			$upcache=true;
+			break;
+	}
+	
+	if ($upcache){ updateCacheFile();}
+    if (isN($flag)){
+		redirect ( 'admin_vod_popular.php' );
+	}
+    echo "保存完毕";
 }
 
 function mname()
@@ -741,7 +829,7 @@ function mplzhuanti()
 {
 	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thit,$ttopic;
 	if ($show ==1){
-		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"0\">请选择专题</option>" . makeSelect("{pre}".$flag."_topic","t_id","t_name","t_sort","","&nbsp;|&nbsp;&nbsp;","") ."</select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut> <input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
+		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"0\">请选择专题</option>" . makeSelectWhere("{pre}".$flag."_topic","t_id","t_name","t_sort","","&nbsp;|&nbsp;&nbsp;",""," where t_id <= 4") ."</select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut> <input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
 		echo $str;
 	}
 	else if($show ==2){
@@ -749,6 +837,49 @@ function mplzhuanti()
 		echo "reload";
 	}
 }
+
+function mplbangdan()
+{
+global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thit,$ttopic,$dbtype;
+	$bd=" ";
+	$name='';
+	$keyword = be("all","keyword");
+	if($dbtype==1){
+		$bd=" and t_bdtype=1 ";
+		$name='悦单';
+		
+	}
+    if($dbtype==2){
+		$bd=" and t_bdtype=2 ";
+		$name='悦榜';
+	}
+	
+	if(!isN($keyword)){
+		$bd=$bd. " and t_name like '%".$keyword."%' ";
+	}
+	
+	if ($show ==1){
+		$str="<input type='text' name='bd_keyword' id='bd_keyword' value='".$keyword."' size='30' ><input type='button' value='查询' onclick=\"plsetBDkewyowrd('plbd','vod','".$dbtype."',document.getElementById('bd_keyword').value);\"></br><select style='width:155px' id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"0\">请选择".$name."</option>" . makeSelectWhere("{pre}".$flag."_topic","t_id","t_name","t_name,t_sort","","&nbsp;|&nbsp;&nbsp;",""," where t_id > 4 ".$bd."  ") ."</select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut> <input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
+		echo $str;
+	}
+	else if($show ==2){
+//		var_dump($id);
+		$ids=explode(",", $id);
+		$tab="{pre}vod_topic_items";
+		$colarr=array("topic_id","vod_id");
+		foreach ($ids as $t_id){
+			if(isNum($t_id) && isNum($ajaxcontent)){
+		       $valarr=array($ajaxcontent,$t_id);
+		     $db->Add($tab,$colarr,$valarr);
+			}
+		}
+//		$db->query ("UPDATE {pre}".$flag . " set ". $ttopic ."=".$ajaxcontent. " WHERE " . $tid ." IN(".$id.")" );
+//		echo "reload";
+        echo "bd".$id."$<script language=\"javascript\">alert('添加成功');</script>";
+	}
+}
+
+
 
 function mplrenqi()
 {
@@ -791,7 +922,7 @@ function mtopic()
 {
 	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thit,$ttopic;
 	if ($show ==1){
-		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"0\">请选择专题</option>" . makeSelect("{pre}".$flag."_topic","t_id","t_name","t_sort","","&nbsp;|&nbsp;&nbsp;","") ."</select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut> <input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
+		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"0\">请选择专题</option>" . makeSelectWhere("{pre}".$flag."_topic","t_id","t_name","t_sort","","&nbsp;|&nbsp;&nbsp;","", " where t_id <= 4 ") ."</select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut> <input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
 		echo $str;
 	}
 	else if ($show ==2){
@@ -803,4 +934,76 @@ function mtopic()
 		echo "zt".$id."$<img src=\"../images/icons/icon_02.gif\" border=\"0\" style=\"cursor: pointer;\" onClick=\"setday('zt','".$id."','".$flag."')\"/>"; 
 	}
 }
+
+
+
+function bdtopic()
+{
+	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thit,$ttopic,$dbtype;
+	$bd=" ";
+	$name='';
+	$keyword = be("all","keyword");
+	if($dbtype==1){
+		$bd=" and t_bdtype=1 ";
+		$name='悦单';
+		
+	}
+    if($dbtype==2){
+		$bd=" and t_bdtype=2 ";
+		$name='悦榜';
+	}
+	
+	if(!isN($keyword)){
+		$bd=$bd. " and t_name like '%".$keyword."%' ";
+	}
+	
+	if ($show ==1){
+		$str="<input type='text' name='bd_keyword' id='bd_keyword' value='".$keyword."' size='30' ><input type='button' value='查询' onclick=\"setdayBDkewyowrd('bd','".$id."','vod','".$dbtype."',document.getElementById('bd_keyword').value);\"></br><select style='width:155px' id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"0\">请选择".$name."</option>" . makeSelectWhere("{pre}".$flag."_topic","t_id","t_name","t_name,t_sort","","&nbsp;|&nbsp;&nbsp;",""," where t_id > 4 ".$bd."  ") ."</select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut> <input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
+		echo $str;
+	}
+	else if ($show ==2){
+//		$db->query ("{pre}".$flag ,array($ttopic),array($ajaxcontent),$tid."=".$id);
+		$tab="{pre}vod_topic_items";
+		$colarr=array("topic_id","vod_id");
+		if(isNum($id) && isNum($ajaxcontent)){
+		  $valarr=array($ajaxcontent,$id);
+		  $db->Add($tab,$colarr,$valarr);
+		}
+		echo "bd".$id."$<script language=\"javascript\">alert('添加成功');</script>";
+	}
+	
+}
+
+function lunbo(){
+	global $db,$action,$flag,$show,$id;
+        $tab="{pre}vod_popular";
+		$colarr=array("vod_id");
+		if(isNum($id)){
+		  $valarr=array($id);
+		  $db->Add($tab,$colarr,$valarr);
+		}   
+		
+		echo "popular".$id."$<img src=\"../images/icons/icon_01.gif\" border=\"0\" style=\"cursor: pointer;\" />";
+}
+
+function plluobo()
+{
+	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thit,$ttopic,$dbtype;
+
+//		var_dump($id);
+		$ids=explode(",", $id);
+	$tab="{pre}vod_popular";
+		$colarr=array("vod_id");
+		foreach ($ids as $t_id){
+			if(isNum($t_id)){
+		       $valarr=array($t_id);
+		     $db->Add($tab,$colarr,$valarr);
+			}
+		}
+//		$db->query ("UPDATE {pre}".$flag . " set ". $ttopic ."=".$ajaxcontent. " WHERE " . $tid ." IN(".$id.")" );
+//		echo "reload";
+        echo "popular".$id."$<script language=\"javascript\">alert('添加成功');</script>";
+	
+}
+
 ?>

@@ -21,7 +21,8 @@ class PPTVContent extends Content{
   	}
   	
     public function parseIOSVideoUrl($url,$p_coding,$p_script){
-  		$content = getPage($url, $this->p_code);  		
+  		$content = getPage($url, "utf-8");  
+//  		var_dump($url);		
   		return $this->parseIOSVideoUrlByContent($content, $p_coding,$p_script);
   	}
   	

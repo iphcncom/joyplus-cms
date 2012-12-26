@@ -73,6 +73,9 @@ class NotificationsManager {
            if(isset($notifyMsg->prod_id) && !is_null($notifyMsg->prod_id)){
 		   	  $args['data']['prod_id']=$notifyMsg->prod_id;
 		   }
+          if(isset($notifyMsg->prod_type) && !is_null($notifyMsg->prod_type)){
+		   	  $args['data']['prod_type']=$notifyMsg->prod_type;
+		   }
 		   		   
       		
 		$result = ParseClient::getInstance ()->push ( $args );
@@ -86,6 +89,7 @@ class NotificationsManager {
 
 class Notification{
 	public $prod_id;
+	public $prod_type;
 	public $where;//
 	public $expiration_interval;//he "expiration_interval" parameter to set a number of seconds after which the notification will expire. This parameter is relative to the "push_time" if it was specified, otherwise it is relative to now. 
 	public $expiration_time;//": "2012-10-19T12:00:00Z"
