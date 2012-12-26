@@ -58,6 +58,10 @@ class SearchController extends Controller
    			IjoyPlusServiceUtils::exportServiceError(Constants::KEYWORD_IS_NULL);	
    			return ;	   			
    		}
+   		if( !FilterUtils::keyWordValid($keyword)){
+   			 IjoyPlusServiceUtils::exportEntity(array('results'=>array()));
+   			 return;
+   		}
 //   		$keyword= iconv("GBK","UTF-8",$keyword);n
 //   		var_dump($keyword);
    		//$keyword='???';
