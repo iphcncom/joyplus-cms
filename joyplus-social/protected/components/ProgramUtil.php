@@ -1,6 +1,5 @@
 <?php
 class ProgramUtil{
-	
 	public static function exportProgramEntity($program){
         $prod = array();
 		switch (CacheManager::getTopParentType($program->d_type)){
@@ -136,6 +135,9 @@ private static function genTV($program,$flag){
 		    	$url="";
 		    	if(count($nameUrl)==2){
 		    		$name=$nameUrl[0];
+		    		if(ProgramUtil::isN($name)){
+		    			$name=$index;
+		    		}
 		    		$url=$nameUrl[1];
 		    	}
 		        if(count($nameUrl)==1){
@@ -148,7 +150,7 @@ private static function genTV($program,$flag){
 		    		$temp =$numPlatformUrl[$name];
 		    	}
 		    	
-		    	if( !ProgramUtil::isN($url)){
+		    	if( !ProgramUtil::isN($url) && (ProgramUtil::urlValid($url))){
 			    	$temp['video_urls'][]=array(
 			    	  'source'=>$tmpplayfrom,
 	                  'url'=>$url
@@ -184,7 +186,7 @@ private static function genTV($program,$flag){
 		for ($k=0;$k<count($webArrays);$k++){
 			$weburlarr2=explode("$$",$webArrays[$k]);
 			$tmpplayfrom=$weburlarr2[0];
-			if(isset($tmpplayfrom) && !is_null($tmpplayfrom) && strlen(trim($tmpplayfrom))>0 && strpos($playfroms, $tmpplayfrom) ===false ){
+			if(count($weburlarr2)>=2 && isset($tmpplayfrom) && !is_null($tmpplayfrom) && strlen(trim($tmpplayfrom))>0 && strpos($playfroms, $tmpplayfrom) ===false ){
 				$playfroms=$playfroms.'.'.$tmpplayfrom;
 				$platformWebUrl= $weburlarr2[1];
 			    if (is_null($platformWebUrl) || $platformWebUrl=='') { $platformWebUrl="";}
@@ -197,6 +199,9 @@ private static function genTV($program,$flag){
 			    	$url="";
 			    	if(count($nameUrl)==2){
 			    		$name=$nameUrl[0];
+			    		if(ProgramUtil::isN($name)){
+			    			$name=$index;
+			    		}
 			    		$url=$nameUrl[1];
 			    	}
 			        if(count($nameUrl)==1){
@@ -219,6 +224,11 @@ private static function genTV($program,$flag){
 		}
 		return $numPlatformUrl;
    }
+   private static function urlValid($url){
+   	 $urlValid= new CUrlValidator();
+   	 return $urlValid->validateValue($url);
+   }
+  
    private static function parseDownVideoUrls($url){
    	 if(ProgramUtil::isN($url)){
    	 	return array();
@@ -228,18 +238,22 @@ private static function genTV($program,$flag){
    	 foreach ($videoTypeArrs as $videoType){
    	 	$videoTypeNameUrl = explode(MovieType::VIDEO_NAME_URL_SEP,$videoType);
    	 	if(count($videoTypeNameUrl)==2 && !ProgramUtil::isN($videoTypeNameUrl[1])){
-   	 		$temp[]= array(
-   	 		    "type"=>$videoTypeNameUrl[0],
-   	 		    "url"=>$videoTypeNameUrl[1],
-			    'file'=>ProgramUtil::getContentType($videoTypeNameUrl[1]),
-   	 		);
+   	 		if(ProgramUtil::urlValid($videoTypeNameUrl[1])){
+	   	 		$temp[]= array(
+	   	 		    "type"=>$videoTypeNameUrl[0],
+	   	 		    "url"=>$videoTypeNameUrl[1],
+				    'file'=>ProgramUtil::getContentType($videoTypeNameUrl[1]),
+	   	 		);
+   	 		}
    	 	}
    	   if(count($videoTypeNameUrl)==1 && !ProgramUtil::isN($videoTypeNameUrl[0])){
-   	 		$temp[]= array(
-   	 		    "type"=>MovieType::HIGH_CLEAR,
-   	 		    "url"=>$videoTypeNameUrl[0],
-			    'file'=>ProgramUtil::getContentType($videoTypeNameUrl[0]),
-   	 		);
+   	 		if(ProgramUtil::urlValid($videoTypeNameUrl[0])){
+	   	 		$temp[]= array(
+	   	 		    "type"=>MovieType::HIGH_CLEAR,
+	   	 		    "url"=>$videoTypeNameUrl[0],
+				    'file'=>ProgramUtil::getContentType($videoTypeNameUrl[0]),
+	   	 		);
+   	 		}
    	 	}
    	 }
    	 return $temp;
