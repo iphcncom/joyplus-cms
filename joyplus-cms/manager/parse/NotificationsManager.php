@@ -16,16 +16,17 @@ class NotificationsManager {
 		          'alert'=>$notifyMsg->alert,
 		         ),
 		   );
+		   $args['channels']= array('');
 		   if(isset($notifyMsg->type) && !is_null($notifyMsg->type) && strlen($notifyMsg->type)>0){
-		   	  $args['type']=$notifyMsg->type;
+		   	  $args['type']=$notifyMsg->type;		   	 
 		   	  if($args['type'] === NotificationsManager::DEVICE_ISO){
-		   	  	$args['channels']= array(NotificationsManager::CHANNEL_ISO);
+		   	  	//$args['channels']= array(NotificationsManager::CHANNEL_ISO);
 		   	  }
 		      if($args['type'] === NotificationsManager::DEVICE_ANDROID){
-		   	  	$args['channels'] =array(NotificationsManager::CHANNEL_ANDROID);
+		   	  //	$args['channels'] =array(NotificationsManager::CHANNEL_ANDROID);
 		   	  }
 		   }else {
-		   	  $args['channels']= array(NotificationsManager::CHANNEL_ISO,NotificationsManager::CHANNEL_ANDROID);
+		   	 // $args['channels']= array(NotificationsManager::CHANNEL_ISO,NotificationsManager::CHANNEL_ANDROID);
 		   }
 //		   $args['channels']= array(NotificationsManager::CHANNEL_ISO,NotificationsManager::CHANNEL_ANDROID);
 //		   var_dump($args);
@@ -77,7 +78,7 @@ class NotificationsManager {
 		   	  $args['data']['prod_type']=$notifyMsg->prod_type;
 		   }
 		   		   
-      		
+       // var_dump(json_encode( var_dump($args)));
 		$result = ParseClient::getInstance ()->push ( $args );
 //		$list = obj2arr ( $result->results );
 //echo ($result['code']);
