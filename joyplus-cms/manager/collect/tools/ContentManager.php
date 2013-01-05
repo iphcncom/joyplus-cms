@@ -70,8 +70,7 @@ require_once (dirname(__FILE__)."/../../admin_conn.php");
   			$judgeContent=ContentProviderFactory::PPTV_CAN_PLAY_CONTENT;
   			$content=getPage($url, 'utf-8');
   		}else if(ContentProviderFactory::LETV===$providerName ){
-  			$judgeContent=ContentProviderFactory::LETV_CAN_PLAY_CONTENT;
-  			$content=getPage($url, 'utf-8');
+  			return true;
   		}else if(ContentProviderFactory::Wl_56===$providerName ){
   			$judgeContent=ContentProviderFactory::Wl_56_CAN_PLAY_CONTENT;
   			$content=getPage($url, 'utf-8');
