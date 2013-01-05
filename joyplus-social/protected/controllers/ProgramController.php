@@ -178,6 +178,67 @@ class ProgramController extends Controller
 				IjoyPlusServiceUtils::exportServiceError(Constants::OBJECT_NOT_FOUND);
 			}
 		}
+		
+       function actionPlay(){
+	        header('Content-type: application/json');
+		    if(!Yii::app()->request->isPostRequest){   
+		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+		   		 return ;
+		   	}
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}
+			$prod_id= Yii::app()->request->getParam("prod_id");
+			$prod_name= Yii::app()->request->getParam("prod_name");
+			$prod_subname= Yii::app()->request->getParam("prod_subname");
+			$prod_type= Yii::app()->request->getParam("prod_type");
+			$play_type= Yii::app()->request->getParam("play_type");
+			$playback_time= Yii::app()->request->getParam("playback_time");
+			$video_url= Yii::app()->request->getParam("video_url");
+			$duration= Yii::app()->request->getParam("duration");
+			
+			if( (!isset($prod_id)) || is_null($prod_id) || (!isset($prod_type)) || is_null($prod_type)  ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}
+			
+            if( (!isset($video_url)) || is_null($video_url)  || (!isset($play_type)) || is_null($play_type)  ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}
+			
+            if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
+			
+		 try{
+		    $userid=Yii::app()->user->id;
+			
+			$history = PlayHistory::model()->getHisotryByProd($userid, $prod_id);
+			if($history === null){
+			     $history = new PlayHistory();
+			}		
+			$history->author_id=$userid;
+			$history->prod_type=$prod_type;
+			$history->prod_name=$prod_name;
+			$history->prod_subname=$prod_subname;
+			$history->prod_id=$prod_id;
+			$history->status=Constants::OBJECT_APPROVAL;
+			$history->play_type=$play_type;
+			$history->playback_time=$playback_time;
+			$history->video_url=$video_url;
+			$history->duration=$duration;
+			$history->create_date=new CDbExpression('NOW()');
+			$history->save();
+		    IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
+		  } catch (Exception $e) {
+			$transaction->rollback();
+			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+		  }
+		}
+		
         function actionWatch(){
 	        header('Content-type: application/json');
 		    if(!Yii::app()->request->isPostRequest){   
