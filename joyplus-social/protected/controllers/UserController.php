@@ -133,6 +133,7 @@ class UserController extends Controller
 		}
 		$page_size=Yii::app()->request->getParam("page_size");
 		$page_num=Yii::app()->request->getParam("page_num");
+		$type=Yii::app()->request->getParam("type");
 		if(!(isset($page_size) && is_numeric($page_size))){
 			$page_size=10;
 			$page_num=1;
@@ -140,7 +141,11 @@ class UserController extends Controller
 			$page_num=1;
 		}
 		try{
-		  $lists = SearchManager::lists($userid,$page_size,$page_size*($page_num-1),0);
+		  if(isset($type) && !is_null($type) && strlen(trim($type))>0){
+		    $lists = SearchManager::listsByProdType($userid,$page_size,$page_size*($page_num-1),0,$type);
+		  }else {
+		    $lists = SearchManager::lists($userid,$page_size,$page_size*($page_num-1),0);
+		  }
 		  if(isset($lists) && is_array($lists)){				
 		    IjoyPlusServiceUtils::exportEntity(array('tops'=>$lists));
 		    }else {
@@ -356,6 +361,43 @@ class UserController extends Controller
    			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
    		}
 	}
+	
+   public function actionPlayHistories(){
+   	
+        header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}
+		
+   		$userid=Yii::app()->request->getParam("userid");
+   		if( (!isset($userid)) || is_null($userid)  ){		
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
+   			$userid=Yii::app()->user->id;
+   		}
+   		$page_size=Yii::app()->request->getParam("page_size");
+   		$page_num=Yii::app()->request->getParam("page_num");
+   		if(!(isset($page_size) && is_numeric($page_size))){
+   			$page_size=100;
+   			$page_num=1;
+   		}else if(!(isset($page_num) && is_numeric($page_num))){
+   			$page_num=1;
+   		}
+   		try {
+   			$histories=PlayHistory::model()->getUserHistory($userid,$page_size,$page_size*($page_num-1));
+   			if(isset($histories) && !is_null($histories) && is_array($histories)){
+   				IjoyPlusServiceUtils::exportEntity(array('histories'=>$histories));
+   			}else {
+   				IjoyPlusServiceUtils::exportEntity(array('histories'=>array()));
+   			}
+   		} catch (Exception $e) {
+   			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+   		}
+	}
+	
 	/**
 	 * 锟斤拷态
 	 * Enter description here ...

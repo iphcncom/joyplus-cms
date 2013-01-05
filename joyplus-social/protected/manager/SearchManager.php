@@ -257,6 +257,52 @@ ORDER BY d.disp_order asc ';
 	    return $temp;
 	}
 	
+    public static function listsByProdType($userid,$limit,$offset,$type,$prodType){
+	    $key =SearchManager::CACHE_LISTS_BY_TYPE_LIMIT_OFFSET.'_'.$userid.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_type_'.$prodType;
+	    $lists = CacheManager::getValueFromCache($key);
+	    if($lists){
+	    	return $lists;
+	    }
+	    if($userid >0){
+		    $lists= Yii::app()->db->createCommand()
+			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
+			->from('mac_vod_topic ')
+			->where('t_userid=:t_userid and t_id>4 and t_type in ('.$prodType.')', array(
+				    ':t_userid'=>$userid,
+			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
+			->queryAll();
+	    } else {
+	    	$lists= Yii::app()->db->createCommand()
+			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
+			->from('mac_vod_topic ')
+			->where('t_flag=:t_flag and t_id>4 and t_bdtype=:type and t_type in ('.$prodType.')', array(
+				    ':t_flag'=>1,
+			        ':type'=>$type,
+			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
+			->queryAll();
+	    }
+	    
+	    $temp = array();
+	  if(isset($lists) && is_array($lists)){	  	
+	  	 foreach ($lists as $list){	  	 	
+	  	 	$items = SearchManager::listItems($list['id'], SearchManager::USER_TOPS_LIST_ITEM_NUM, 0);	  	 	
+	  	 	if(isset($items) && is_array($items) && count($items)>0){
+	  	 		$list['items']=$items;
+	  	 		if(!(isset($list['pic_url']) && is_null($list['pic_url']))){
+	  	 			$list['pic_url']=$items[0]['prod_pic_url'];
+	  	 		}
+	  	 	}
+	  	 	$temp[]=$list;
+	  	 }
+	  	  if(count($temp)>0){
+	  	    $prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
+	  	    CacheManager::setValueToCache($key, $temp,$prodExpired);
+	  	  }
+	  }	
+	   
+	    return $temp;
+	}
+	
 	public static function listItems($top_id,$limit,$offset){
 	    $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
 	    $items = CacheManager::getValueFromCache($key);
@@ -339,7 +385,7 @@ ORDER BY d.disp_order asc ';
 	    return $tempList;
 	}
 	
-	
+   
    public static function searchProgram($keyword,$limit,$offset){
 	    $key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_'.$keyword.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
 	    $prods = CacheManager::getValueFromCache($key);
