@@ -47,7 +47,9 @@ require_once (dirname(__FILE__)."/../../admin_conn.php");
   			return new WLContent();
   		}else if(ContentProviderFactory::FENG_XING===$providerName ){
   			return new FengXingContent();
-  		} 
+  		}else if(ContentProviderFactory::SINA===$providerName ){
+  			return new SinaContent();
+  		}  
   		else {
   		  return new DefaultContent();
   		}  		
