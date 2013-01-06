@@ -35,8 +35,7 @@ class SinaContent extends Content {
     }
 
     public function checkHtmlCanPlay($url,$p_coding){
-        $content = getPage($url, $p_coding);
-        return false;
+       return true;
     }
 
     private $p_videourlstart = "ipad_vid:'";
@@ -51,5 +50,4 @@ class SinaContent extends Content {
     }
 
 }
-
 ?>
