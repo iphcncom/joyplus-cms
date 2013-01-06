@@ -7,7 +7,7 @@ require_once (dirname(__FILE__)."/TudouContent.php");
 require_once (dirname(__FILE__)."/DefaultContent.php");
 require_once (dirname(__FILE__)."/WLContent.php"); 
 require_once (dirname(__FILE__)."/SinaContent.php"); 
-require_once (dirname(__FILE__)."/FengXingContent.php");//http://www.56.com/u42/v_NjY3MTUyOTU.html
+require_once (dirname(__FILE__)."/FengXingContent.php");
 require_once (dirname(__FILE__)."/../MovieType.php");
 require_once (dirname(__FILE__)."/../../admin_conn.php");
   class ContentProviderFactory{
