@@ -2,6 +2,7 @@
 require_once (dirname(__FILE__)."/YouKuContent.php");
 require_once (dirname(__FILE__)."/LetvContent.php");
 require_once (dirname(__FILE__)."/PPTVContent.php");
+require_once (dirname(__FILE__)."/IqiyiContent.php");
 require_once (dirname(__FILE__)."/TudouContent.php");
 require_once (dirname(__FILE__)."/DefaultContent.php");
 require_once (dirname(__FILE__)."/WLContent.php"); 
@@ -50,7 +51,9 @@ require_once (dirname(__FILE__)."/../../admin_conn.php");
   			return new FengXingContent();
   		}else if(ContentProviderFactory::SINA===$providerName ){
   			return new SinaContent();
-  		}  
+  		}else if(ContentProviderFactory::QI_YI===$providerName ){
+  			return new IqiyiContent();
+  		}    
   		else {
   		  return new DefaultContent();
   		}  		
