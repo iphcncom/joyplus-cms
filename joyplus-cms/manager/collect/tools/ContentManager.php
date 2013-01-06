@@ -5,6 +5,7 @@ require_once (dirname(__FILE__)."/PPTVContent.php");
 require_once (dirname(__FILE__)."/TudouContent.php");
 require_once (dirname(__FILE__)."/DefaultContent.php");
 require_once (dirname(__FILE__)."/WLContent.php"); 
+require_once (dirname(__FILE__)."/SinaContent.php"); 
 require_once (dirname(__FILE__)."/FengXingContent.php");//http://www.56.com/u42/v_NjY3MTUyOTU.html
 require_once (dirname(__FILE__)."/../MovieType.php");
 require_once (dirname(__FILE__)."/../../admin_conn.php");
@@ -47,7 +48,9 @@ require_once (dirname(__FILE__)."/../../admin_conn.php");
   			return new WLContent();
   		}else if(ContentProviderFactory::FENG_XING===$providerName ){
   			return new FengXingContent();
-  		} 
+  		}else if(ContentProviderFactory::SINA===$providerName ){
+  			return new SinaContent();
+  		}  
   		else {
   		  return new DefaultContent();
   		}  		
