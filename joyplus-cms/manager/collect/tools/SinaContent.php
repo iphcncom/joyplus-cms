@@ -30,7 +30,7 @@ class SinaContent extends Content {
             $videoAddressUrl = replaceStr(SinaContent::BASE_URL, "{vid}", $vid);            
              $videoAddressUrl =  MovieType::HIGH_CLEAR . MovieType::VIDEO_NAME_URL_SEP.$videoAddressUrl ;
         }
-         var_dump($videoAddressUrl);
+        // var_dump($videoAddressUrl);
         return $videoAddressUrl;
     }
 
