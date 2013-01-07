@@ -3,11 +3,12 @@ require_once (dirname(__FILE__)."/YouKuContent.php");
 require_once (dirname(__FILE__)."/LetvContent.php");
 require_once (dirname(__FILE__)."/PPTVContent.php");
 require_once (dirname(__FILE__)."/IqiyiContent.php");
+require_once (dirname(__FILE__)."/M1905Content.php");
 require_once (dirname(__FILE__)."/TudouContent.php");
 require_once (dirname(__FILE__)."/DefaultContent.php");
 require_once (dirname(__FILE__)."/WLContent.php"); 
 require_once (dirname(__FILE__)."/SinaContent.php"); 
-require_once (dirname(__FILE__)."/FengXingContent.php");
+require_once (dirname(__FILE__)."/FengXingContent.php");//http://www.56.com/u42/v_NjY3MTUyOTU.html
 require_once (dirname(__FILE__)."/../MovieType.php");
 require_once (dirname(__FILE__)."/../../admin_conn.php");
   class ContentProviderFactory{
@@ -22,6 +23,7 @@ require_once (dirname(__FILE__)."/../../admin_conn.php");
   	const SINA="sinahd";
   	const QI_YI="qiyi";
   	const TANG_DOU="tangdou";
+        const M1905="m1905";
   	
   	const YOU_KU_CAN_PLAY_CONTENT="优酷网未能找到您所访问的地址";
   	const TU_DOU_CAN_PLAY_CONTENT="哎呀！你想访问的网页不存在。";
@@ -34,6 +36,7 @@ require_once (dirname(__FILE__)."/../../admin_conn.php");
   	const SINA_CAN_PLAY_CONTENT="Not Found"; //对不起，这个页面已经木有啦
   	const QI_YI_CAN_PLAY_CONTENT="很不碰巧，您想访问的页面丢了";
   	const TANG_DOU_CAN_PLAY_CONTENT="视频已被删除";
+        const M1905_CAN_PLAY_CONTENT="很不碰巧，您想访问的页面不存在";
   	
   	public static function getContentProvider($providerName){
   		if(ContentProviderFactory::LETV===$providerName ){
@@ -53,6 +56,8 @@ require_once (dirname(__FILE__)."/../../admin_conn.php");
   			return new SinaContent();
   		}else if(ContentProviderFactory::QI_YI===$providerName ){
   			return new IqiyiContent();
+  		}else if(ContentProviderFactory::M1905===$providerName ){
+  			return new M1905Content();
   		}    
   		else {
   		  return new DefaultContent();
@@ -100,8 +105,11 @@ require_once (dirname(__FILE__)."/../../admin_conn.php");
   		}else if(ContentProviderFactory::QI_YI===$providerName ){
   			$judgeContent=ContentProviderFactory::QI_YI_CAN_PLAY_CONTENT;
   			$content=getPage($url, 'utf-8');
-  		}	else if(ContentProviderFactory::TANG_DOU===$providerName ){
+  		}else if(ContentProviderFactory::TANG_DOU===$providerName ){
   			$judgeContent=ContentProviderFactory::TANG_DOU_CAN_PLAY_CONTENT;
+  			$content=getPage($url, 'utf-8');
+  		}else if(ContentProviderFactory::M1905===$providerName ){
+  			$judgeContent=ContentProviderFactory::M1905_CAN_PLAY_CONTENT;
   			$content=getPage($url, 'utf-8');
   		}else {
   			return true;
