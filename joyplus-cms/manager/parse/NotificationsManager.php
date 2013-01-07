@@ -11,9 +11,9 @@ class NotificationsManager {
  
   static function push($notifyMsg){		   
 		   $args = array (
-//				'channels' =>
 				'data' =>array(
 		          'alert'=>$notifyMsg->alert,
+		          'badge'=>'Increment',
 		         ),
 		   );
 		   $args['channels']= array('');
