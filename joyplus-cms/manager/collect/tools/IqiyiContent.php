@@ -5,7 +5,7 @@
  *
  * @author gaven
  */
-require_once dirname(__FILE__).'\ContentManager.php';
+require_once dirname(__FILE__).'/ContentManager.php';
 class IqiyiContent {
     const API = 'http://cache.m.iqiyi.com/mt/{aid}/';
     public function parseAndroidVideoUrl($url, $p_coding, $p_script) {
