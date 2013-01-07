@@ -95,6 +95,8 @@ class User extends CActiveRecord
 					
 					
 			}
+			//clear device number
+			$model->device_number='';
 			if($model->save()){
 				return Constants::SUCC;
 			}else{
@@ -147,7 +149,42 @@ class User extends CActiveRecord
 	    return Constants::SYSTEM_ERROR;
 	  }
 	}
-	
+    public function deleteUserInfo($userid){
+	  $transaction = Yii::app()->db->beginTransaction(); 
+	  try{
+	  	  //delete user infor
+		  Yii::app()->db->createCommand()->delete($this->tableName(),'id=:id', 
+		      array(
+		        ':id'=>$userid,
+		      )
+	      ); 
+	      Yii::app()->db->createCommand()->delete('tbl_comments', 'author_id=:id', 
+	      array(
+	        ':id'=>$userid,
+	      )
+	      );
+	      
+	      Yii::app()->db->createCommand()->delete('tbl_my_dynamic', 'author_id=:id', 
+	      array(
+	        ':id'=>$userid,
+	      )
+	      );
+	  	  //tbl_play_history
+	  	  
+	      Yii::app()->db->createCommand()->delete('tbl_play_history', 'author_id=:id', 
+	      array(
+	        ':id'=>$userid,
+	      )
+	      );
+	  	  
+	  	  $transaction->commit();
+	      return Constants::SUCC;
+	  }catch (Exception $e){	  	 
+        $transaction->rollback();
+        Yii::trace($e);
+	    return Constants::SYSTEM_ERROR;
+	  }
+	}
     function updatePicUrl($userid,$url){
       $transaction = Yii::app()->db->beginTransaction(); 
       try{

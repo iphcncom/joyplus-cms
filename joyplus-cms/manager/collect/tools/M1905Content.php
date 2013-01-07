@@ -4,7 +4,7 @@
  *
  * @author gaven
  */
-require_once dirname(__FILE__).'\ContentManager.php';
+require_once dirname(__FILE__).'/ContentManager.php';
 class M1905Content {
     public function parseAndroidVideoUrl($url, $p_coding, $p_script) {
         $content = getPage($url, $p_coding);
