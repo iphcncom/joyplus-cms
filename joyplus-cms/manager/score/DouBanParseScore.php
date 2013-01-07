@@ -351,15 +351,21 @@ public function getDoubanID($name,$year,$area){
 	 		}
 //	 		 $log=$log .'==='.$rateR ;
 	 		 $rateR=abs($rateR/$rate-1);
+	 		 
 //	 		  $log=$log .'==='.$rateR ;
 //	 		var_dump($log );
-	 		$tempA[$rateR.'']=$url;
+            //比率不能少于80%
+            if($rateR<0.2){
+	 		  $tempA[$rateR.'']=$url;
+            }
 	 	  }catch(Exception $e){}
 	 	}
 	 	if(count($tempA)>0){
 			$tempAKeys=array_keys($tempA);
 			sort($tempAKeys,SORT_NUMERIC);
 	        $pic=$tempA[$tempAKeys[0]];
+	        var_dump($tempA);
+//	        var_dump($tempAKeys);
 		    if(!isN($pic)){
 				$pic = replaceStr($pic, 'thumb', 'photo');
 			}
