@@ -8,10 +8,10 @@
 require_once dirname(__FILE__).'/ContentManager.php';
 class IqiyiContent {
     const API = 'http://cache.m.iqiyi.com/mt/{aid}/';
+    private $p_code = 'utf-8';
     public function parseAndroidVideoUrl($url, $p_coding, $p_script) {
-        $content = getPageWindow($url, $p_coding);
-//        var_dump($content);
-        return $this->parseAndroidVideoUrlByContent($content, $p_coding, $p_script);
+        $content = getPageWindow($url, $this->p_code);
+        return $this->parseAndroidVideoUrlByContent($content, $this->p_code, $p_script);
     }
 
     public function parseAndroidVideoUrlByContent($content, $p_coding, $p_script) {
@@ -23,7 +23,10 @@ class IqiyiContent {
 
     private function getAndroidVideoUrl($obj, $p_coding, $p_script) {
         $videoAddressUrl="";
-//        print_r($obj);
+        if(!is_object($obj) || !is_object($obj->data))
+        {
+            return true;
+        }
         /* mp4 && m3u8  */
         if(property_exists($obj->data, 'mpl'))
         {

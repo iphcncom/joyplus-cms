@@ -75,8 +75,9 @@ require_once (dirname(__FILE__)."/../../admin_conn.php");
   			$judgeContent=ContentProviderFactory::YOU_KU_CAN_PLAY_CONTENT;
   			$content=getPage($url, 'utf-8');
   		}else if(ContentProviderFactory::TU_DOU===$providerName ){
-  			$judgeContent=ContentProviderFactory::TU_DOU_CAN_PLAY_CONTENT;
-  			$content=getPage($url, 'gbk');
+  			//$judgeContent=ContentProviderFactory::TU_DOU_CAN_PLAY_CONTENT;
+  			//$content=getPage($url, 'gbk');
+  			return true;
   		}else if(ContentProviderFactory::PPTV===$providerName ){
   			$judgeContent=ContentProviderFactory::PPTV_CAN_PLAY_CONTENT;
   			$content=getPage($url, 'utf-8');
