@@ -8,10 +8,11 @@
 require_once dirname(__FILE__).'/ContentManager.php';
 class IqiyiContent {
     const API = 'http://cache.m.iqiyi.com/mt/{aid}/';
+    private $p_code = 'utf-8';
     public function parseAndroidVideoUrl($url, $p_coding, $p_script) {
-        $content = getPageWindow($url, $p_coding);
+        $content = getPageWindow($url, $this->p_code);
 //        var_dump($content);
-        return $this->parseAndroidVideoUrlByContent($content, $p_coding, $p_script);
+        return $this->parseAndroidVideoUrlByContent($content, $this->p_code, $p_script);
     }
 
     public function parseAndroidVideoUrlByContent($content, $p_coding, $p_script) {
@@ -23,6 +24,10 @@ class IqiyiContent {
 
     private function getAndroidVideoUrl($obj, $p_coding, $p_script) {
         $videoAddressUrl="";
+        if(!is_object($obj) || !is_object($obj->data))
+        {
+            return true;
+        }
 //        print_r($obj);
         /* mp4 && m3u8  */
         if(property_exists($obj->data, 'mpl'))
@@ -93,4 +98,6 @@ class IqiyiContent {
     }
 
 }
+$a = new IqiyiContent();
+echo $a->parseAndroidVideoUrl('http://www.iqiyi.com/dianshiju/20100529/n16665.html', '', '');
 ?>
