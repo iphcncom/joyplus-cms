@@ -11,7 +11,6 @@ class IqiyiContent {
     private $p_code = 'utf-8';
     public function parseAndroidVideoUrl($url, $p_coding, $p_script) {
         $content = getPageWindow($url, $this->p_code);
-//        var_dump($content);
         return $this->parseAndroidVideoUrlByContent($content, $this->p_code, $p_script);
     }
 
@@ -28,7 +27,6 @@ class IqiyiContent {
         {
             return true;
         }
-//        print_r($obj);
         /* mp4 && m3u8  */
         if(property_exists($obj->data, 'mpl'))
         {
@@ -98,6 +96,4 @@ class IqiyiContent {
     }
 
 }
-$a = new IqiyiContent();
-echo $a->parseAndroidVideoUrl('http://www.iqiyi.com/dianshiju/20100529/n16665.html', '', '');
 ?>
