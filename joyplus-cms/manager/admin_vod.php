@@ -72,6 +72,9 @@ function save()
     $d_type_name= be("post", "d_type_name");
     $d_pic_ipad= be("post", "d_pic_ipad");
     
+    $d_play_check= be("post", "d_play_check");
+    
+    
     $urlid = be("arr", "urlid"); $url = be("arr", "url"); $urlfrom = be("arr", "urlfrom"); $urlserver = be("arr", "urlserver");
     $urlidsarr = explode(",",$urlid); $urlarr = explode(",",$url); $urlfromarr = explode(",",$urlfrom); $urlserverarr = explode(",",$urlserver);
     $urlarr = $_POST["url"];
@@ -128,13 +131,13 @@ function save()
     if(!isNum($d_usergroup)) { $d_usergroup = 0;}
     if (isN($d_enname)) { $d_enname = Hanzi2PinYin($d_name); }
     if (isN($d_letter)) { $d_letter = strtoupper(substring($d_enname,1)); }
-    	
+    //$d_play_check	
     if (strpos($d_enname, "*")>0 || strpos($d_enname, ":")>0 || strpos($d_enname, "?")>0 || strpos($d_enname, "\"")>0 || strpos($d_enname, "<")>0 || strpos($d_enname, ">")>0 || strpos($d_enname, "|")>0 || strpos($d_enname, "\\")>0){
         echo "名称和拼音名称中: 不能出现英文输入状态下的 * : ? \" < > | \ 等特殊符号";exit;
     }
 	
     if ($flag == "edit") {
-        $db->Update ("{pre}vod", array("d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type","d_letter", "d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks","d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_hide", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type, $d_letter, $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits ,$d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_hide, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver), "d_id=" . $d_id);
+        $db->Update ("{pre}vod", array("d_play_check","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type","d_letter", "d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks","d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_hide", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_play_check,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type, $d_letter, $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits ,$d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_hide, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver), "d_id=" . $d_id);
     }
     else{
         $backurl = "admin_vod.php?action=add";
@@ -482,7 +485,8 @@ function main()
     $repeat = be("all", "repeat");   $repeatlen = be("all", "repeatlen");
     $order = be("all", "order");     $pagenum = be("all", "page");
     $spic = be("all", "spic");    $hide = be("all", "hide");
-    $douban_score = be("all", "douban_score"); $ipadpic = be("all", "ipadpic");
+    $douban_score = be("all", "douban_score");
+    $ipadpic = be("all", "ipadpic");
     if(!isNum($level)) { $level = 0;} else { $level = intval($level);}
     if(!isNum($sstate)) { $sstate = 0;} else { $sstate = intval($sstate);}
     if(!isNum($stype)) { $stype = 0;} else { $stype = intval($stype);}
@@ -497,7 +501,7 @@ function main()
 	if (!isNum($pagenum)){ $pagenum = 1;} else { $pagenum = intval($pagenum);}
 	if ($pagenum < 1) { $pagenum = 1; }
     
-    $where = " d_type in (1,2,3,4) ";
+    $where = " d_type in (1,2,3) ";
     if (!isN($keyword)) { $where .= " AND d_name LIKE '%" . $keyword . "%' ";}
     if ($stype > 0) { 
     	$typearr = getValueByArray($cache[0], "t_id" ,$stype );
@@ -575,7 +579,20 @@ function main()
     
     $select_weburl=be("all", "select_weburl");
     $select_videourl=be("all", "select_videourl");
+    $select_videourl_play=be("all", "select_videourl_play");
+    if(!isNum($select_videourl_play)) {
+    	$select_videourl_play = -1;
+    } else {
+    	$select_videourl_play = intval($select_videourl_play);
+    }
     
+    if($select_videourl_play ==0) {
+    	$where .= " AND d_play_check = 0 ";
+    }
+    
+    if($select_videourl_play ==2) {
+    	$where .= " AND d_play_check = 2 ";
+    }
 	if($select_weburl==1){
     	$where .= " AND webUrls is not null and webUrls !='' ";
     }
@@ -661,8 +678,9 @@ function filter(){
 	var select_videourl=$("#select_videourl").val();
 	var douban_score =$("#douban_score").val();
 	var douban_comment =$("#douban_comment").val();
+	var select_videourl_play=$("#select_videourl_play").val();
 	var keyword=$("#keyword").val();
-	var url = "admin_vod.php?douban_comment="+douban_comment+"&keyword="+encodeURI(keyword)+"&stype="+stype+"&topic="+topic+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic; //ipadpic
+	var url = "admin_vod.php?select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&keyword="+encodeURI(keyword)+"&stype="+stype+"&topic="+topic+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic; //ipadpic
 	window.location.href=url;
 }
 
@@ -681,8 +699,9 @@ function doubans(){
 	var select_weburl=$("#select_weburl").val();
 	var select_videourl=$("#select_videourl").val();
 	var douban_comment =$("#douban_comment").val();
+	var select_videourl_play=$("#select_videourl_play").val();
 	var keyword=$("#keyword").val();
-	var url = "admin_vod.php?douban_comment="+douban_comment+"&action=doubans&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
+	var url = "admin_vod.php?select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubans&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
 	window.location.href=url;
 }
 
@@ -700,9 +719,10 @@ function doubansComment(){
 	var douban_score =$("#douban_score").val();
 	var select_weburl=$("#select_weburl").val();
 	var select_videourl=$("#select_videourl").val();
+	var select_videourl_play=$("#select_videourl_play").val();
 	var keyword=$("#keyword").val();
 	var douban_comment =$("#douban_comment").val();
-	var url = "admin_vod.php?douban_comment="+douban_comment+"&action=doubansComment&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
+	var url = "admin_vod.php?select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubansComment&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
 	window.location.href=url;
 }
 function showpic(){
@@ -849,6 +869,12 @@ function sendWeiboText(){
 	<option value="0">视频地址</option>
 	<option value="1" <?php if ($select_videourl==1){ echo "selected";} ?>>存在</option>
 	<option value="2" <?php if ($select_videourl==2){ echo "selected";} ?>>不存在</option>
+	</select>
+	
+	<select id="select_videourl_play" name="select_videourl_play">
+	<option value="-1">网页播放地址是否检测</option>
+	<option value="0" <?php if ($select_videourl_play==0){ echo "selected";} ?>>没有检测</option>
+	<option value="2" <?php if ($select_videourl_play==2){ echo "selected";} ?>>已经检测</option>
 	</select>
 	</td>
 	</tr>
@@ -1017,7 +1043,7 @@ function sendWeiboText(){
 	</tr>
 	<tr>
 	<td align="center" colspan="12">
-	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod.php?page={p}&keyword=" . urlencode($keyword) . "&topic=" . $topic . "&level=".$level."&order=".$order ."&stype=" . $stype ."&sserver=" . $sserver ."&sstate=".$sstate."&repeat=".$repeat."&repeatlen=".$repeatlen."&from=".$from."&spic=".$spic."&hide=".$hide."&douban_comment=".$douban_comment."&select_weburl=".$select_weburl."&select_videourl=".$select_videourl."&ipadpic=".$ipadpic)?>   //
+	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod.php?page={p}&keyword=" . urlencode($keyword) . "&select_videourl_play=" . $select_videourl_play . "&topic=" . $topic . "&level=".$level."&order=".$order ."&stype=" . $stype ."&sserver=" . $sserver ."&sstate=".$sstate."&repeat=".$repeat."&repeatlen=".$repeatlen."&from=".$from."&spic=".$spic."&hide=".$hide."&douban_comment=".$douban_comment."&douban_score=".$douban_score."&select_weburl=".$select_weburl."&select_videourl=".$select_videourl."&ipadpic=".$ipadpic)?>   //
 	</td>
 	</tr>
 </table>
@@ -1241,6 +1267,7 @@ function info()
 			$d_hitstime=$row["d_hitstime"]; $d_subname=$row["d_subname"]; $d_playurl=$row["d_playurl"]; $d_downurl=$row["d_downurl"];
 			$d_playfrom=$row["d_playfrom"]; $d_playserver=$row["d_playserver"]; $d_letter=$row["d_letter"];$d_type_name=$row["d_type_name"];
 			$d_pic_ipad=$row["d_pic_ipad"];  
+			$d_play_check=$row["d_play_check"];
 			if (isN($d_playurl)) { $d_playurl = "";}
 			if (isN($d_downurl)) { $d_downurl = "";}
 //			var_dump($d_downurl);
@@ -1248,6 +1275,7 @@ function info()
 		    if (isN($d_weburl)) { $d_weburl = "";}
 			unset($row);
 		 if(!isNum($d_hide)) { $d_hide=-1;} else { $d_hide = intval($d_hide);}
+		 if(!isNum($d_play_check)) { $d_play_check=0;} else { $d_play_check = intval($d_play_check);}
 		
 		}
 	}
@@ -1429,6 +1457,11 @@ function collect(weburls,playerfrom){
 	&nbsp;<input id="d_name" name="d_name" type="text" size="40" value="<?php echo $d_name?>" onBlur="if(this.value){ajaxckname(this.value);}"><span id="d_name_ok"></span>
 	&nbsp;副标：<input id="d_subname" name="d_subname" type="text" size="40" value="<?php echo $d_subname?>">
 	&nbsp;&nbsp;&nbsp;首字母：<input id="d_letter" name="d_letter" type="text" size="4" value="<?php echo $d_letter?>">
+	&nbsp;&nbsp;&nbsp;网页播放地址是否检测:
+	<select id="d_play_check" name="d_play_check">
+	<option value="0" <?php if ($d_play_check==0){ echo "selected";} ?>>没有检测</option>
+	<option value="2" <?php if ($d_play_check==2){ echo "selected";} ?>>已经检测</option>
+	</select>
 	</td>
 	</tr>
 	<tr> 

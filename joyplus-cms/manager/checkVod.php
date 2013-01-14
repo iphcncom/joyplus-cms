@@ -21,14 +21,14 @@ dispseObj();
 function videoType($type){
 	writetofile("checkVod.txt", 'Start to check item for vod type{=}'.$type);
 	global $db,$template,$cache;
-	 $sql = "SELECT count(*)  FROM {pre}vod where d_topic=0 and  d_hide !=-100 and d_type=".$type ;
+	 $sql = "SELECT count(*)  FROM {pre}vod where d_topic=0 and  d_hide !=-100 and d_play_check=0 and  d_type=".$type ;
 	 $nums = $db->getOne($sql);  
 	 $app_pagenum=20; 
 	 $pagecount=ceil($nums/$app_pagenum);
 	 for($i=1;$i<=$pagecount;$i++){
 	 	writetofile("checkVod.txt", 'check item for vod type{=}'.$type .'{=}Total{=}'.$pagecount.'{=}'.$i);
 	    $sql = "SELECT d_id,d_name,d_playfrom,webUrls 
-	    FROM {pre}vod where d_topic=0 and  d_hide !=-100 and d_type=".$type ."  limit ".($app_pagenum * ($i-1)) .",".$app_pagenum;  
+	    FROM {pre}vod where d_topic=0 and  d_hide !=-100 and d_play_check=0 and d_type=".$type ."  limit ".($app_pagenum * ($i-1)) .",".$app_pagenum;  
 	      
 	    $rs = $db->query($sql); 
 	    checkWebUrls($rs);
@@ -41,7 +41,7 @@ function topicVideo(){
 	writetofile("checkVod.txt", 'Start to check item for topicVideo');
 	global $db,$template,$cache;
     $sql = "SELECT d_id,d_name,d_playfrom,webUrls 
-    FROM {pre}vod where d_topic!=0 and  d_hide !=-100 ";//  limit ".($app_pagenum * ($pagenum-1)) .",".$app_pagenum;    
+    FROM {pre}vod where d_topic!=0 and  d_hide !=-100 and d_play_check=0";//  limit ".($app_pagenum * ($pagenum-1)) .",".$app_pagenum;    
     $rs = $db->query($sql); 
     checkWebUrls($rs);
 	    unset($rs);
@@ -52,7 +52,7 @@ function bandanVideo(){
 	writetofile("checkVod.txt", 'Start to check item for topic');
 	global $db,$template,$cache;
     $sql = "SELECT d_id,d_name,d_playfrom,webUrls 
-    FROM {pre}vod ,{pre}vod_topic_items where vod_id=d_id and d_hide !=-100 ";//  limit ".($app_pagenum * ($pagenum-1)) .",".$app_pagenum;    
+    FROM {pre}vod ,{pre}vod_topic_items where vod_id=d_id and d_hide !=-100 and d_play_check=0";//  limit ".($app_pagenum * ($pagenum-1)) .",".$app_pagenum;    
     $rs = $db->query($sql); 
     checkWebUrls($rs);
 	    unset($rs);
@@ -63,7 +63,7 @@ function lunboVideo(){
 	global $db,$template,$cache;
 	writetofile("checkVod.txt", 'Start to check item for lunbo');
     $sql = "SELECT d_id,d_name,d_playfrom,webUrls 
-    FROM {pre}vod ,{pre}vod_popular where vod_id=d_id and d_hide !=-100 ";//  limit ".($app_pagenum * ($pagenum-1)) .",".$app_pagenum;    
+    FROM {pre}vod ,{pre}vod_popular where vod_id=d_id and d_hide !=-100 and d_play_check=0";//  limit ".($app_pagenum * ($pagenum-1)) .",".$app_pagenum;    
     $rs = $db->query($sql); 
     checkWebUrls($rs);
 	    unset($rs);
@@ -95,7 +95,7 @@ function checkWebUrls($rs){
     }
     unset($rs);
     if(isset($ids) && !is_null($ids) && strlen($ids)>0){
-    	 $db->query('update {pre}vod set d_hide=-100 where d_id in ('.$ids.')');
+    	 $db->query('update {pre}vod set d_hide=-100, d_play_check=2 where d_id in ('.$ids.')');
     } 
 }
 
