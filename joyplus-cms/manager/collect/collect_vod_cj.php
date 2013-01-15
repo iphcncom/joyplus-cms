@@ -4,6 +4,7 @@ ini_set('max_execution_time', '0');
 require_once ("../admin_conn.php");
 require_once ("collect_fun.php");
 require_once ("MovieType.php");
+require_once ("BaiduParse.php");
 require_once ("tools/ContentManager.php");
 //chkLogin();
 $action = be("get","action");
@@ -268,7 +269,7 @@ if(isset($action) && $action ==='collectSimpl'){
 function cjList()
 {
 	global $db,$reCollExistMovie, $flag,$listnum,$strListUrl,$p_pagetype,$p_collecorder,$p_listcodestart,$p_listcodeend,$p_listlinkstart,$p_listlinkend,$p_starringstart,$p_starringend,$p_titlestart,$p_titleend,$p_picstart,$p_picend,$p_starringtype,$p_titletype,$p_pictype,$p_coding,$p_showtype,$viewnum,$p_ids,$sb,$cg,$p_savefiles,$p_pagebatchid2,$p_pagebatchid1;
-	global  $p_playspecialtype,$starringarr,$titlearr,$picarr,$strdstate,$action,$p_pagebatchurl,$p_colleclinkorder,$p_id;
+	global  $p_playtype,$p_playspecialtype,$starringarr,$titlearr,$picarr,$strdstate,$action,$p_pagebatchurl,$p_colleclinkorder,$p_id;
 	
 	if (isN($_SESSION["strListCode"])) {
 		$strListCode = getPage($strListUrl,$p_coding);
@@ -351,6 +352,7 @@ function cjList()
 			wBreakpoint ("../../upload/vodbreakpoint",getUrl());
 			
 			$linkarr = explode("{Array}",$linkarrcode);
+//			var_dump($linkarr);
 			if ($p_starringtype ==1) {
 				$starringarr = explode("{Array}",$starringarrcode);
 			}
@@ -371,7 +373,11 @@ function cjList()
 				else{
 					if ($p_savefiles==1){ $strdstate = "false"; }else{ $strdstate = "true"; }
 					wtablehead();
-					cjView(getHrefFromLink($linkarr[$viewnum]),$viewnum);
+					if($p_playtype ==='baidu'){
+						cjBaiduView(getHrefFromLink($linkarr[$viewnum]),$viewnum);
+					}else {
+					  cjView(getHrefFromLink($linkarr[$viewnum]),$viewnum);
+					}
 					wtablefoot();
 					if($flag){
 					  echo "数据采集完毕 --- 稍后继续采集<script language=\"javascript\">var dstate=".$strdstate.";setInterval(\"makeNextPage();\",500);function makeNextPage(){if(dstate){dstate=false;location.href='collect_vod_cj.php?p_id=".$p_ids."&listnum=".($listnum-1)."&sb=".$sb."&cg=".$cg."&num=".$num."&viewnum=".($viewnum+1)."&action=".$action."';}}</script>";
@@ -387,14 +393,16 @@ function cjList()
 						}
 						$urlMo=getHrefFromLink($linkarr[$i]);
 						if($reCollExistMovie){
-							cjView($urlMo,$i);
+						    if($p_playtype ==='baidu'){
+								cjBaiduView($urlMo,$i);
+							}else {
+							  cjView($urlMo,$i);
+							}
 						}else {
 							$sql="select m_id from {pre}cj_vod where m_urltest='".$urlMo."' order by m_id desc";
 		                    $rowvod=$db->getRow($sql);		
 	                        if (!$rowvod) {
 	                           cjView($urlMo,$i);                     	
-	                        }else {	                        	
-	                           writetofile("crawel_info.log", $p_id.'{=====}'.$urlMo ."{=====}View===is collected.");
 	                        }	                       
 						}
 						wtablefoot();
@@ -402,18 +410,27 @@ function cjList()
 				}
 				else{
 					for ($i=0 ;$i<count($linkarr);$i++){
+						writetofile("crawel_infosss.log", $p_id.'{=====}'.$urlMo ."{=====}View===is collected.");
 						wtablehead();
 						if ($i==0){
 							echo "<tr><td colspan=\"2\"></TD>正在采集列表：".$strListUrl."的数据 </TR>";
 						}
 					    $urlMo=getHrefFromLink($linkarr[$i]);
 						if($reCollExistMovie){
-							cjView($urlMo,$i);
+							if($p_playtype ==='baidu'){
+								cjBaiduView($urlMo,$i);
+							}else {
+							  cjView($urlMo,$i);
+							}
 						}else {
 							$sql="select m_id from {pre}cj_vod where m_urltest='".$urlMo."' order by m_id desc";
 		                    $rowvod=$db->getRow($sql);		
-	                        if (!$rowvod) {
-	                           cjView($urlMo,$i);                     	
+	                        if (!$rowvod) {	                        
+								if($p_playtype ==='baidu'){
+								  cjBaiduView($urlMo,$i);
+								}else {
+								   cjView($urlMo,$i);
+								}                   	
 	                        }else {	                        	
 	                           writetofile("crawel_info.log", $p_id.'{=====}'.$urlMo ."{=====}View===is collected.");
 	                        }	                       
@@ -427,6 +444,236 @@ function cjList()
 				}
 			}
 	}
+}
+
+function cjBaiduView($strlink,$num){
+	global $starringarr,$titlearr,$picarr,$strListUrl,$p_playspecialtype,$p_playtype, $p_videocodeType,$p_videocodeApiUrl,$p_id,$p_videocodeApiUrlParamstart,$p_videocodeApiUrlParamend,$p_videourlstart,$p_videourlend, $playcodeApiUrl,$playcodeApiUrlParamstart,$p_playcodeApiUrlParamend,$playcodeApiUrltype,$db,$strListUrl,$p_titletype,$starringarr,$titlearr,$picarr,$p_id,$p_titlestart,$p_titleend,$p_lzstart,$p_lzend,$p_hitsstart,$p_hitsend,$p_starringtype,$p_starringstart,$p_starringend,$p_picstart,$p_picend,$p_typestart,$p_typeend,$p_pictype,$p_classtype,$p_collect_type,$p_timestart,$p_timeend,$p_areastart,$p_areaend,$p_contentstart,$p_contentend,$p_playcodestart,$p_playcodeend,$p_playlinkstart,$p_playlinkend,$p_playurlstart,$p_playurlend,$p_playcodetype,$p_playlinktype,$p_playtype,$p_coding,$p_lzstart,$p_lzend,$p_lzcodetype,$p_lzcodestart,$p_lzcodeend,$p_languagestart,$p_languageend,$p_remarksstart,$p_remarksend,$p_script,$p_showtype,$p_savefiles,$strdstate,$p_server,$p_setnametype,$p_setnamestart,$p_setnameend,$p_directedstart,$p_directedend,$cache;
+	$androidUrl="";
+	//var_dump($strlink);var_dump($strListUrl);
+    try {
+	  $pos = strpos($strlink, "href=\"");
+	  if ($pos !== false) {
+		$strlink=substr($strlink, $pos+6);
+	  }
+	  $pos = strpos($strlink, "\"");
+	  if ($pos !== false) {
+		$strlink=substr($strlink, 0,$pos);
+	  }	
+		
+	} catch (Exception $e) {
+	}
+	$strlink = definiteUrl($strlink,$strListUrl);
+	writetofile("crawel_info.log", $p_id.'{=====}'.$strlink ."{=====}View===start");
+	echo "<tr><td colspan=\"2\">开始采集：".$strlink." / '.$strListUrl.'</br> </TD></TR>";
+	$strViewCode = getPage($strlink,$p_coding);
+	
+	if ($strViewCode ==false) {
+		$strdstate = "true";
+		echo "<tr><td colspan=\"2\">在获取内容页时出错：".$strlink." / '.$strListUrl.' </br></TD></TR>";
+		writetofile("crawel_error.log", $p_id.'{=====}'.$strlink.'{=====}'.$strListUrl);
+		$sb=$sb+1;
+		return;
+	}
+	else{
+		$info= BaiduParse::parseMovieInfoByContent($strViewCode, $p_coding, $p_collect_type);
+		echo "<tr><td colspan=\"2\">在获取内容页时success ：".$strlink." / '.$strListUrl.'</br> </TD></TR>";
+		//节目名称，来自列表或者来自内容页 
+		if ($p_titletype ==1) {
+			$titlecode = $titlearr[$num];
+			
+		}
+		else{
+			$titlecode = $info->title;
+		}
+		
+		$titlecode = filterScript($titlecode,$p_script);
+		$titlecode = replaceFilters($titlecode,$p_id,1,0);
+		$titlecode = replaceStr(replaceStr(replaceStr($titlecode,","," "),"'",""),"\"\"","");
+		$titlecode = trim($titlecode);
+		
+	 
+		$lzcode =$info->curr_episode;
+		$lzcode = replaceStr($lzcode,"false","0");
+		$lzcode = trim($lzcode);
+		try{
+		  $lzcode = intval($lzcode);
+		}catch(Exception $e){
+			$lzcode=0;
+		}
+		
+
+
+		
+		$p_hitsstart = 0 ;
+		$p_hitsend = 0 ;
+		$m_hits=0;
+		
+		if ($p_starringtype ==1) {
+			$starringcode = $starringarr[$num];
+		}
+		else{
+			$starringcode = $info->actor;
+		}
+		//演员
+		$starringcode = filterScriptStar($starringcode,$p_script);
+		$starringcode = replaceStr(replaceStr(replaceStr($starringcode,","," "),"'",""),"\"\"","");
+		$starringcode = trim($starringcode);
+		
+		if ($p_pictype ==1) {
+			$piccode = $picarr[$num];
+		}
+		else{
+		 	$piccode = $info->big_poster;
+		}
+		//图片
+		$piccode = trim($piccode);
+		$piccode = getHrefFromImg(definiteUrl($piccode,$strListUrl));
+		
+		$m_typeid = $p_collect_type;
+		$typecode=$info->type;
+		$typecode = filterScript($typecode,$p_script);
+		
+		if ($p_showtype==1) {
+			echo "<tr><td  colspan=\"2\" align=\"center\">此列表中第".($num+1)."条数据采集结果</td></tr><tr><td width=\"20%\" >来源：</td><td >".$strlink."</td></tr><tr><td >名称：</td><td >".$titlecode." 连载:".$lzcode." 备注:".$remarkscode."</td></tr><tr><td >演员：</td><td >".$starringcode."</td></tr><tr><td >导演：</td><td >".$directedcode."</td></tr><tr><td >时间：</td><td >".$timecode."</td></tr><tr><td >分类：</td><td >".$typecode."</td></tr><tr><td >地区：</td><td >".$areacode."</td></tr><tr><td >语言：</td><td >".$languagecode."</td></tr><tr><td  >图片：</td><td >".$piccode."</td></tr><tr><td >介绍：</td><td >".substring($contentcode,50).".....</td></tr>";
+		
+			if ($p_savefiles ==1) {
+				$filename = time() . $num;
+				if (strpos($piccode,".jpg") || strpos($piccode,".bmp") || strpos($piccode,".png") || strpos($piccode,".gif")){
+					$extName= substring($piccode,4,strlen($piccode)-4);
+				}
+				else{
+					$extName=".jpg";
+				}
+				$picpath = "upload/vod/". getSavePicPath() . "/" ;
+				$picfile = $filename . $extName;
+				
+				echo "<tr><td width=\"20%\" >自动下载图片：</td><td><iframe border=\"0\" valign=\"bottom\" vspace=\"0\" hspace=\"0\" marginwidth=\"0\" marginheight=\"0\" framespacing=\"0\" frameborder=\"0\" scrolling=\"no\" width=\"400\" height=\"15\" src=\"../admin_pic.php?action=downpic&wjs=1&path=../".$picpath."&file=".$picfile."&url=".$piccode."\"></iframe></td></tr>";
+				$piccode = $picpath . $picfile;
+			}
+		}
+		else{
+			echo "<tr><td colspan=\"2\" align=\"center\">第".($num+1)."条数据采集结果</td></tr><tr><td width=\"20%\" >来源：</td><td >".$strlink."</td></tr><tr><td width=\"20%\" >名称：</td><td >".$titlecode." 连载:".$lzcode." 备注:".$remarkscode."</td></tr>";
+		}
+		$weburl=$info->sites;
+		if ($weburl ==false) {
+				echo "<tr><td colspan=\"2\">在获取播放列表链接时出错 ".$strlink." / '.$strListUrl.'</TD></TR>";			
+			    writetofile("crawel_error.log", $p_id.'{=====}'.$strlink.'{=====}'.$strListUrl);
+				$sb=$sb+1;
+				return;
+		}else{
+		    $directedcode = $info->director;
+			//备注
+			$remarkscode = $info->max_episode;
+			//语音
+			$languagecode = !isN($info->language)?$info->language:"未知";
+			$languagecode = trim($languagecode);
+			//时间
+			$timecode =  !isN($info->pubdate)?$info->pubdate:"未知";
+			$timecode = trim($timecode);
+			//地区
+			$areacode = !isN($info->area)?$info->area:"未知";
+			$areacode = trim($areacode);
+			//内容
+			$contentcode = !isN($info->brief)?$info->brief:"未知";
+			$contentcode = filterScript(replaceFilters($contentcode,$p_id,2,0),$p_script);
+			$contentcode = replaceStr(replaceStr(replaceStr($contentcode,","," "),"'",""),"\"\"","");
+			$contentcode = trim($contentcode);
+				
+			$m_area = $areacode;
+			$m_languageid = $languagecode;
+			
+			foreach ($weburl as $weburlitem){
+				$p_playtypebaiduweb = $weburlitem['site_name'];
+				$baiduwebUrls=$weburlitem['episodes'];
+//				var_dump($p_playtypebaiduweb);
+//				var_dump('----------------');
+//				var_dump($weburlitem);
+				$movieid = updateVod($baiduwebUrls,$p_id,$titlecode,$piccode,$typecode,$areacode,$strlink,$starringcode,$directedcode,$timecode,$p_playtypebaiduweb,$contentcode,$m_typeid,$lzcode,$languagecode,$remarkscode);
+			}
+		
+	   }
+	}
+}
+
+function updateVod($baiduwebUrls,$p_id,$titlecode,$piccode,$typecode,$areacode,$strlink,$starringcode,$directedcode,$timecode,$p_playtype,$contentcode,$m_typeid,$lzcode,$languagecode,$remarkscode){
+	global $db,$cg;
+       $sql="select m_id,m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_addtime,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state from {pre}cj_vod where m_pid='".$p_id."' and m_name='".$titlecode."'  and m_playfrom='".$p_playtype."'  order by m_id desc";
+			
+			$rowvod=$db->getRow($sql);
+			
+		    if ($rowvod) {
+				$cg=$cg+1;
+				$movieid=$rowvod["m_id"];
+				if(isN($titlecode)){
+					$titlecode = $rowvod["m_name"];
+				}
+		    
+				if(isN($starringcode)){
+					$starringcode = $rowvod["m_starring"];
+				}
+		    
+				if(isN($piccode)){
+					$piccode = $rowvod["m_pic"];
+				}
+				$sql = "update {pre}cj_vod set m_pic='".$piccode."', m_type='".$typecode."',m_area='".$areacode."',m_urltest='".$strlink."',m_name='".$titlecode."',m_starring='".$starringcode."',m_directed='".$directedcode."',m_year='".$timecode."',m_playfrom='".$p_playtype."',m_content='".$contentcode."',m_addtime='".date('Y-m-d H:i:s',time())."',m_zt='0',m_pid='".$p_id."',m_typeid='".$m_typeid."',m_playserver='',m_state='".$lzcode."',m_language='".$languagecode."',m_remarks='".$remarkscode."' where m_id=".$rowvod["m_id"];
+				writetofile("sql.txt", $sql);
+				$db->query($sql);
+			}
+			else{
+				$cg=$cg+1;
+				$sql="insert {pre}cj_vod (m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state,m_addtime,m_language,m_remarks) values('".$titlecode."','".$typecode."','".$areacode."','".$p_playtype."','".$starringcode."','".$directedcode."','".$piccode."','".$contentcode."','".$timecode."','".$strlink."','0','".$p_id."','".$m_typeid."','0','','".$lzcode."','".date('Y-m-d H:i:s',time())."','".$languagecode."','".$remarkscode."')";
+				writetofile("sql.txt", $sql);
+	 			$db->query($sql);
+				$movieid= $db->insert_id();
+			}
+//			var_dump($baiduwebUrls);
+			foreach ($baiduwebUrls as $baiduweburl){
+				if(array_key_exists('url', $baiduweburl)){
+				   $WebTestx = $baiduweburl['url'];	
+				}else {
+					continue;
+				}
+				
+			    if(array_key_exists('pic', $baiduweburl)){
+				 $picurl = $baiduweburl['pic'];	
+				}else {
+					$picurl='';
+				}
+						
+					
+				writetofile("crawel_info.log", $p_id.'{=====}'.$WebTestx ."{=====}ViewList===start");
+				
+			    $contentObject =ContentProviderFactory::getContentProvider($p_playtype);
+			    $androidUrl = $contentObject->parseAndroidVideoUrl($WebTestx, $p_coding, $p_script);
+				$videoAddressUrl = $contentObject->parseIOSVideoUrl($WebTestx, $p_coding, $p_script);
+				writetofile("android_log.txt", $WebTestx.'{===}'.$androidUrl .'{===}'.$videoAddressUrl );
+			    
+//			    $url = getBody($playCode,$p_playurlstart,$p_playurlend);
+			    $url = "";
+			    if(array_key_exists('episode', $baiduweburl)){
+				   $setname= $baiduweburl['episode'];
+				}else {
+					$setname='';
+				}
+				
+				if($m_typeid ==3){
+					if(array_key_exists('name', $baiduweburl)){
+					   $setname=$setname. ' '.$baiduweburl['name'];
+					}
+					
+				}
+				$setname=trim($setname);
+				
+			   $sql="SELECT {pre}cj_vod_url.u_url FROM ({pre}cj_vod_url INNER JOIN {pre}cj_vod ON {pre}cj_vod_url.u_movieid = {pre}cj_vod.m_id)  where {pre}cj_vod_url.u_weburl='" . $WebTestx . "' and {pre}cj_vod.m_pid=" . $p_id . " and {pre}cj_vod.m_id=" . $movieid;
+			   
+     		   $rowurl = $db->getRow($sql);
+     		   
+			   if (!$rowurl) {
+					 writetofile("sql.txt","insert into {pre}cj_vod_url(u_url,u_movieid,u_weburl,iso_video_url,name,android_vedio_url) values('".$url."','".$movieid."','".$WebTestx."','".$videoAddressUrl."','".$setname."' ,'".$androidUrl."' )");
+					  $db->query("insert into {pre}cj_vod_url(pic,u_url,u_movieid,u_weburl,iso_video_url,name,android_vedio_url) values('".$picurl."','".$url."','".$movieid."','".$WebTestx."','".$videoAddressUrl."','".$setname."' ,'".$androidUrl."' )");
+			   }
+			}
+			
 }
 
 function cjView($strlink,$num)
@@ -709,7 +956,6 @@ function cjView($strlink,$num)
 //			$db->query($sql);
 		}
 		else{
-			
 			$cg=$cg+1;
 			$sql="insert {pre}cj_vod (m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state,m_addtime,m_language,m_remarks) values('".$titlecode."','".$typecode."','".$areacode."','".$p_playtype."','".$starringcode."','".$directedcode."','".$piccode."','".$contentcode."','".$timecode."','".$strlink."','0','".$p_id."','".$m_typeid."','".$m_hits."','".$p_server."','".$lzcode."','".date('Y-m-d H:i:s',time())."','".$languagecode."','".$remarkscode."')";
 			writetofile("sql.txt", $sql);
@@ -767,8 +1013,6 @@ function cjView($strlink,$num)
 			    
 			    $url = getBody($playCode,$p_playurlstart,$p_playurlend);
 			    $url = replaceLine($url);
-			    
-			        
 			}
 			else if($p_playlinktype == 2){ //播放链接中获取地址
 				$WebTestx=getHrefFromLink($WebTestx);
