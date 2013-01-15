@@ -12,11 +12,10 @@ class SinaContent extends Content {
     const BASE_URL="http://v.iask.com/v_play_ipad.php?vid={vid}";
     private $contentparmStart = "ipad_vid:'"; //
     private $contentparaend = "',";
-
+    private $p_code='utf-8';
     public function parseAndroidVideoUrl($url,$p_coding,$p_script){
-        $content = getPage($url, $p_coding);
-//        var_dump($content);
-        return $this->parseAndroidVideoUrlByContent($content, $p_coding, $p_script);
+        $content = getPage($url, $this->p_code);
+        return $this->parseAndroidVideoUrlByContent($content, $this->p_code, $p_script);
     }
 
     public function parseAndroidVideoUrlByContent($content, $p_coding,$p_script) {
@@ -30,7 +29,6 @@ class SinaContent extends Content {
             $videoAddressUrl = replaceStr(SinaContent::BASE_URL, "{vid}", $vid);            
              $videoAddressUrl =  MovieType::HIGH_CLEAR . MovieType::VIDEO_NAME_URL_SEP.$videoAddressUrl ;
         }
-        // var_dump($videoAddressUrl);
         return $videoAddressUrl;
     }
 
