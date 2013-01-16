@@ -70,27 +70,52 @@ function noInflow()
 function AllInflowProject()
 {
 	global $db;
-	$pid = be("get","{pre}cj_vod_projects");
-	if (isN($pid)){
-		showmsg ("请选择入库数据！",$backurl);
-	}else {
-	    $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != '' and m_pid=".$pid);
-		$sql="select * from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != '' and m_pid=".$pid;
-		MovieInflow($sql,$count);
+	
+    $keyword = be("get","keyword");
+	$from= be("get","playfrom");
+	$project = be("get","cj_vod_projects");
+	
+	$where =" ";
+	if ($keyword != "") {
+		$where = $where . " and m_name like '%" . $keyword . "%' ";
 	}
+	if ($project!= "") {
+		$where = $where . " and m_pid = " . $project;
+	}
+	
+    if ($from!= "") {
+		$where = $where . " and m_playfrom ='" . $from."' ";
+	}
+	//var_dump($where);
+	$count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != '' ".$where);
+	$sql="select * from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != ''  ".$where;
+	MovieInflow($sql,$count);
 }
 
 function noInflowProject()
 {
 	global $db;
-	$pid = be("get","{pre}cj_vod_projects");
-    if (isN($pid)){
-		showmsg ("请选择入库数据！",$backurl);
-	}else {
-	    $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_zt=0 and m_typeid>0 and m_name IS NOT NULL AND m_name != ''  and m_pid=".$pid);
-	    $sql="select * from {pre}cj_vod where m_zt=0 and m_typeid>0  and m_name IS NOT NULL AND m_name != '' and m_pid=".$pid;
-	    MovieInflow($sql,$count);
+    $keyword = be("get","keyword");
+	$from= be("get","playfrom");
+	$project = be("get","cj_vod_projects");
+	
+	$where =" ";
+	if ($keyword != "") {
+		$where = $where . " and m_name like '%" . $keyword . "%' ";
 	}
+	if ($project!= "") {
+		$where = $where . " and m_pid = " . $project;
+	}
+	
+    if ($from!= "") {
+		$where = $where . " and m_playfrom ='" . $from."' ";
+	}
+
+    $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_zt=0 and m_typeid>0 and m_name IS NOT NULL AND m_name != ''   ".$where);
+    $sql="select * from {pre}cj_vod where m_zt=0 and m_typeid>0  and m_name IS NOT NULL AND m_name != ''  ".$where;
+    // var_dump($count); var_dump($sql);
+    MovieInflow($sql,$count);
+	
 }
 
 function del()
@@ -357,7 +382,8 @@ function main()
 	$pagenum = intval($pagenum);
 	
 	$keyword = be("get","keyword");
-	$project = be("get","{pre}cj_vod_projects");
+	$from= be("get","playfrom");
+	$project = be("get","cj_vod_projects");
 	$zt = be("get","zt");
 	
 	$sql="Select a.*,b.p_name as p_name from {pre}cj_vod a,{pre}cj_vod_projects b where a.m_pid=b.p_id";
@@ -370,7 +396,12 @@ function main()
 	if ($project!= "") {
 		$sql = $sql . " and a.m_pid = " . $project;
 	}
-	$sql = $sql . " order by m_zt asc,m_addtime desc " ;
+	
+    if ($from!= "") {
+		$sql = $sql . " and a.m_playfrom ='" . $from."' ";
+	}
+	
+	$sql = $sql . " order by m_zt asc,m_name desc, m_addtime desc " ;
 	
 	$rscount = $db->query($sql);
 	$nums= $db -> num_rows($rscount);//总记录数
@@ -410,6 +441,29 @@ $(document).ready(function(){
 			$("#form1").submit();
 		}
 	});
+
+	$("#noInflowProject").click(function(){
+		var keyword=$("#keyword").val();
+		var playfrom=$("#playfrom").val();
+		var project=$("#cj_vod_projects").val();
+		if(confirm('确定所搜视频入库未入库吗')){
+			$("#form1").attr("action","?action=noInflowProject&keyword="+keyword+"&playfrom="+playfrom+"&cj_vod_projects="+project);
+			$("#form1").submit();
+		}
+	});
+
+
+	$("#AllInflowProject").click(function(){
+		var keyword=$("#keyword").val();
+		var playfrom=$("#playfrom").val();
+		var project=$("#cj_vod_projects").val();
+		if(confirm('确定所搜视频全部入库吗')){
+			$("#form1").attr("action","?action=AllInflowProject&keyword="+keyword+"&playfrom="+playfrom+"&cj_vod_projects="+project);
+			$("#form1").submit();
+		}
+	});
+
+	
 	 $("#btnType").click(function(){
 		if(confirm('确定更新所选数据的分类吗')){
 			$("#form1").attr("action","?action=editype");
@@ -424,14 +478,19 @@ $(document).ready(function(){
 		<td>
 		<form action="collect_vod.php" method="get" > 
 			<strong>搜索影片：</strong>
-			<input id=KeyWord size=40 name=keyword>
-			<INPUT class=inputbut type=submit value=搜索 name=submit>
-			&nbsp; 按项目查看：
-			<select id="projectSelect" onchange=javascript:window.location.href=this.options[this.selectedIndex].value>
-			<option value="collect_vod.php?{pre}cj_vod_projects=">全部采集项目</option>
-			<?php echo makeSelect("{pre}cj_vod_projects","p_id","p_name","","collect_vod.php","&nbsp;|&nbsp;&nbsp;",$project)?>
+			<input id=keyword size=40 name=keyword>
+			
+			<select id="playfrom" name=playfrom>
+	<option value="">视频播放器</option>
+	<?php echo makeSelectPlayer($from)?>
+	</select>
+			
+			<select id="cj_vod_projects" name="cj_vod_projects">
+			<option value="">全部采集项目</option>
+			<?php echo makeSelect("{pre}cj_vod_projects","p_id","p_name","","","&nbsp;|&nbsp;&nbsp;",$project)?>
 			</select>	
-			     <a href="#" onclick ="javascript:{window.location.href=document.getElementById('projectSelect').options[document.getElementById('projectSelect').selectedIndex].value+'&action=AllInflowProject';}"><font color="blue">所选项目全部入库</font></a>  |   <a href="#" onclick ="javascript:{window.location.href=document.getElementById('projectSelect').options[document.getElementById('projectSelect').selectedIndex].value+'&action=noInflowProject';}"><font color="blue">所选项目入库未入库</font></a>   <font color="#FF0000">(没有找到对应栏目,不能入库)</font> 
+			<INPUT class=inputbut type=submit value=搜索 name=submit>
+			    
 		</form>
 		</td>
     </tr>
@@ -501,6 +560,8 @@ $(document).ready(function(){
 	&nbsp;<input type="button" id="btnSelin" class="btn" name="Submit" value="入库所选" >
 	&nbsp;<input type="button" id="btnAllin" class="btn" name="Submit" value="全部入库" >
     &nbsp;<input type="button" id="btnNoin" class="btn" name="Submit" value="入库未入库" >
+	&nbsp;<input type="button" id="AllInflowProject" class="btn" name="Submit" value="所搜视频全部入库" >
+    &nbsp;<input type="button" id="noInflowProject" class="btn" name="Submit" value="所搜视频入库未入库" >
 	&nbsp; <select name="m_typeid" id="m_typeid">
         <option value="">请选择数据分类</option>
         <?php echo makeSelectAll("{pre}vod_type","t_id","t_name","t_pid","t_sort",0,"","&nbsp;|&nbsp;&nbsp;","")?>
@@ -530,7 +591,7 @@ $(document).ready(function(){
 	</tr>
     <tr align="center" bgcolor="#f8fbfb">
 	<td colspan="9">
-	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"collect_vod.php?page={p}&{pre}cj_vod_projects=".$project."&keyword=".$keyword) ?></td>
+	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"collect_vod.php?page={p}&cj_vod_projects=".$project."&keyword=".$keyword."&playfrom=".$from) ?></td>
     </tr>
 </table>
 </form>
@@ -555,9 +616,9 @@ function MovieInflow($sql_collect,$MovieNumW)
 	$iscover= be("iscover","get");
 	$rs = $db->query($sql_collect);
 	$rscount = $db -> num_rows($rs);
-	
+//	var_dump($rscount);
 	if($rscount==0){
-		echo "<script>alert('没有可入库的数据!'); location.href='collect_art.php';</script>";
+		echo "<script>alert('没有可入库的数据!'); location.href='collect_vod.php';</script>";
 		exit;
 	}
 	
@@ -623,8 +684,8 @@ function MovieInflow($sql_collect,$MovieNumW)
 			$did = $db->insert_id();
 		}
 		//插入新数据结束
-		else{
-			if( be("post","CCTV")=="3"){
+		else{  //同名不处理， 如果是电影也不更新
+			if( be("post","CCTV")=="3" || $d_type==='1' ||$d_type ==1){
 				//var_dump("dd");
 				continue;
 			}
@@ -696,7 +757,7 @@ function MovieInflow($sql_collect,$MovieNumW)
 		$playAndWebArray= getVodPlanAndWebUrl($row["m_id"],$testUrl,$row["m_playfrom"],$d_type);
 		
 //		$urls = getVodUrl($row["m_id"]);
-        
+     //   var_dump($playAndWebArray);
         $urls =$playAndWebArray['playUrl'];        
         $webUrls =$playAndWebArray['webUrl'];
         if(!(isset($webUrls) && !is_null($webUrls) && strlen($webUrls)>0)){
@@ -731,9 +792,9 @@ function MovieInflow($sql_collect,$MovieNumW)
 		else if (strpos( ",". $tmpplayfrom , $row["m_playfrom"] ) >0){
 			if (be("post","CCTV")=="2") {
 				if(isN($videoUrls)){
-					$strSet .="d_playfrom='".$row["m_playfrom"]. "$$$".$tmpplayfrom  ."',d_playserver='".$tmpplayfrom ."$$$".$row["m_playserver"]."',d_playurl='". $tmpplayurl ."$$$". $urls."' "."',webUrls='". $tmpweburl ."$$$". $webUrls."' ,d_downurl='". $tmpvideourl ."'";
+					$strSet .="d_playfrom='".$row["m_playfrom"]. "$$$".$tmpplayfrom  ."',d_playserver='". $row["m_playserver"]."$$$".$tmpplayfrom."',d_playurl='". $urls ."$$$".$tmpplayurl ."' "."',webUrls='". $webUrls ."$$$". $tmpweburl."' ,d_downurl='". $tmpvideourl ."'";
 				}else {
-				  $strSet .="d_playfrom='".$row["m_playfrom"] . "$$$". $tmpplayfrom ."',d_playserver='".$tmpplayfrom ."$$$".$row["m_playserver"]."',d_playurl='". $tmpplayurl ."$$$". $urls."' "."',webUrls='". $tmpweburl ."$$$". $webUrls."' ,d_downurl='". $tmpvideourl ."$$$".$row["m_playfrom"].'$$'. $videoUrls."'";  
+				  $strSet .="d_playfrom='".$row["m_playfrom"] . "$$$". $tmpplayfrom ."',d_playserver='". $row["m_playserver"]."$$$".$tmpplayfrom."',d_playurl='". $urls ."$$$".$tmpplayurl ."' "."',webUrls='". $webUrls ."$$$". $tmpweburl."' ,d_downurl='". $tmpvideourl ."$$$".$row["m_playfrom"].'$$'. $videoUrls."'";  
 			    }
 			}
 			else{
@@ -815,8 +876,9 @@ function MovieInflow($sql_collect,$MovieNumW)
 			}
 		}
 		else{
+			
 			if(isN($videoUrls)){
-				$strSet .="d_playfrom='".$row["m_playfrom"]. "$$$". $tmpplayfrom ."',d_playserver='".$tmpplayfrom ."$$$".$row["m_playserver"]."',d_playurl='". $tmpplayurl ."$$$". $urls."' ,webUrls='". $tmpweburl ."$$$". $webUrls ."' ";
+				$strSet .="d_playfrom='".$row["m_playfrom"]. "$$$". $tmpplayfrom ."',d_playserver='". $row["m_playserver"] ."$$$".$tmpplayserver."',d_playurl='".  $urls."$$$". $tmpplayurl."' ,webUrls='".  $webUrls ."$$$". $tmpweburl ."' ";
 			}else {
 				$tempVideoArray1 = explode("$$$",$tmpvideourl );
 				$tmpvideourl = "";
@@ -840,7 +902,7 @@ function MovieInflow($sql_collect,$MovieNumW)
 					$tmpvideourl =  $row["m_playfrom"].'$$'.$videoUrls."$$$".$tmpvideourl ;					
 				}
 				
-			  $strSet .="d_playfrom='".$row["m_playfrom"] . "$$$". $tmpplayfrom."',d_playserver='".$tmpplayfrom ."$$$".$row["m_playserver"]."',d_playurl='". $tmpplayurl ."$$$". $urls."' ,webUrls='". $tmpweburl ."$$$". $webUrls."' ,d_downurl='". $tmpvideourl .'\' ';
+			  $strSet .="d_playfrom='".$row["m_playfrom"] . "$$$". $tmpplayfrom."',d_playserver='".$tmpplayserver ."$$$".$row["m_playserver"]."',d_playurl='".  $urls."$$$". $tmpplayurl."' ,webUrls='".  $webUrls."$$$". $tmpweburl."' ,d_downurl='". $tmpvideourl .'\' ';
 			}
 		}
 		
@@ -983,12 +1045,14 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
 				if( $m_playfrom === 'letv' && $d_type ==='2'){
 		            	$playNum=getNumber($urstee).'$';
 		        }
-				if ($num ==1) {
-					$videoUrl .= $playNum.$videourstee;
-				}
-				Else{
-					$videoUrl .= "{Array}".$playNum.$videourstee;
-				}
+		        if(!isN($videourstee)){
+					if ($num ==1) {
+						$videoUrl .= $playNum.$videourstee;
+					}
+					Else{
+						$videoUrl .= "{Array}".$playNum.$videourstee;
+					}
+		        }
 //				if(!isN($android_vedio_url))
 //			}
 		}
