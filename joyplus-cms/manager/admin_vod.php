@@ -593,6 +593,10 @@ function main()
     if($select_videourl_play ==2) {
     	$where .= " AND d_play_check = 2 ";
     }
+    
+     if($select_videourl_play ==1) {
+    	$where .= " AND d_play_check = 1 ";
+    }
 	if($select_weburl==1){
     	$where .= " AND webUrls is not null and webUrls !='' ";
     }
@@ -744,7 +748,6 @@ function gosyncpic(){
 }
 
 function prepareWeiboText(type,id,name){
-//      alert(id );
 	   document.getElementById( "weiboText").value= name; 
 	   document.getElementById( "notify_msg_prod_id").value= id; 
 	   document.getElementById( "notify_msg_prod_type").value= type; 
@@ -875,6 +878,7 @@ function sendWeiboText(){
 	<option value="-1">网页播放地址是否检测</option>
 	<option value="0" <?php if ($select_videourl_play==0){ echo "selected";} ?>>没有检测</option>
 	<option value="2" <?php if ($select_videourl_play==2){ echo "selected";} ?>>已经检测</option>
+	<option value="1" <?php if ($select_videourl_play==1){ echo "selected";} ?>>网友发现此视频有问题</option>
 	</select>
 	</td>
 	</tr>
@@ -1132,7 +1136,7 @@ global $db,$action;
 			$name=$row["d_name"];$area=$row["d_area"]; $year=$row["d_year"];
 			 unset($row);
 			 $scoreDouban = new DouBanParseScore();
-		     $pic= $scoreDouban->getDouBanPics($name, $year, $area,5/7);
+		     $pic= $scoreDouban->getDouBanPics($name, $year, $area,7/5);
 		     if($pic !==false && !isN($pic)){
 		     	$padPic= explode("{Array}", $pic);
 		     	if(count($padPic)>0){
@@ -1461,6 +1465,7 @@ function collect(weburls,playerfrom){
 	<select id="d_play_check" name="d_play_check">
 	<option value="0" <?php if ($d_play_check==0){ echo "selected";} ?>>没有检测</option>
 	<option value="2" <?php if ($d_play_check==2){ echo "selected";} ?>>已经检测</option>
+	<option value="1" <?php if ($d_play_check==1){ echo "selected";} ?>>网友发现此视频有问题</option>
 	</select>
 	</td>
 	</tr>
