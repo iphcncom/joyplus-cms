@@ -239,6 +239,32 @@ class ProgramController extends Controller
 		  }
 		}
 		
+       function actionInvalid(){
+       	
+	        header('Content-type: application/json');
+	        
+		    if(!Yii::app()->request->isPostRequest){   
+		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+		   		 return ;
+		   	}
+		   	
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}
+			
+			$prod_id= Yii::app()->request->getParam("prod_id");
+			
+			
+			if( (!isset($prod_id)) || is_null($prod_id)   ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}
+			
+          IjoyPlusServiceUtils::exportServiceError(Program::model()->invalid($prod_id));
+          
+		}
+		
         function actionWatch(){
 	        header('Content-type: application/json');
 		    if(!Yii::app()->request->isPostRequest){   

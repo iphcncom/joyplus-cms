@@ -13,7 +13,7 @@ class FengXingContent extends Content{ //56
   	private $htmlparaend=".html";
   	private $notfound='/wap/wrong';
 
-  	private $p_code="UTF-8"; //http://www.funshion.com/subject/play/103299/4
+  	public $p_code="UTF-8"; //http://www.funshion.com/subject/play/103299/4
     public function parseAndroidVideoUrl($url,$p_coding,$p_script){
 //    	echo $url;
     	$vid = getBodys($url,$this->htmlparmStart);  
@@ -41,7 +41,6 @@ class FengXingContent extends Content{ //56
   		$videoAddressUrl1="";
   		$videoAddressUrl2="";
   		$videoAddressUrl3="";
-  		$videoAddressUrl4="";
   	  if(isset($vid) && !is_null($vid)){
   		  $url = replaceStr(FengXingContent::BASE_URL,"{ID}",$vid);
   		  $mediaid=explode("/", $vid);
@@ -69,7 +68,7 @@ class FengXingContent extends Content{ //56
   		    		  $rc=false;
   		    		  foreach ($tempjson['playlist'][0]['urls'] as $location){
   		    		  	if( $clarity === "high-dvd"  ){ 
-  		    		  		if($rc){
+  		    		  		if($rc  || !isN($videoAddressUrl3)){
   		    		  			$videoAddressUrl3=$videoAddressUrl3.MovieType::VIDEO_SEP_VERSION;
   		    		  		} 
 				  	  	 	$videoAddressUrl3=$videoAddressUrl3.MovieType::HIGH_CLEAR.MovieType::VIDEO_NAME_URL_SEP.$location;
@@ -77,7 +76,7 @@ class FengXingContent extends Content{ //56
 				  	  	 } 
 
 				  	  	 if( $clarity === "dvd"  ){
-  		    		  		if($rc){
+  		    		  		if($rc  || !isN($videoAddressUrl2)){
   		    		  			$videoAddressUrl2=$videoAddressUrl2.MovieType::VIDEO_SEP_VERSION;
   		    		  		} 
 				  	  	 	$videoAddressUrl2=$videoAddressUrl2.MovieType::NORMAL .MovieType::VIDEO_NAME_URL_SEP.$location;
@@ -85,7 +84,7 @@ class FengXingContent extends Content{ //56
 				  	  	 } 
 				  	  	 
 				  	  	 if( $clarity === "tv"  ){ 
-  		    		  		if($rc){
+  		    		  		if($rc || !isN($videoAddressUrl1)){
   		    		  			$videoAddressUrl1=$videoAddressUrl1.MovieType::VIDEO_SEP_VERSION;
   		    		  		} 
 				  	  	 	$videoAddressUrl1=$videoAddressUrl1.MovieType::Liu_Chang.MovieType::VIDEO_NAME_URL_SEP.$location;
@@ -102,11 +101,8 @@ class FengXingContent extends Content{ //56
   		 
   		}
   	      $flag=false;
-  		  if(!isN($videoAddressUrl4)){
-  		  	$videoAddressUrl=$videoAddressUrl.$videoAddressUrl4;
-  		  	$flag=true;
-  		  }
-  	  
+  		 
+  	 
   		  if(!isN($videoAddressUrl3)){
   		  	if($flag){
   		  		$videoAddressUrl=$videoAddressUrl.MovieType::VIDEO_SEP_VERSION;
