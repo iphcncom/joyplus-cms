@@ -875,9 +875,9 @@ function sendWeiboText(){
 	</select>
 	
 	<select id="select_videourl_play" name="select_videourl_play">
-	<option value="-1">网页播放地址是否检测</option>
-	<option value="0" <?php if ($select_videourl_play==0){ echo "selected";} ?>>没有检测</option>
-	<option value="2" <?php if ($select_videourl_play==2){ echo "selected";} ?>>已经检测</option>
+	<option value="-1">视频是否有问题</option>
+	<option value="0" <?php if ($select_videourl_play==0){ echo "selected";} ?>>没有问题</option>
+	<option value="2" <?php if ($select_videourl_play==2){ echo "selected";} ?>>程序发现此视频网页地址有问题</option>
 	<option value="1" <?php if ($select_videourl_play==1){ echo "selected";} ?>>网友发现此视频有问题</option>
 	</select>
 	</td>
@@ -1461,12 +1461,13 @@ function collect(weburls,playerfrom){
 	&nbsp;<input id="d_name" name="d_name" type="text" size="40" value="<?php echo $d_name?>" onBlur="if(this.value){ajaxckname(this.value);}"><span id="d_name_ok"></span>
 	&nbsp;副标：<input id="d_subname" name="d_subname" type="text" size="40" value="<?php echo $d_subname?>">
 	&nbsp;&nbsp;&nbsp;首字母：<input id="d_letter" name="d_letter" type="text" size="4" value="<?php echo $d_letter?>">
-	&nbsp;&nbsp;&nbsp;网页播放地址是否检测:
+	&nbsp;&nbsp;&nbsp;视频是否有问题:
 	<select id="d_play_check" name="d_play_check">
-	<option value="0" <?php if ($d_play_check==0){ echo "selected";} ?>>没有检测</option>
-	<option value="2" <?php if ($d_play_check==2){ echo "selected";} ?>>已经检测</option>
+	<option value="0" <?php if ($d_play_check==0){ echo "selected";} ?>>没有问题</option>
+	<option value="2" <?php if ($d_play_check==2){ echo "selected";} ?>>程序发现此视频网页地址有问题</option>
 	<option value="1" <?php if ($d_play_check==1){ echo "selected";} ?>>网友发现此视频有问题</option>
 	</select>
+
 	</td>
 	</tr>
 	<tr> 
