@@ -9,7 +9,7 @@ class DouBanParseScore{
 	const PIC_URL="http://movie.douban.com/subject/{ID}/photos?type=R&start=0&sortby=size";
 	const PIC_URL_NORMAL="http://movie.douban.com/subject/{ID}/photos?type=R&sortby=size&size=a&subtype=o";
 	const PIC_JIZHAO="http://movie.douban.com/subject/{ID}/photos?type=S&start=0&sortby=size&size=a&subtype=a";
-	
+	const PIC_URL_THUMB="http://movie.douban.com/subject/{ID}/";
 	
 	public function readContent($url){
 		$httpClient = new HttpClient("api.douban.com",80);
@@ -175,6 +175,26 @@ class DouBanParseScore{
 		return $this->getPicById($id,$rate);
 	}
 	
+	
+	function getDoubanThumb($name,$year,$area){
+	    $id = $this->getDoubanIDForWeb($name, $year, $area);		
+		if(isN($id)){
+			$id = $this->getDoubanID($name, $year, $area);
+		}
+	    if(isN($id)){
+			return false;
+		}var_dump($id);
+		writetofile("updateVodThumb.txt", 'check item for vod id{=}'.$id );
+		return $this->getThumb($id);
+	}
+	function getThumb($id){
+		 $url = str_replace("{ID}", $id, DouBanParseScore::PIC_URL_THUMB);	     
+	     writetofile("updateVodThumb.txt", 'check item for PIC_URL_NORMAL url{=}'.$url );
+ 	     $content = getPage($url, "utf-8");
+ 	     $content=getBody($content, DouBanParseScore::WEB_THUMB_START, DouBanParseScore::WEB_THUMB_END);
+	     $content=getBody($content, DouBanParseScore::WEB_PIC_THUMB_START, DouBanParseScore::WEB_PIC_THUMB_END);
+	     return $content;
+	}
     function getComments($name,$year,$area){
 		$comments= $this->getDoubanComments($name, $year, $area);
 		return $comments;
@@ -186,6 +206,12 @@ class DouBanParseScore{
 	const WEB_TITLE_END='</div>';
 	const WEB_DATE_START='<p class="pl">';
 	const WEB_DATE_END='/';
+	
+	const WEB_THUMB_START='<div id="mainpic">';
+	const WEB_THUMB_END='</div>';
+	
+	const WEB_PIC_THUMB_START='<img src="';
+	const WEB_PIC_THUMB_END='"';
 	
 	const WEB_CONTENT_START='<div class="article">';
 	const WEB_CONTENT_END='<div class="aside">';
@@ -452,7 +478,7 @@ public function getDoubanID($name,$year,$area){
 //$d = nes= $d->getCommentById('10569156');
 //var_dump($coments);
 //$d = new DouBanParseScore();
-//var_dump($d->getDouBanPics("深海异形", '2005', '',7/5));
+//var_dump($d->getDoubanThumb("喜剧王", '2013', ''));
 
 //$s=rand(0, 10)+rand(0, 10)/10;
 //echo $s;
