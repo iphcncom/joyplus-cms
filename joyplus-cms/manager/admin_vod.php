@@ -23,7 +23,7 @@ switch($action)
 	case "douban" : douban();break;
 	case "doubanPic" : doubanPic();break;
 	case "doubans" : doubans();break;
-	
+	case "doubanThumb" :doubanThumb();break;
 	case "doubanComment" : doubanComment();break;
 	case "doubansComment" : doubansComment();break;
 	case "del" : del();break;
@@ -1022,7 +1022,7 @@ function sendWeiboText(){
 	<a href="admin_vod.php?action=doubanComment&id=<?php echo $d_id?>">豆瓣评论</a> |
 	 <?php }?> 
 		
-	<a href="admin_vod.php?action=doubanPic&id=<?php echo $d_id?>">豆瓣图片</a> | <a class="thickbox" href="#TB_inline?height=200&width=400&inlineId=myOnPageContent" onclick="javascript:{prepareWeiboText('<?php echo $row["d_type"]?>','<?php echo $d_id?>','<?php echo substring($row["d_name"],20)?>');}" > 消息推送</a>	  
+	<a href="admin_vod.php?action=doubanPic&id=<?php echo $d_id?>">豆瓣图片</a> | <a href="admin_vod.php?action=doubanThumb&id=<?php echo $d_id?>">豆瓣缩略图</a> | <a class="thickbox" href="#TB_inline?height=200&width=400&inlineId=myOnPageContent" onclick="javascript:{prepareWeiboText('<?php echo $row["d_type"]?>','<?php echo $d_id?>','<?php echo substring($row["d_name"],20)?>');}" > 消息推送</a>	  
 	| <A href="admin_vod.php?action=del&d_id=<?php echo $d_id?>" onClick="return confirm('确定要删除吗?');">删除</a></td>
     </tr>
 	<?php
@@ -1154,6 +1154,34 @@ global $db,$action;
 		
 	}	
 }
+
+function doubanThumb(){
+global $db,$action;
+	$backurl = getReferer();
+	if (strpos($backurl,"admin_vod.php") <=0){ $backurl="admin_vod.php"; }
+	
+	if ($action=="doubanThumb"){
+		$d_id = be("get","id");
+		$row = $db->getRow("SELECT * FROM {pre}vod WHERE d_id=".$d_id);
+		if (!$row){
+			errmsg ("系统信息","错误没有找到该数据");
+		}else {
+			$name=$row["d_name"];$area=$row["d_area"]; $year=$row["d_year"];
+			 unset($row);
+			 $scoreDouban = new DouBanParseScore();
+		     $pic= $scoreDouban->getDoubanThumb($name, $year, $area);
+		     if($pic !==false && !isN($pic)){
+		     	writetofile("updateVodPic.txt", 'd_pic{=}'.$pic );
+		     		$db->Update ("{pre}vod", array("d_pic"), array($pic), "d_id=" . $d_id);
+		     		echo '<script language="javascript">alert("采集成功");location.href ="'.$backurl.'";</script>';	
+		     }else {
+		     	echo '<script language="javascript">alert("在豆瓣上找不到资源 ");location.href ="'.$backurl.'";</script>';
+		     }
+		}
+		
+	}	
+}
+
 function doubanComment(){
 global $db,$action;
 	$backurl = getReferer();
