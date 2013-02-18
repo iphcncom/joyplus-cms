@@ -35,7 +35,7 @@ class Topic extends CActiveRecord
 	{
 		return 'mac_vod_topic';
 	}
-	const relatedTops_prod='select topic.t_id,topic.t_name from mac_vod_topic topic,mac_vod_topic_items item where topic.t_id=item.topic_id and topic.t_flag=1 and  topic.t_bdtype=1 and item.vod_id=';
+	const relatedTops_prod='select topic.t_id,topic.t_name from mac_vod_topic topic,mac_vod_topic_items item where topic.t_id=item.topic_id and topic.t_flag=1 and  topic.t_bdtype=1 and item.flag=1 and item.vod_id=';
     public function getRelatedTops($prod_id){    	
       return Yii::app()->db->createCommand(Topic::relatedTops_prod.$prod_id)->queryAll();
     }
