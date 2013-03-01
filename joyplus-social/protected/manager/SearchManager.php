@@ -399,7 +399,7 @@ ORDER BY d.disp_order asc ';
 	    $prods= Yii::app()->db->createCommand()
 		->select('d_id as prod_id, d_name as prod_name, d_type as prod_type,d_pic as prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area')
 		->from('mac_vod ')
-		->where('d_hide=:d_hide  and d_type in (1,2,3,4) and ( d_name like \''.$keyword.'\' or d_enname like \''.$keyword.'\'   )', array(
+		->where('d_hide=:d_hide  and d_type in (1,2,3,131) and ( d_directed like \''.$keyword.'\' or d_starring like \''.$keyword.'\' or d_name like \''.$keyword.'\' or d_enname like \''.$keyword.'\'   )', array(
 			    ':d_hide'=>0,
 		))->order('d_type asc ,d_level desc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
 		->queryAll();
