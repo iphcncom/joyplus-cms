@@ -6,6 +6,10 @@ class ProgramUtil{
 			case Constants::PROGRAM_TYPE_TV:
 				$prod['tv']=ProgramUtil::genTV($program,true);
 				break;
+				
+			case 131:
+				$prod['tv']=ProgramUtil::genTV($program,true);
+				break;
 					
 			case Constants::PROGRAM_TYPE_SHOW:
 				$prod['show']=ProgramUtil::genTV($program,false);
