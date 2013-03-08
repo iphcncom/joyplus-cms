@@ -36,6 +36,40 @@ class TopController extends Controller
 		}
 	}
 	
+   function actionShowTopItems(){
+       header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}
+		
+		$page_size=Yii::app()->request->getParam("page_size");
+		$page_num=Yii::app()->request->getParam("page_num");
+		if(!(isset($page_size) && is_numeric($page_size))){
+			$page_size=10;
+			$page_num=1;
+		}else if(!(isset($page_num) && is_numeric($page_num))){
+			$page_num=1;
+		}
+		
+        $top_id= Yii::app()->request->getParam("top_id");
+		if( (!isset($top_id)) || is_null($top_id)  ){
+			IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+			return;
+		}
+		try{
+		  $lists = SearchManager::listShowItems($top_id,$page_size,$page_size*($page_num-1));
+		  if(isset($lists) && is_array($lists)){				
+		    IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
+		    }else {
+			  IjoyPlusServiceUtils::exportEntity(array('items'=>array()));
+			}
+		}catch (Exception $e){
+			Yii::log( CJSON::encode($e), "error");
+		  IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);	
+		}
+	}
+	
 	//悦单
    function actionSystemTop(){
        header('Content-type: application/json');
@@ -118,7 +152,34 @@ class TopController extends Controller
 		}
 	}
 	
-function actionSystemShowTop(){
+   function actionSystemCartTop(){
+       header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}
+		$page_size=Yii::app()->request->getParam("page_size");
+		$page_num=Yii::app()->request->getParam("page_num");
+        if(!(isset($page_size) && is_numeric($page_size))){
+			$page_size=10;
+			$page_num=1;
+		}else if(!(isset($page_num) && is_numeric($page_num))){
+			$page_num=1;
+		}
+		try{
+		  $lists = SearchManager::animation_tops($page_size,$page_size*($page_num-1));
+		  if(isset($lists) && is_array($lists)){				
+		    IjoyPlusServiceUtils::exportEntity(array('tops'=>$lists));
+		    }else {
+			  IjoyPlusServiceUtils::exporptEntity(array('tops'=>array()));
+			}
+		}catch (Exception $e){
+			Yii::log( CJSON::encode($e), "error");
+		  IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);	
+		}
+	}	
+	
+    function actionSystemShowTop(){
        header('Content-type: application/json');
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
