@@ -74,6 +74,11 @@ function save()
     $d_letter = be("post", "d_letter"); 
     $d_type_name= be("post", "d_type_name");
     $d_pic_ipad= be("post", "d_pic_ipad");
+    $can_play_device= be("post", "can_play_device");
+    
+    $can_search_device=be("arr","can_search_device");
+    
+    $d_status= be("post", "d_status");
     $d_video_desc_url= be("post", "d_video_desc_url");
     
     $d_play_check= be("post", "d_play_check");
@@ -82,7 +87,7 @@ function save()
     $urlid = be("arr", "urlid"); $url = be("arr", "url"); $urlfrom = be("arr", "urlfrom"); $urlserver = be("arr", "urlserver");
     $urlidsarr = explode(",",$urlid); $urlarr = explode(",",$url); $urlfromarr = explode(",",$urlfrom); $urlserverarr = explode(",",$urlserver);
     $urlarr = $_POST["url"];
-    
+    $d_douban_id= $_POST["d_douban_id"];
     
     $downurlid = be("arr", "downurlid"); $downurl = be("arr", "downurl"); $downurlfrom = be("arr", "downurlfrom");
     $downurlidsarr = explode(",",$downurlid); $downurlarr = explode(",",$downurl); $downurlfromarr = explode(",",$downurlfrom);
@@ -141,11 +146,11 @@ function save()
     }
 	
     if ($flag == "edit") {
-        $db->Update ("{pre}vod", array("d_video_desc_url","d_play_check","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type","d_letter", "d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks","d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_hide", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_video_desc_url,$d_play_check,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type, $d_letter, $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits ,$d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_hide, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver), "d_id=" . $d_id);
+        $db->Update ("{pre}vod", array("d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_play_check","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type","d_letter", "d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks","d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_hide", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_play_check,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type, $d_letter, $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits ,$d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_hide, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver), "d_id=" . $d_id);
     }
     else{
         $backurl = "admin_vod.php?action=add";
-        $db->Add ("{pre}vod", array("d_video_desc_url","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type", "d_letter","d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks", "d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_addtime", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_video_desc_url,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type,$d_letter,  $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits , $d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_addtime, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver));
+        $db->Add ("{pre}vod", array("d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type", "d_letter","d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks", "d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_addtime", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type,$d_letter,  $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits , $d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_addtime, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver));
     }
     
     echo "保存完毕";
@@ -201,7 +206,16 @@ global $db,$action,$template,$cache;
 	if ($pagenum < 1) { $pagenum = 1; }
     
     $where = " (d_type=1 or d_type=2)  ";
-   if (!isN($keyword)) { $keyword=trim($keyword);$where .= " AND ( d_directed like '%".$keyword."%' or d_starring like '%".$keyword."%' or d_name like '%".$keyword."%' or d_enname like '%".$keyword."%'   ) ";}
+	
+    $keyword_col = be("all", "keyword_col");
+    if (!isN($keyword)) {
+    	$keyword=trim($keyword); 
+    	if(isN($keyword_col)){
+    	   $where .= " AND ( d_directed like '%".$keyword."%' or d_starring like '%".$keyword."%' or d_name like '%".$keyword."%' or d_enname like '%".$keyword."%'   ) ";
+    	}else {
+    		$where .= " AND ".$keyword_col ." like '%".$keyword."%' ";
+    	}
+    }
     if ($stype > 0) { 
     	$typearr = getValueByArray($cache[0], "t_id" ,$stype );
 		if(is_array($typearr)){
@@ -344,8 +358,17 @@ global $db,$action,$template,$cache;
 	if ($pagenum < 1) { $pagenum = 1; }
     
     $where = "  (d_type =1 or d_type=2) ";  
-   if (!isN($keyword)) { $keyword=trim($keyword);$where .= " AND ( d_directed like '%".$keyword."%' or d_starring like '%".$keyword."%' or d_name like '%".$keyword."%' or d_enname like '%".$keyword."%'   ) ";}
-     if ($stype > 0) { 
+	
+    $keyword_col = be("all", "keyword_col");
+    if (!isN($keyword)) {
+    	$keyword=trim($keyword); 
+    	if(isN($keyword_col)){
+    	   $where .= " AND ( d_directed like '%".$keyword."%' or d_starring like '%".$keyword."%' or d_name like '%".$keyword."%' or d_enname like '%".$keyword."%'   ) ";
+    	}else {
+    		$where .= " AND ".$keyword_col ." like '%".$keyword."%' ";
+    	}
+    }
+    if ($stype > 0) { 
     	$typearr = getValueByArray($cache[0], "t_id" ,$stype );
 		if(is_array($typearr)){
 			$where = $where . " and d_type in (" . $typearr["childids"] . ")";
@@ -442,7 +465,21 @@ global $db,$action,$template,$cache;
 				 $name=$row["d_name"];$area=$row["d_area"]; $year=$row["d_year"];
 				 $d_id=$row["d_id"];$type=$row["d_type"];
 				 $scoreDouban = new DouBanParseScore();
-				 $pic= $scoreDouban->getDoubanThumb($name, $year, $area);
+				 $doubanid=$row['d_douban_id'];
+				 $flag=true;
+				 if(!isN($doubanid) && $doubanid !==0 && $doubanid !=='0' ){
+				   $flag=false;
+			       $pic= $scoreDouban->getThumb($doubanid);
+				 }else {
+				 	$pic= $scoreDouban->getDoubanThumb($name, $year, $area);
+				 }
+			     if($pic !==false) {
+			     	$doubanid=$pic['id'];
+			     	if(!isN($doubanid) && $flag){
+			     		$db->Update ("{pre}vod", array("d_douban_id"), array($doubanid), "d_id=" . $d_id);
+			     	}
+			     	$pic=$pic['pic'];
+			     }
 			     if($pic !==false && !isN($pic)){
 			     	writetofile("updateVodPic.txt", 'd_pic{=}'.$pic );
 			     		$db->Update ("{pre}vod", array("d_pic"), array($pic), "d_id=" . $d_id);
@@ -487,8 +524,17 @@ global $db,$action,$template,$cache;
 	if ($pagenum < 1) { $pagenum = 1; }
     
     $where = " (d_type =1 or d_type=2) ";
-  if (!isN($keyword)) { $keyword=trim($keyword);$where .= " AND ( d_directed like '%".$keyword."%' or d_starring like '%".$keyword."%' or d_name like '%".$keyword."%' or d_enname like '%".$keyword."%'   ) ";}
-     if ($stype > 0) { 
+	
+    $keyword_col = be("all", "keyword_col");
+    if (!isN($keyword)) {
+    	$keyword=trim($keyword); 
+    	if(isN($keyword_col)){
+    	   $where .= " AND ( d_directed like '%".$keyword."%' or d_starring like '%".$keyword."%' or d_name like '%".$keyword."%' or d_enname like '%".$keyword."%'   ) ";
+    	}else {
+    		$where .= " AND ".$keyword_col ." like '%".$keyword."%' ";
+    	}
+    }
+      if ($stype > 0) { 
     	$typearr = getValueByArray($cache[0], "t_id" ,$stype );
 		if(is_array($typearr)){
 			$where = $where . " and d_type in (" . $typearr["childids"] . ")";
@@ -583,29 +629,45 @@ global $db,$action,$template,$cache;
 				$name=$row["d_name"];$area=$row["d_area"]; $year=$row["d_year"];
 				$d_id=$row["d_id"];$type=$row["d_type"];
 				 $scoreDouban = new DouBanParseScore();
-			     $comments= $scoreDouban->getDoubanComments($name, $year, $area);
-			
-			 if(is_array($comments)){
-			 	$dates= $comments['dates'];
-			 	$commentsS= $comments['comments'];
-			 	$commentsArray = explode("{Array}", $commentsS);
-			 	$datesArray = explode("{Array}", $dates);
-			 	$authorsArray= explode("{Array}", $comments['authors']);
+				$doubanid=$row['d_douban_id'];
+				 $flag=true;
+				 if(!isN($doubanid) && $doubanid !==0 && $doubanid !=='0' ){
+				   $flag=false;
+			       $comments= $scoreDouban->getReviewsById($doubanid);
+				 }else {
+				 	$comments= $scoreDouban->getDoubanReviews($name, $year, $area);
+				 }
+			     if($comments !==false) {
+			     	$doubanid=$comments['id'];
+			     	if(!isN($doubanid) && $flag){
+			     		$db->Update ("{pre}vod", array("d_douban_id"), array($doubanid), "d_id=" . $d_id);
+			     	}
+			     }
+			//var_dump($comments);
+			 
+			if(is_array($comments)&& !isN( $comments['comments'])){			 
+			 	$commentsArray = $comments['comments'];
+			 	$titlesArray =$comments['title'];		 	
+			 	$reviewidsArray= $comments['reviewid'];
 			 	$total= count($commentsArray);
 			 	if($total>0){
-			 		$db->Delete("tbl_comments", "content_id=".$d_id ." and author_id is null");			 		
-			 		$db->Delete("mac_comment", "c_vid=".$d_id );
+			 		$db->Delete("tbl_comments", "content_id=".$d_id ." and author_id is null and comment_type=1");
+			 		//$db->Delete("mac_comment", "c_vid=".$d_id );
 			 	}
-			 	for ($i=0;$i<$total;$i++) {			 	
-			 		$com=$commentsArray[$i];			 		
-			 		$date=$datesArray[$i];
-			 		$author=$authorsArray[$i];
+			 	
+			 	for ($i=0;$i<$total;$i++) {
+			 		$com=$commentsArray[$i];
+			 		
+			 		$title=$titlesArray[$i];
+			 		$reviewid=$reviewidsArray[$i];
 			 		if(!isN($com)){
-			 			$com=filterScript($com,8191);
-			 		  $db->Add("tbl_comments", array("status","content_type","content_name","content_id","create_date","comments"),
-			 		  array('1',$type,$name,$d_id,$date,$com));
-			 		   $db->Add("mac_comment", array("c_audit","c_type","c_vid","c_time","c_content","c_name"),
-			 		  array('1',$type,$d_id,$date,$com,$author));
+			 		  $com=filterScript($com,8191);
+			 		  $db->Add("tbl_comments", array("status","content_type","content_name","content_id","create_date","comments","comment_type","douban_comment_id","comment_title"),
+			 		  array('1',$type,$name,$d_id,date("Y-m-d H:i:s"),$com,'1',$reviewid,$title));
+			 		  
+			 		  $db->Add("mac_comment", array("c_audit","c_type","c_vid","c_time","c_content","c_name"),
+			 		  array('1',$type,$d_id,date("Y-m-d H:i:s"),$com,$author));
+			 		  
 			 		}
 			 	}
 				 	//showMsg();
@@ -625,6 +687,7 @@ global $db,$action,$template,$cache;
 function main()
 {
 	global $db,$template,$cache;
+	$loginname=getCookie("adminname");
     $keyword = be("all", "keyword"); $stype = be("all", "stype");
     $area = be("all", "area");   $topic = be("all", "topic");
     $level = be("all", "level");     $from = be("all", "from");
@@ -632,7 +695,7 @@ function main()
     $repeat = be("all", "repeat");   $repeatlen = be("all", "repeatlen");
     $order = be("all", "order");     $pagenum = be("all", "page");
      $sort = be("all", "sort");
-    $spic = be("all", "spic");    $hide = be("all", "hide");
+    $spic = be("all", "spic");    $hide = be("all", "hide"); $d_status = be("all", "d_status");
     $douban_score = be("all", "douban_score");
     $ipadpic = be("all", "ipadpic");
     if(!isNum($level)) { $level = 0;} else { $level = intval($level);}
@@ -645,12 +708,20 @@ function main()
     if(!isNum($hide)) { $hide=-1;} else { $hide = intval($hide);}
     if(!isNum($douban_score)) { $douban_score=0;} else { $douban_score = intval($douban_score);}
     if(!isNum($repeatlen)) { $repeatlen = 0;}
-    
+    if(!isNum($d_status)) { $d_status = -1;}else { $d_status = intval($d_status);}
 	if (!isNum($pagenum)){ $pagenum = 1;} else { $pagenum = intval($pagenum);}
 	if ($pagenum < 1) { $pagenum = 1; }
     
     $where = " d_type in (1,2,3,131) ";
-    if (!isN($keyword)) { $keyword=trim($keyword);$where .= " AND ( d_directed like '%".$keyword."%' or d_starring like '%".$keyword."%' or d_name like '%".$keyword."%' or d_enname like '%".$keyword."%'   ) ";}
+    $keyword_col = be("all", "keyword_col");
+    if (!isN($keyword)) {
+    	$keyword=trim($keyword); 
+    	if(isN($keyword_col)){
+    	   $where .= " AND ( d_directed like '%".$keyword."%' or d_starring like '%".$keyword."%' or d_name like '%".$keyword."%' or d_enname like '%".$keyword."%'   ) ";
+    	}else {
+    		$where .= " AND ".$keyword_col ." like '%".$keyword."%' ";
+    	}
+    }
     if ($stype > 0) { 
     	$typearr = getValueByArray($cache[0], "t_id" ,$stype );
 		if(is_array($typearr)){
@@ -674,6 +745,10 @@ function main()
     
     if($hide!=-1){
     	$where .= " AND d_hide=".$hide ." ";
+    }
+    
+    if($d_status!=-1){
+    	$where .= " AND d_status=".$d_status ." ";
     }
     
     if($douban_score==1){
@@ -716,7 +791,7 @@ function main()
     }
     
     if(!isN($sserver)) { $where .= " AND d_playserver like '%" . $sserver . "%' ";}
-    if(!isN($from)) { $where .= " and d_playfrom like  '" . $from . "%' ";}
+    if(!isN($from)) { $where .= " and d_playfrom like  '%" . $from . "%' ";}
     if($spic==1){
     	$where .= " AND d_pic = '' ";
     }
@@ -769,8 +844,10 @@ function main()
     $sql = "SELECT count(*) FROM {pre}vod ".$repeatsql." where ".$where;
 	$nums = $db->getOne($sql);
 	$pagecount=ceil($nums/app_pagenum);
-    $sql = "SELECT d_year,d_id, d_name, d_enname, d_play_num,d_type,d_state,d_topic, d_level, d_hits, d_time,d_remarks,d_playfrom,d_hide,p.id as popular_id FROM {pre}vod ".$repeatsql." left join {pre}vod_popular as p on p.vod_id=d_id  WHERE" . $where . " ORDER BY " . $orders . "  limit ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
-  //var_dump($sql);
+	//$sql = "SELECT d_year,d_id, d_name, d_enname, d_play_num,d_type,d_state,d_topic, d_level, d_hits, d_time,d_remarks,d_playfrom,d_hide,p.id as popular_id FROM {pre}vod ".$repeatsql." left join {pre}vod_popular as p on p.vod_id=d_id  WHERE" . $where . " ORDER BY " . $orders . "  limit ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
+  
+    $sql = "SELECT d_year,d_id, d_name, d_enname, d_play_num,d_type,d_state,d_topic, d_level, d_hits, d_time,d_remarks,d_playfrom,d_hide FROM {pre}vod ".$repeatsql."  WHERE" . $where . " ORDER BY " . $orders . "  limit ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
+ // var_dump($sql);
 	$rs = $db->query($sql);
 ?>
 
@@ -837,8 +914,10 @@ function filter(){
 	var douban_score =$("#douban_score").val();
 	var douban_comment =$("#douban_comment").val();
 	var select_videourl_play=$("#select_videourl_play").val();
-	var keyword=$("#keyword").val();
-	var url = "admin_vod.php?sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&keyword="+encodeURI(keyword)+"&stype="+stype+"&topic="+topic+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic; //ipadpic
+	var keyword=$("#keyword").val();	
+	var d_status=$("#d_status").val();
+	var keyword_col=$("#keyword_col").val();
+	var url = "admin_vod.php?keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&keyword="+encodeURI(keyword)+"&stype="+stype+"&topic="+topic+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic; //ipadpic
 	window.location.href=url;
 }
 
@@ -859,8 +938,10 @@ function doubans(){
 	var select_videourl=$("#select_videourl").val();
 	var douban_comment =$("#douban_comment").val();
 	var select_videourl_play=$("#select_videourl_play").val();
-	var keyword=$("#keyword").val();
-	var url = "admin_vod.php?sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubans&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
+	var keyword=$("#keyword").val();	
+	var d_status=$("#d_status").val();
+	var keyword_col=$("#keyword_col").val();
+	var url = "admin_vod.php?keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubans&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
 	window.location.href=url;
 }
 
@@ -881,8 +962,10 @@ function doubansComment(){
 	var select_videourl=$("#select_videourl").val();
 	var select_videourl_play=$("#select_videourl_play").val();
 	var keyword=$("#keyword").val();
-	var douban_comment =$("#douban_comment").val();
-	var url = "admin_vod.php?sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubansComment&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
+	var douban_comment =$("#douban_comment").val();	
+	var d_status=$("#d_status").val();
+	var keyword_col=$("#keyword_col").val();
+	var url = "admin_vod.php?keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubansComment&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
 	window.location.href=url;
 }
 
@@ -903,8 +986,10 @@ function doubanThumbs(){
 	var select_videourl=$("#select_videourl").val();
 	var select_videourl_play=$("#select_videourl_play").val();
 	var keyword=$("#keyword").val();
-	var douban_comment =$("#douban_comment").val();
-	var url = "admin_vod.php?sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubanThumbs&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
+	var douban_comment =$("#douban_comment").val();	
+	var d_status=$("#d_status").val();
+	var keyword_col=$("#keyword_col").val();
+	var url = "admin_vod.php?keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubanThumbs&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
 	window.location.href=url;
 }
 
@@ -1065,11 +1150,24 @@ function sendWeiboText(){
 	<option value="2" <?php if ($select_videourl_play==2){ echo "selected";} ?>>程序发现此视频网页地址有问题</option>
 	<option value="1" <?php if ($select_videourl_play==1){ echo "selected";} ?>>网友发现此视频有问题</option>
 	</select>
+	
+	<select id="d_status" name="d_status">
+	<option value="-1">是否已经审核过</option>
+	<option value="0" <?php if ($d_status==0){ echo "selected";} ?>>未审核</option>
+	<option value="1" <?php if ($d_status==1){ echo "selected";} ?>>审核并锁定</option>
+	</select>
+	
 	</td>
 	</tr>
 	<tr>
 	<td colspan="4">
-	关键字：<input id="keyword" size="40" name="keyword" value="<?php echo $keyword?>">
+	关键字：<input id="keyword" size="40" name="keyword" value="<?php echo $keyword?>">&nbsp;
+	<select id="keyword_col" name="keyword_col">
+	<option value="">关键字的匹配列</option>
+	<option value="d_name" <?php if($keyword_col=="d_name"){ echo "selected";} ?>>视频名称</option>
+	<option value="d_starring" <?php if($keyword_col=="d_starring"){ echo "selected";} ?>>演员</option>
+	<option value="d_directed" <?php if($keyword_col=="d_directed"){ echo "selected";} ?>>导演</option>
+	</select>
 	<input class="input" type="button" value="搜索" id="btnsearch" onClick="filter();">
 	检测名称长度：<input id="repeatlen" size="2" name="repeatlen" >
 	&nbsp;<input class="input" type="button" value="检测重复数据" id="btnrepeat" name="btnrepeat" > 
@@ -1078,7 +1176,7 @@ function sendWeiboText(){
 	<input style="display:<?php echo $douban_scoreT;?>" type="button" value="豆瓣积分" id="btnsearchs" onClick="doubans();"> 
 	</td>
 	<td align="left">
-	<input style="display:<?php echo $douban_scoreT;?>" type="button" value="豆瓣评论" id="btnsearchsComment" onClick="doubansComment();"> 
+	<input style="display:<?php echo $douban_scoreT;?>" type="button" value="豆瓣影评" id="btnsearchsComment" onClick="doubansComment();"> 
 	</td>
 	<td align="left">
 	<input style="display:<?php echo $douban_scoreT;?>" type="button" value="豆瓣缩略图 " id="btnsearchsThumbs" onClick="doubanThumbs();"> 
@@ -1097,15 +1195,15 @@ function sendWeiboText(){
 	<tr>
 	<td width="4%">&nbsp;</td>
 	<td width="5%">编号</td>
-	<td>名称</td>
+	<td width="15%">名称</td>
 	<td width="6%">播放次数</td>
 	<td width="6%">上映日期</td>
 	<td width="5%">分类</td>
-	<td width="6%">来源</td>
+	<td width="2%">来源</td>
 <!--	<td width="3%">人气</td>-->
 	<td width="5%">推荐</td>
-	<td width="5%">专题</td>
-	<td width="5%">轮播图</td>
+<!--	<td width="5%">专题</td>-->
+<!--	<td width="5%">轮播图</td>-->
 	<td width="12%" align="center">视频榜单</td>
 <!--	<td width="5%">浏览</td>-->
 	<td width="5%">时间</td>
@@ -1140,12 +1238,12 @@ function sendWeiboText(){
 	<td><?php echo $row["d_play_num"]?></td>
 	<td><?php echo $row["d_year"]?></td>
 	<td><?php echo $tname?></td>
-	<td><?php echo replaceStr($row["d_playfrom"],"$$$",",")?></td>
+	<td title="<?php echo replaceStr($row["d_playfrom"],"$$$",",");?>"><?php echo substring(replaceStr($row["d_playfrom"],"$$$",","),15,0)?></td>
 	<!--<td><?php echo $row["d_hits"]?></td>
 	--><td id="tj<?php echo $d_id?>">
 	<?php echo "<img src=\"../images/icons/ico".$row["d_level"].".gif\" border=\"0\" style=\"cursor: pointer;\" onClick=\"setday('tj','".$d_id."','vod')\"/>"?>
 	</td>
-	<td id="zt<?php echo $d_id?>" >
+	<!--<td id="zt<?php echo $d_id?>" >
 	<?php if($row["d_topic"]==0) {?>
 	<?php echo "<img src=\"../images/icons/icon_02.gif\" border=\"0\" style=\"cursor: pointer;\" onClick=\"setday('zt','".$d_id."','vod')\"/>"?>
 	<?php }else{?>
@@ -1153,7 +1251,8 @@ function sendWeiboText(){
 	<?php }?>
 	</td>
 	
-	<td id="popular<?php echo $d_id?>" >
+	-->
+	<!--<td id="popular<?php echo $d_id?>" >
 	<?php if($row["popular_id"]>0) {?>
 		<?php echo "<img src=\"../images/icons/icon_01.gif\" border=\"0\" style=\"cursor: pointer;\" />"?>
 	
@@ -1162,7 +1261,7 @@ function sendWeiboText(){
 	<?php }?>
 	</td>
 	
-	<td  align="center"><span id="bd<?php echo $d_id?>"></span>
+	--><td  align="center"><span id="bd<?php echo $d_id?>"></span>
 	
 	<a href="#" onClick="setdayBD('bd','<?php echo $d_id?>','vod','1')"/> 添加悦单</a>  | <a href="#" onClick="setdayBD('bd','<?php echo $d_id?>','vod','2')"/> 添加悦榜</a>
 	
@@ -1209,10 +1308,14 @@ function sendWeiboText(){
 	 </td>
 	--><td><?php echo isToday($row["d_time"])?></td>
 	<td><a href="admin_vod_topic.php?action=info&id=<?php echo $d_id?>">所在榜单</a> |<a href="admin_vod.php?action=edit&id=<?php echo $d_id?>">修改</a> | <?php if($row["d_type"] ==1 || $row["d_type"] ==2){ ?><a href="admin_vod.php?action=douban&id=<?php echo $d_id?>">豆瓣积分</a> | 
-	<a href="admin_vod.php?action=doubanComment&id=<?php echo $d_id?>">豆瓣评论</a> |
+	<a href="admin_vod.php?action=doubanComment&id=<?php echo $d_id?>">豆瓣影评</a> |
 	 <?php }?> 
 		
-	<a href="admin_vod.php?action=doubanPic&id=<?php echo $d_id?>">豆瓣图片</a> | <a href="admin_vod.php?action=doubanThumb&id=<?php echo $d_id?>">豆瓣缩略图</a> | <a class="thickbox" href="#TB_inline?height=200&width=400&inlineId=myOnPageContent" onclick="javascript:{prepareWeiboText('<?php echo $row["d_type"]?>','<?php echo $d_id?>','<?php echo substring($row["d_name"],20)?>');}" > 消息推送</a>	  
+	<a href="admin_vod.php?action=doubanPic&id=<?php echo $d_id?>">豆瓣图片</a> | <a href="admin_vod.php?action=doubanThumb&id=<?php echo $d_id?>">豆瓣缩略图</a> 
+	<?php if($loginname ==='dale' || $loginname ==='admin'  || $loginname ==='lulu' || $loginname ==='scottliyq' || $loginname ==='zhouyinlong'  ){?>
+	|
+	 <a class="thickbox" href="#TB_inline?height=200&width=400&inlineId=myOnPageContent" onclick="javascript:{prepareWeiboText('<?php echo $row["d_type"]?>','<?php echo $d_id?>','<?php echo substring($row["d_name"],20)?>');}" > 消息推送</a>	  
+	<?php }?>
 	| <A href="admin_vod.php?action=del&d_id=<?php echo $d_id?>" onClick="return confirm('确定要删除吗?');">删除</a></td>
     </tr>
 	<?php
@@ -1237,7 +1340,7 @@ function sendWeiboText(){
 	</tr>
 	<tr>
 	<td align="center" colspan="12">
-	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod.php?page={p}&keyword=" . urlencode($keyword) . "&sort=" . $sort . "&select_videourl_play=" . $select_videourl_play . "&topic=" . $topic . "&level=".$level."&order=".$order ."&stype=" . $stype ."&sserver=" . $sserver ."&sstate=".$sstate."&repeat=".$repeat."&repeatlen=".$repeatlen."&from=".$from."&spic=".$spic."&hide=".$hide."&douban_comment=".$douban_comment."&douban_score=".$douban_score."&select_weburl=".$select_weburl."&select_videourl=".$select_videourl."&ipadpic=".$ipadpic)?>   //
+	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod.php?page={p}&keyword=" . urlencode($keyword) . "&d_status=".$d_status."&keyword_col=".$keyword_col."&sort=" . $sort . "&select_videourl_play=" . $select_videourl_play . "&topic=" . $topic . "&level=".$level."&order=".$order ."&stype=" . $stype ."&sserver=" . $sserver ."&sstate=".$sstate."&repeat=".$repeat."&repeatlen=".$repeatlen."&from=".$from."&spic=".$spic."&hide=".$hide."&douban_comment=".$douban_comment."&douban_score=".$douban_score."&select_weburl=".$select_weburl."&select_videourl=".$select_videourl."&ipadpic=".$ipadpic)?>   //
 	</td>
 	</tr>
 </table>
@@ -1326,8 +1429,22 @@ global $db,$action;
 			$name=$row["d_name"];$area=$row["d_area"]; $year=$row["d_year"];
 			 unset($row);
 			 $scoreDouban = new DouBanParseScore();
-		     $pic= $scoreDouban->getDouBanPics($name, $year, $area,7/5);
-		     if($pic !==false && !isN($pic)){
+			 $doubanid=$row['d_douban_id'];
+			 $flag=true;
+			 if(!isN($doubanid) && $doubanid !==0 && $doubanid !=='0' ){
+			   $flag=false;
+		       $pic= $scoreDouban->getPicById($doubanid,7/5);
+			 }else {
+			 	$pic= $scoreDouban->getDouBanPics($name, $year, $area,7/5);
+			 }
+		     if($pic !==false) {
+		     	$doubanid=$pic['id'];
+		     	if(!isN($doubanid) && $flag){
+		     		$db->Update ("{pre}vod", array("d_douban_id"), array($doubanid), "d_id=" . $d_id);
+		     	}
+		     	$pic=$pic['pic'];
+		     }
+		     if($pic !==false &&  !isN($pic)){
 		     	$padPic= explode("{Array}", $pic);
 		     	if(count($padPic)>0){
 		     		$padPic=$padPic[0];
@@ -1340,6 +1457,8 @@ global $db,$action;
 		     }else {
 		     	echo '<script language="javascript">alert("在豆瓣上找不到资源 ");location.href ="'.$backurl.'";</script>';
 		     }
+		     
+		     
 		}
 		
 	}	
@@ -1359,7 +1478,22 @@ global $db,$action;
 			$name=$row["d_name"];$area=$row["d_area"]; $year=$row["d_year"];
 			 unset($row);
 			 $scoreDouban = new DouBanParseScore();
-		     $pic= $scoreDouban->getDoubanThumb($name, $year, $area);
+		     $doubanid=$row['d_douban_id'];
+			 $flag=true;
+			 if(!isN($doubanid) && $doubanid !==0 && $doubanid !=='0' ){
+			   $flag=false;
+		       $pic= $scoreDouban->getThumb($doubanid);
+			 }else {
+			 	$pic= $scoreDouban->getDoubanThumb($name, $year, $area);
+			 }
+		     if($pic !==false) {
+		     	$doubanid=$pic['id'];
+		     	if(!isN($doubanid) && $flag){
+		     		$db->Update ("{pre}vod", array("d_douban_id"), array($doubanid), "d_id=" . $d_id);
+		     	}
+		     	$pic=$pic['pic'];
+		     }
+		     
 		     if($pic !==false && !isN($pic)){
 		     	writetofile("updateVodPic.txt", 'd_pic{=}'.$pic );
 		     		$db->Update ("{pre}vod", array("d_pic"), array($pic), "d_id=" . $d_id);
@@ -1387,32 +1521,45 @@ global $db,$action;
 			$type=$row["d_type"];
 			 $scoreDouban = new DouBanParseScore();
              unset($row);
-			 $comments= $scoreDouban->getDoubanComments($name, $year, $area);
+		     $doubanid=$row['d_douban_id'];
+			 $flag=true;
+			 if(!isN($doubanid) && $doubanid !==0 && $doubanid !=='0' ){
+			   $flag=false;
+		       $comments= $scoreDouban->getReviewsById($doubanid);
+			 }else {
+			 	$comments= $scoreDouban->getDoubanReviews($name, $year, $area);
+			 }
+		     if($comments !==false) {
+		     	$doubanid=$comments['id'];
+		     	if(!isN($doubanid) && $flag){
+		     		$db->Update ("{pre}vod", array("d_douban_id"), array($doubanid), "d_id=" . $d_id);
+		     	}
+		     }
+		     
+			
 			//var_dump($comments);
-			 if(is_array($comments)&& !isN( $comments['comments'])){
-			 //	var_dump($comments);			 	
-			 	$dates= $comments['dates'];
-			 	$commentsS= $comments['comments'];
-			 	$commentsArray = explode("{Array}", $commentsS);
-			 	$datesArray = explode("{Array}", $dates);			 	
-			 	$authorsArray= explode("{Array}", $comments['authors']);
+			 if(is_array($comments)&& !isN( $comments['comments'])){			 
+			 	$commentsArray = $comments['comments'];
+			 	$titlesArray =$comments['title'];		 	
+			 	$reviewidsArray= $comments['reviewid'];
 			 	$total= count($commentsArray);
 			 	if($total>0){
-			 		$db->Delete("tbl_comments", "content_id=".$d_id ." and author_id is null");
-			 		$db->Delete("mac_comment", "c_vid=".$d_id );
+			 		$db->Delete("tbl_comments", "content_id=".$d_id ." and author_id is null and comment_type=1");
+			 		//$db->Delete("mac_comment", "c_vid=".$d_id );
 			 	}
+			 	
 			 	for ($i=0;$i<$total;$i++) {
 			 		$com=$commentsArray[$i];
 			 		
-			 		$date=$datesArray[$i];
-			 		$author=$authorsArray[$i];
+			 		$title=$titlesArray[$i];
+			 		$reviewid=$reviewidsArray[$i];
 			 		if(!isN($com)){
 			 		  $com=filterScript($com,8191);
-			 		  $db->Add("tbl_comments", array("status","content_type","content_name","content_id","create_date","comments"),
-			 		  array('1',$type,$name,$d_id,$date,$com));
+			 		  $db->Add("tbl_comments", array("status","content_type","content_name","content_id","create_date","comments","comment_type","douban_comment_id","comment_title"),
+			 		  array('1',$type,$name,$d_id,date("Y-m-d H:i:s"),$com,'1',$reviewid,$title));
 			 		  
 			 		  $db->Add("mac_comment", array("c_audit","c_type","c_vid","c_time","c_content","c_name"),
-			 		  array('1',$type,$d_id,$date,$com,$author));
+			 		  array('1',$type,$d_id,date("Y-m-d H:i:s"),$com,$author));
 			 		  
 			 		}
 			 	}
@@ -1491,6 +1638,10 @@ function info()
 			$d_pic_ipad=$row["d_pic_ipad"];  
 			$d_video_desc_url=$row["d_video_desc_url"];  
 			$d_play_check=$row["d_play_check"];
+			$can_play_device=$row["can_play_device"];
+			$d_status=$row["d_status"];
+			$can_search_device=$row["can_search_device"];
+			$d_douban_id=$row["d_douban_id"];
 			if (isN($d_playurl)) { $d_playurl = "";}
 			if (isN($d_video_desc_url)) { $d_video_desc_url = "";}
 		if (isN($d_downurl)) { $d_downurl = "";}
@@ -1696,13 +1847,20 @@ function collect(weburls,playerfrom){
 	&nbsp;<input id="d_enname" name="d_enname" type="text" size="40" value="<?php echo $d_enname?>">
 	&nbsp;备注：<input id="d_remarks" name="d_remarks" type="text" size="40" value="<?php echo $d_remarks?>">
 	&nbsp;连载信息：<input id="d_state" name="d_state" type="text" size="4" value="<?php echo $d_state?>">
+	&nbsp;&nbsp;&nbsp;播放设备:
+	<select id="can_play_device" name="can_play_device">
+	<option value="0" <?php if ($can_play_device==0){ echo "selected";} ?>>所有设备</option>
+	<option value="1" <?php if ($can_play_device==1){ echo "selected";} ?>>只能ipad/iphone播放</option>
+	<option value="2" <?php if ($can_play_device==2){ echo "selected";} ?>>只能Android播放</option>
+	</select>
 	</td>
 	</tr>
 	<tr>
 	<td>演员：</td>
 	<td>&nbsp;<input id="d_starring" name="d_starring" type="text" size="40" value="<?php echo $d_starring?>">
 	&nbsp;导演：<input id="d_directed" name="d_directed" type="text" size="40" value="<?php echo $d_directed?>">
-	&nbsp;上映日期：<input id="d_year" name="d_year" type="text" value="<?php echo $d_year?>" size="4">
+	&nbsp;上映日期：<input id="d_year" name="d_year" type="text" value="<?php echo $d_year?>" size="10"> 
+	&nbsp;豆瓣ID：<input id="d_douban_id" name="d_douban_id" type="text" value="<?php echo $d_douban_id?>" size="10">  
 	</tr>
 	<tr> 
     <td>图片：</td>
@@ -1712,12 +1870,29 @@ function collect(weburls,playerfrom){
 	</tr>
 	
 	<tr> 
-    <td>短视频简介Url地址：</td>
-    <td>&nbsp;
-    <textarea id="d_video_desc_url" name="d_video_desc_url" style="width:700px;height:50px;"><?php echo $d_video_desc_url?></textarea>
-   <br />只用于微信 <!--   如果存在两个地址以上，按{Array}隔开。其中android版的支持flash。-->
+    <td><font color="red"><strong>是否已经审核过：</strong></font></td>
+    <td><select id="d_status" name="d_status">
+	<option value="0" <?php if ($d_status==0){ echo "selected";} ?>>未审核</option>
+	<option value="1" <?php if ($d_status==1){ echo "selected";} ?>>审核并锁定</option>
+	</select>
+    
+    &nbsp;<font color="red"><strong>投放的设备：</strong></font>
+     <?php
+      
+        if(isN($can_search_device)){
+        	$can_search_device="Pad,Mobile,Web";
+        }
+        
+        
+     ?>
+    <input type="checkbox" name="can_search_device[]" value="TV" <?php if(strpos($can_search_device, "TV") !==false){echo "checked";}?> />TV版
+    <input type="checkbox" name="can_search_device[]" value="Pad" <?php if(strpos($can_search_device, "Pad") !==false){echo "checked";}?> />Pad版
+    <input type="checkbox" name="can_search_device[]" value="Mobile" <?php if(strpos($can_search_device, "Mobile") !==false){echo "checked";}?>/>Mobile版
+    <input type="checkbox" name="can_search_device[]" value="Web" <?php if(strpos($can_search_device, "Web") !==false){echo "checked";}?>/>网站版
     </td>
 	</tr>
+	
+	
 	
 	<tr> 
     <td>图片 For IPad：</td>
@@ -1725,6 +1900,15 @@ function collect(weburls,playerfrom){
     <br /> <font color="red">备注：对于综艺悦榜里的视频，需要两种大图片，他们以逗号分开，格式为：综艺悦榜列表图片地址,综艺详细页面图片地址</font>
     </td>
 	</tr>
+	
+	<tr> 
+    <td>短视频简介Url地址：</td>
+    <td>&nbsp;
+    <textarea id="d_video_desc_url" name="d_video_desc_url" style="width:700px;height:50px;"><?php echo $d_video_desc_url?></textarea>
+   <br />只用于微信 ,如果存在两个地址，按{Array}隔开。IOS/Android,其中android版的支持flash.
+    </td>
+	</tr>
+	
 	<tr>
 	<td>其他：</td>
 	<td>豆瓣：<input id="d_hits" name="d_hits" type="text" size="8" value="<?php echo $d_hits?>">

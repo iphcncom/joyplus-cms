@@ -166,7 +166,12 @@ if(isset($action) && $action ==='collectSimpl'){
 	}
 	
 //	echo $name;
-	cjView(getHrefFromLink($webUrl),0);
+	if($p_playtype ==='baidu'){
+	  cjBaiduView(getHrefFromLink($webUrl),0);
+	}else {
+	  cjView(getHrefFromLink($webUrl),0);
+	}  
+	
 //	break;
 }else if(isset($action) && $action ==='collectListUrl'){
 	$flag=false;
@@ -476,6 +481,7 @@ function cjBaiduView($strlink,$num){
 	}
 	else{
 		$info= BaiduParse::parseMovieInfoByContent($strViewCode, $p_coding, $p_collect_type);
+//		var_dump($info);
 		echo "<tr><td colspan=\"2\">在获取内容页时success ：".$strlink." / '.$strListUrl.'</br> </TD></TR>";
 		//节目名称，来自列表或者来自内容页 
 		if ($p_titletype ==1) {
@@ -581,13 +587,14 @@ function cjBaiduView($strlink,$num){
 				
 			$m_area = $areacode;
 			$m_languageid = $languagecode;
-			
+			$piccode="";
 			foreach ($weburl as $weburlitem){
 				$p_playtypebaiduweb = $weburlitem['site_name'];
 				$baiduwebUrls=$weburlitem['episodes'];
 //				var_dump($p_playtypebaiduweb);
 //				var_dump('----------------');
 //				var_dump($weburlitem);
+                 
 				$movieid = updateVod($baiduwebUrls,$p_id,$titlecode,$piccode,$typecode,$areacode,$strlink,$starringcode,$directedcode,$timecode,$p_playtypebaiduweb,$contentcode,$m_typeid,$lzcode,$languagecode,$remarkscode);
 			}
 		
