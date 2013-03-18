@@ -40,8 +40,8 @@ function IDInflow()
 	global $db;
 	$ids = be("arr","m_id");
 	if (!isN($ids)){
-		$count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_id in (".$ids.") and m_typeid>0 and m_name IS NOT NULL AND m_name != ''");
-		$sql="select * from {pre}cj_vod where m_id in (".$ids.") and m_typeid>0 and m_name IS NOT NULL AND m_name != ''";
+		$count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_id in (".$ids.") and m_typeid>0 and m_name IS NOT NULL AND m_name != ''  and m_playfrom not in ('tudou','kankan','cntv','wasu')");
+		$sql="select * from {pre}cj_vod where m_id in (".$ids.") and m_typeid>0 and m_name IS NOT NULL AND m_name != ''  and m_playfrom not in ('tudou','kankan','cntv','wasu')";
 		MovieInflow($sql,$count);
 	}
 	else{
@@ -52,16 +52,16 @@ function IDInflow()
 function AllInflow()
 {
 	global $db;
-    $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != ''");
-	$sql="select * from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != ''";
+    $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != ''  and m_playfrom not in ('tudou','kankan','cntv','wasu')");
+	$sql="select * from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != '' and m_playfrom not in ('tudou','kankan','cntv','wasu')";
 	MovieInflow($sql,$count);
 }
 
 function noInflow()
 {
 	global $db;
-    $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_zt=0 and m_name IS NOT NULL AND m_name != '' and m_typeid>0");
-	$sql="select * from {pre}cj_vod where m_zt=0 and m_name IS NOT NULL AND m_name != '' and m_typeid>0";
+    $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_zt=0 and m_name IS NOT NULL AND m_name != '' and m_typeid>0  and m_playfrom not in ('tudou','kankan','cntv','wasu')");
+	$sql="select * from {pre}cj_vod where m_zt=0 and m_name IS NOT NULL AND m_name != '' and m_typeid>0  and m_playfrom not in ('tudou','kankan','cntv','wasu')";
 	MovieInflow($sql,$count);
 }
 
@@ -75,7 +75,7 @@ function AllInflowProject()
 	$from= be("get","playfrom");
 	$project = be("get","cj_vod_projects");
 	
-	$where =" ";
+	$where =" and  m_playfrom not in ('tudou','kankan','cntv','wasu') ";
 	if ($keyword != "") {
 		$where = $where . " and m_name like '%" . $keyword . "%' ";
 	}
@@ -99,7 +99,7 @@ function noInflowProject()
 	$from= be("get","playfrom");
 	$project = be("get","cj_vod_projects");
 	
-	$where =" ";
+	$where ="  and m_playfrom not in ('tudou','kankan','cntv','wasu')  ";
 	if ($keyword != "") {
 		$where = $where . " and m_name like '%" . $keyword . "%' ";
 	}
@@ -386,11 +386,12 @@ function main()
 	$project = be("get","cj_vod_projects");
 	$zt = be("get","zt");
 	
-	$sql="Select a.*,b.p_name as p_name from {pre}cj_vod a,{pre}cj_vod_projects b where a.m_pid=b.p_id";
+	$sql="Select a.*,b.p_name as p_name from {pre}cj_vod a,{pre}cj_vod_projects b where a.m_pid=b.p_id and m_playfrom not in ('tudou','kankan','cntv','wasu') ";
 	if ($zt != "") {
 		$sql = $sql . " and m_zt = " . $zt;
 	}
 	if ($keyword != "") {
+		$keyword= trim($keyword);
 		$sql = $sql . " and m_name like '%" . $keyword . "%' ";
 	}
 	if ($project!= "") {
@@ -401,7 +402,7 @@ function main()
 		$sql = $sql . " and a.m_playfrom ='" . $from."' ";
 	}
 	
-	$sql = $sql . " order by m_zt asc,m_name desc, m_addtime desc " ;
+	$sql = $sql . " order by  m_addtime desc, m_zt asc,m_name desc " ;
 	
 	$rscount = $db->query($sql);
 	$nums= $db -> num_rows($rscount);//总记录数
@@ -478,7 +479,7 @@ $(document).ready(function(){
 		<td>
 		<form action="collect_vod.php" method="get" > 
 			<strong>搜索影片：</strong>
-			<input id=keyword size=40 name=keyword>
+			<input id=keyword size=40 name=keyword value="<?php echo $keyword;?>">
 			
 			<select id="playfrom" name=playfrom>
 	<option value="">视频播放器</option>
@@ -637,7 +638,12 @@ function MovieInflow($sql_collect,$MovieNumW)
 	
 	
 	while ($row = $db ->fetch_array($rs))
-	{
+	{    if(!(isset($row["m_playfrom"]) && !is_null($row["m_playfrom"]) && strlen(trim($row["m_playfrom"]))>0) ){
+		    continue;
+	      }
+	    if(isset($row["m_playfrom"]) && !is_null($row["m_playfrom"]) && ($row["m_playfrom"] ==='cntv' || $row["m_playfrom"] ==='wasu' || $row["m_playfrom"] ==='kankan' || $row["m_playfrom"] ==='tudou' || $row["m_playfrom"] ==='' )){
+		    continue;
+	     }
 		$flag=false;
 		$title = $row["m_name"];
 		$d_type = $row["m_typeid"];
@@ -649,6 +655,11 @@ function MovieInflow($sql_collect,$MovieNumW)
 		$strSet="";
 		$sql = "SELECT * FROM {pre}vod WHERE d_name = '".$title."' and d_type = '".$d_type."' ";
 	    $rowvod = $db->getRow($sql);
+	    if(!isN($rowvod["d_status"]) && ( $rowvod["d_status"]===1 || $rowvod["d_status"] ==='1') ){
+	    	var_dump($title." is locked");
+	    	continue;
+	    }
+	    
 	    //插入新数据开始
 		if ( isN($rowvod["d_id"]) || be("post","CCTV")=="1") {
 			$flag=true;
@@ -685,7 +696,7 @@ function MovieInflow($sql_collect,$MovieNumW)
 		}
 		//插入新数据结束
 		else{  //同名不处理， 如果是电影也不更新
-			if( be("post","CCTV")=="3" || $d_type==='1' ||$d_type ==1){
+			if( be("post","CCTV")=="3"  || $d_type==='1' ||$d_type ==1){			
 				//var_dump("dd");
 				continue;
 			}
