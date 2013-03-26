@@ -72,13 +72,14 @@ function save()
     $d_score = be("post", "d_score"); $d_playurl = be("post", "d_playurl");
     $d_downurl = be("post", "d_downurl"); $d_scorecount = be("post", "d_scorecount");
     $d_letter = be("post", "d_letter"); 
-    $d_type_name= be("post", "d_type_name");
+    $d_type_name= be("arr", "d_type_name");
     $d_pic_ipad= be("post", "d_pic_ipad");
     $can_play_device= be("post", "can_play_device");
     
     $can_search_device=be("arr","can_search_device");
     
     $d_status= be("post", "d_status");
+    $duraning= be("post", "duraning");
     $d_video_desc_url= be("post", "d_video_desc_url");
     
     $d_play_check= be("post", "d_play_check");
@@ -145,12 +146,12 @@ function save()
         echo "名称和拼音名称中: 不能出现英文输入状态下的 * : ? \" < > | \ 等特殊符号";exit;
     }
 	
-    if ($flag == "edit") {
-        $db->Update ("{pre}vod", array("d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_play_check","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type","d_letter", "d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks","d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_hide", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_play_check,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type, $d_letter, $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits ,$d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_hide, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver), "d_id=" . $d_id);
+    if ($flag == "edit") { 
+        $db->Update ("{pre}vod", array("duraning","d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_play_check","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type","d_letter", "d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks","d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_hide", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($duraning,$d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_play_check,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type, $d_letter, $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits ,$d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_hide, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver), "d_id=" . $d_id);
     }
     else{
         $backurl = "admin_vod.php?action=add";
-        $db->Add ("{pre}vod", array("d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type", "d_letter","d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks", "d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_addtime", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type,$d_letter,  $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits , $d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_addtime, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver));
+        $db->Add ("{pre}vod", array("duraning","d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type", "d_letter","d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks", "d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_addtime", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($duraning,$d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type,$d_letter,  $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits , $d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_addtime, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver));
     }
     
     echo "保存完毕";
@@ -676,7 +677,7 @@ global $db,$action,$template,$cache;
 				 	echo "<tr><td colspan=\"2\"></TD>找不到资源 ：'".$name."'</TR></br>";			
 				 }
 		    }
-		    updateCommentCount();
+		   //
 		}
 		unset($rs);
 	}	
@@ -698,6 +699,8 @@ function main()
     $spic = be("all", "spic");    $hide = be("all", "hide"); $d_status = be("all", "d_status");
     $douban_score = be("all", "douban_score");
     $ipadpic = be("all", "ipadpic");
+    $d_douban_id = be("all", "d_douban_id");
+     $can_search_device = be("all", "can_search_device");
     if(!isNum($level)) { $level = 0;} else { $level = intval($level);}
     if(!isNum($sstate)) { $sstate = 0;} else { $sstate = intval($sstate);}
     if(!isNum($stype)) { $stype = 0;} else { $stype = intval($stype);}
@@ -709,9 +712,10 @@ function main()
     if(!isNum($douban_score)) { $douban_score=0;} else { $douban_score = intval($douban_score);}
     if(!isNum($repeatlen)) { $repeatlen = 0;}
     if(!isNum($d_status)) { $d_status = -1;}else { $d_status = intval($d_status);}
+    if(isNum($d_douban_id)) {  $d_douban_id = intval($d_douban_id);}
 	if (!isNum($pagenum)){ $pagenum = 1;} else { $pagenum = intval($pagenum);}
 	if ($pagenum < 1) { $pagenum = 1; }
-    
+  
     $where = " d_type in (1,2,3,131) ";
     $keyword_col = be("all", "keyword_col");
     if (!isN($keyword)) {
@@ -747,6 +751,14 @@ function main()
     	$where .= " AND d_hide=".$hide ." ";
     }
     
+    if($d_douban_id ==-1){
+    	$where .= " AND d_douban_id=".$d_douban_id ." ";
+    }else if($d_douban_id ==1){
+    	$where .= " AND d_douban_id >0 ";
+    }else if($d_douban_id ==2){
+    	$where .= " AND d_douban_id =0 ";
+    }
+    
     if($d_status!=-1){
     	$where .= " AND d_status=".$d_status ." ";
     }
@@ -763,6 +775,17 @@ function main()
     }else {
     	$douban_scoreT="none";
     }
+    
+   if(!isN($can_search_device)){
+//    	if($can_search_device ==='TV'){
+//    		$where .= " AND can_search_device like '%TV%' ";
+//    	}else {
+//    		$where .= " AND (can_search_device like '".$can_search_device."' or can_search_device is null or can_search_device ='' ) ";
+//    	}
+    	$where .= " AND (can_search_device like '".$can_search_device."' or can_search_device is null or can_search_device ='' ) ";
+    	
+    }
+    
     if ($repeat == "ok"){
         $repeatSearch = " d_name ";
         if($repeatlen>0){
@@ -772,6 +795,8 @@ function main()
         $where .= " AND `{pre}vod`.`d_name`=`t2`.`d_name1` ";
         if(isN($order)){ $order= "d_name,d_addtime"; }
     }
+    
+    
     
  $douban_comment = be("all", "douban_comment");
     if(!isNum($douban_comment)) { $douban_comment=0;} else { $douban_comment = intval($douban_comment  );}
@@ -915,9 +940,11 @@ function filter(){
 	var douban_comment =$("#douban_comment").val();
 	var select_videourl_play=$("#select_videourl_play").val();
 	var keyword=$("#keyword").val();	
-	var d_status=$("#d_status").val();
+	var d_status=$("#d_status").val();	
+	var d_douban_id=$("#d_douban_id").val();
 	var keyword_col=$("#keyword_col").val();
-	var url = "admin_vod.php?keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&keyword="+encodeURI(keyword)+"&stype="+stype+"&topic="+topic+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic; //ipadpic
+	var can_search_device=$("#can_search_device").val();
+	var url = "admin_vod.php?can_search_device="+can_search_device+"&d_douban_id="+d_douban_id+"&keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&keyword="+encodeURI(keyword)+"&stype="+stype+"&topic="+topic+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic; //ipadpic
 	window.location.href=url;
 }
 
@@ -940,8 +967,10 @@ function doubans(){
 	var select_videourl_play=$("#select_videourl_play").val();
 	var keyword=$("#keyword").val();	
 	var d_status=$("#d_status").val();
-	var keyword_col=$("#keyword_col").val();
-	var url = "admin_vod.php?keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubans&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
+	var keyword_col=$("#keyword_col").val();	
+	var d_douban_id=$("#d_douban_id").val();
+	var can_search_device=$("#can_search_device").val();
+	var url = "admin_vod.php?can_search_device="+can_search_device+"&d_douban_id="+d_douban_id+"&keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubans&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
 	window.location.href=url;
 }
 
@@ -964,8 +993,10 @@ function doubansComment(){
 	var keyword=$("#keyword").val();
 	var douban_comment =$("#douban_comment").val();	
 	var d_status=$("#d_status").val();
-	var keyword_col=$("#keyword_col").val();
-	var url = "admin_vod.php?keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubansComment&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
+	var keyword_col=$("#keyword_col").val();	
+	var d_douban_id=$("#d_douban_id").val();
+	var can_search_device=$("#can_search_device").val();
+	var url = "admin_vod.php?can_search_device="+can_search_device+"&d_douban_id="+d_douban_id+"&keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubansComment&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
 	window.location.href=url;
 }
 
@@ -988,8 +1019,10 @@ function doubanThumbs(){
 	var keyword=$("#keyword").val();
 	var douban_comment =$("#douban_comment").val();	
 	var d_status=$("#d_status").val();
-	var keyword_col=$("#keyword_col").val();
-	var url = "admin_vod.php?keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubanThumbs&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
+	var keyword_col=$("#keyword_col").val();	
+	var d_douban_id=$("#d_douban_id").val();
+	var can_search_device=$("#can_search_device").val();
+	var url = "admin_vod.php?can_search_device="+can_search_device+"&d_douban_id="+d_douban_id+"&keyword_col="+keyword_col+"&d_status="+d_status+"&sort="+sort+"&select_videourl_play="+select_videourl_play+"&douban_comment="+douban_comment+"&action=doubanThumbs&keyword="+encodeURI(keyword)+"&select_weburl="+select_weburl+"&select_videourl="+select_videourl+"&stype="+stype+"&topic="+topic+"&level="+level+"&order="+order+"&sserver="+sserver+"&sstate="+state+"&from="+from+"&spic="+spic+"&hide="+hide+"&douban_score="+douban_score+"&ipadpic="+ipadpic;
 	window.location.href=url;
 }
 
@@ -1156,6 +1189,23 @@ function sendWeiboText(){
 	<option value="0" <?php if ($d_status==0){ echo "selected";} ?>>未审核</option>
 	<option value="1" <?php if ($d_status==1){ echo "selected";} ?>>审核并锁定</option>
 	</select>
+	
+	
+	<select id="d_douban_id" name="d_douban_id">
+	<option value="0">能否在豆瓣上找到</option>
+	<option value="-1" <?php if ($d_douban_id==-1){ echo "selected";} ?>>不能</option>
+	<option value="1" <?php if ($d_douban_id==1){ echo "selected";} ?>>能找到</option>
+	<option value="2" <?php if ($d_douban_id==2){ echo "selected";} ?>>不确定，未搜索</option>
+	</select>
+	 <select   id="can_search_device" name="can_search_device">
+	    <option value="" >投放设备</option>
+		<option value="TV" <?php if ($can_search_device==='TV'){ echo "selected";} ?>>TV版</option>
+		<option value="iPad" <?php if ($can_search_device==='iPad'){ echo "selected";} ?>>iPad版</option>
+		<option value="iphone" <?php if ($can_search_device==='iphone'){ echo "selected";} ?>>iphone版</option>
+		<option value="apad" <?php if ($can_search_device==='apad'){ echo "selected";} ?>>Android-Pad版</option>
+		<option value="aphone" <?php if ($can_search_device==='aphone'){ echo "selected";} ?>>Android-Phone版</option>
+		<option value="web" <?php if ($can_search_device==='web'){ echo "selected";} ?>>网站版</option>
+	</select> 
 	
 	</td>
 	</tr>
@@ -1340,7 +1390,7 @@ function sendWeiboText(){
 	</tr>
 	<tr>
 	<td align="center" colspan="12">
-	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod.php?page={p}&keyword=" . urlencode($keyword) . "&d_status=".$d_status."&keyword_col=".$keyword_col."&sort=" . $sort . "&select_videourl_play=" . $select_videourl_play . "&topic=" . $topic . "&level=".$level."&order=".$order ."&stype=" . $stype ."&sserver=" . $sserver ."&sstate=".$sstate."&repeat=".$repeat."&repeatlen=".$repeatlen."&from=".$from."&spic=".$spic."&hide=".$hide."&douban_comment=".$douban_comment."&douban_score=".$douban_score."&select_weburl=".$select_weburl."&select_videourl=".$select_videourl."&ipadpic=".$ipadpic)?>   //
+	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod.php?page={p}&can_search_device=" . $can_search_device . "&d_douban_id=" . $d_douban_id . "&keyword=" . urlencode($keyword) . "&d_status=".$d_status."&keyword_col=".$keyword_col."&sort=" . $sort . "&select_videourl_play=" . $select_videourl_play . "&topic=" . $topic . "&level=".$level."&order=".$order ."&stype=" . $stype ."&sserver=" . $sserver ."&sstate=".$sstate."&repeat=".$repeat."&repeatlen=".$repeatlen."&from=".$from."&spic=".$spic."&hide=".$hide."&douban_comment=".$douban_comment."&douban_score=".$douban_score."&select_weburl=".$select_weburl."&select_videourl=".$select_videourl."&ipadpic=".$ipadpic)?>   //
 	</td>
 	</tr>
 </table>
@@ -1427,10 +1477,10 @@ global $db,$action;
 			errmsg ("系统信息","错误没有找到该数据");
 		}else {
 			$name=$row["d_name"];$area=$row["d_area"]; $year=$row["d_year"];
-			 unset($row);
 			 $scoreDouban = new DouBanParseScore();
 			 $doubanid=$row['d_douban_id'];
 			 $flag=true;
+			 unset($row);
 			 if(!isN($doubanid) && $doubanid !==0 && $doubanid !=='0' ){
 			   $flag=false;
 		       $pic= $scoreDouban->getPicById($doubanid,7/5);
@@ -1476,9 +1526,9 @@ global $db,$action;
 			errmsg ("系统信息","错误没有找到该数据");
 		}else {
 			$name=$row["d_name"];$area=$row["d_area"]; $year=$row["d_year"];
-			 unset($row);
 			 $scoreDouban = new DouBanParseScore();
 		     $doubanid=$row['d_douban_id'];
+			 unset($row);
 			 $flag=true;
 			 if(!isN($doubanid) && $doubanid !==0 && $doubanid !=='0' ){
 			   $flag=false;
@@ -1519,9 +1569,9 @@ global $db,$action;
 		}else {
 			$name=$row["d_name"];$area=$row["d_area"]; $year=$row["d_year"];
 			$type=$row["d_type"];
-			 $scoreDouban = new DouBanParseScore();
-             unset($row);
+			 $scoreDouban = new DouBanParseScore();            
 		     $doubanid=$row['d_douban_id'];
+		       unset($row);
 			 $flag=true;
 			 if(!isN($doubanid) && $doubanid !==0 && $doubanid !=='0' ){
 			   $flag=false;
@@ -1565,7 +1615,6 @@ global $db,$action;
 			 	}
 //			 	$db->Updatiss ("{pre}vod", array("d_score"), array($score), "d_id=" . $d_id);	
 //			 	showMsg('采集成功',$backurl);
-                updateCommentCount();
 	         	echo '<script language="javascript">alert("采集评论成功");location.href ="'.$backurl.'";</script>';		 	
 			 }else {			 	
 			 	echo '<script language="javascript">alert("在豆瓣上找不到评论 ");location.href ="'.$backurl.'";</script>';	
@@ -1636,7 +1685,8 @@ function info()
 			$d_hitstime=$row["d_hitstime"]; $d_subname=$row["d_subname"]; $d_playurl=$row["d_playurl"]; $d_downurl=$row["d_downurl"];
 			$d_playfrom=$row["d_playfrom"]; $d_playserver=$row["d_playserver"]; $d_letter=$row["d_letter"];$d_type_name=$row["d_type_name"];
 			$d_pic_ipad=$row["d_pic_ipad"];  
-			$d_video_desc_url=$row["d_video_desc_url"];  
+			$d_video_desc_url=$row["d_video_desc_url"]; 
+			$duraning=$row["duraning"];   
 			$d_play_check=$row["d_play_check"];
 			$can_play_device=$row["can_play_device"];
 			$d_status=$row["d_status"];
@@ -1763,17 +1813,76 @@ $(document).ready(function(){
 	});
 });
 
-function collect(weburls,playerfrom){
-	var urls=$("#"+weburls).val();
-	var playerfrom=$("#"+playerfrom).val();
-//	alert(urls);
-	$.post("admin_vod_getVideoUrls.php",{"weburls":urls,"playerfrom":playerfrom}, function(obj) {
-		//oncomplete(obj);
-		$("#tip").val(obj);
-		$('#win1').window('open');
-	});
+	function collect(weburls,playerfrom){
+		var urls=$("#"+weburls).val();
+		var playerfrom=$("#"+playerfrom).val();
+	//	alert(urls);
+		$.post("admin_vod_getVideoUrls.php",{"weburls":urls,"playerfrom":playerfrom}, function(obj) {
+			//oncomplete(obj);
+			$("#tip").val(obj);
+			$('#win1').window('open');
+		});
+		
+	};
+
+	function changeArea(prod_type,area,typename){
+//	  alert(prod_type);alert(area);
+//	  var areaArray=
+	  var content='<option value="0">请选择地区</option>';
+	  if(prod_type =='1'){
+		  areaArray='内地,香港,台湾,美国,日本,韩国,欧洲,东南亚,其他'.split(',');
+	  }
+	  if(prod_type =='2'){
+		  areaArray='内地,香港,台湾,韩国,美国,日本,其他'.split(',');
+	  }
+	  if(prod_type =='3'){
+		  areaArray='港台,内地,日韩,欧美,其他'.split(',');
+	  }
+	  if(prod_type =='131'){
+		  areaArray='日本,欧美,国产,其他'.split(',');
+	  }
+	  var obj=$("#d_area");
+	  //alert(obj[0].innerHTML);
+	  for(var i=0;i<areaArray.length;i++){
+          if(area==areaArray[i]){
+        	  content=content+'<option value="'+area+'" selected="">'+area+'</option>';
+          }else {
+        	  content=content+'<option value="'+areaArray[i]+'" >'+areaArray[i]+'</option>';
+          }
+       }
+	  obj[0].innerHTML=content;
+
+	//<input type="checkbox" name="can_search_device[]" value="TV" "checked" />TV版
+	     var typenameContent='';
+	     if(prod_type =='1'){
+	    	 typeNameArray='恐怖,惊悚,悬疑,伦理,爱情,剧情,西区,科幻,动作,战争,冒险,音乐,动画,运动,奇幻,传记,古装,犯罪,武侠,其他'.split(',');
+		  }
+		  if(prod_type =='2'){
+			  typeNameArray='剧情,情感,青春偶像,家庭伦理,喜剧,犯罪,战争,古装,动作,奇幻,经典,乡村,商战,历史,情景,TVB,其他'.split(',');
+		  }
+		  if(prod_type =='3'){
+			  typeNameArray='综艺,选秀,情感,访谈,播报,旅游,音乐,美食,纪实,曲艺,生活,游戏互动,财经,求职,其他'.split(',');
+		  }
+		  if(prod_type =='131'){
+			  typeNameArray='情感,科幻,热血,推理,搞笑,冒险,萝莉,校园,动作,机战,运动,耽美,战争,少年,少女,社会,原创,亲子,益智,励志,百合,其他'.split(',');
+		  }
+		  var typeNameobj=$("#d_type_name_span");
+		  
+		  for(var i=0;i<typeNameArray.length;i++){			 
+			  var index =typename.indexOf(typeNameArray[i]);
+			//  alert(typename + '==='+typeNameArray[i] +' ==' +index);
+	          if( index >= 0 ){
+		        //  alert('hear');
+	        	  typenameContent=typenameContent+'<input type="checkbox" name="d_type_name[]" value="'+typeNameArray[i]+'" checked />'+typeNameArray[i];
+	          }else {
+	        	  typenameContent=typenameContent+'<input type="checkbox" name="d_type_name[]" value="'+typeNameArray[i]+'"  />'+typeNameArray[i];
+	          }
+	       }
+		  typeNameobj[0].innerHTML=typenameContent;
+	}
+
 	
-};
+     
 </script>
 
 <form name="form1" id="form1" method="post" action="?action=save">
@@ -1784,7 +1893,7 @@ function collect(weburls,playerfrom){
 	<tr>
 	<td width="10%">参数：</td>
 	<td>
-	&nbsp;<select id="d_type" name="d_type">
+	&nbsp;<select id="d_type" name="d_type" onchange="changeArea(this.options[this.selectedIndex].value,'<?php echo $d_area;?>','<?php echo $d_type_name?>');">
     <option value="">请选择栏目</option>
 	<?php echo makeSelectAll("{pre}vod_type","t_id","t_name","t_pid","t_sort",0,"","&nbsp;|&nbsp;&nbsp;",$d_type)?>
 	</select>
@@ -1806,7 +1915,7 @@ function collect(weburls,playerfrom){
 	</select>
 	&nbsp;<select id="d_area" name="d_area">
 	<option value="0">请选择地区</option>
-	<?php echo makeSelectAreaLang("area",$d_area)?>
+	  <?php echo makeSelectAreaLang("area",$d_area)?>
     </select>
 	&nbsp;
     <select id="d_language" name="d_language">
@@ -1847,12 +1956,12 @@ function collect(weburls,playerfrom){
 	&nbsp;<input id="d_enname" name="d_enname" type="text" size="40" value="<?php echo $d_enname?>">
 	&nbsp;备注：<input id="d_remarks" name="d_remarks" type="text" size="40" value="<?php echo $d_remarks?>">
 	&nbsp;连载信息：<input id="d_state" name="d_state" type="text" size="4" value="<?php echo $d_state?>">
-	&nbsp;&nbsp;&nbsp;播放设备:
-	<select id="can_play_device" name="can_play_device">
-	<option value="0" <?php if ($can_play_device==0){ echo "selected";} ?>>所有设备</option>
-	<option value="1" <?php if ($can_play_device==1){ echo "selected";} ?>>只能ipad/iphone播放</option>
-	<option value="2" <?php if ($can_play_device==2){ echo "selected";} ?>>只能Android播放</option>
-	</select>
+<!--	&nbsp;&nbsp;&nbsp;播放设备:-->
+<!--	<select id="can_play_device" name="can_play_device">-->
+<!--	<option value="0" <?php if ($can_play_device==0){ echo "selected";} ?>>所有设备</option>-->
+<!--	<option value="1" <?php if ($can_play_device==1){ echo "selected";} ?>>只能ipad/iphone播放</option>-->
+<!--	<option value="2" <?php if ($can_play_device==2){ echo "selected";} ?>>只能Android播放</option>-->
+<!--	</select>-->
 	</td>
 	</tr>
 	<tr>
@@ -1861,12 +1970,6 @@ function collect(weburls,playerfrom){
 	&nbsp;导演：<input id="d_directed" name="d_directed" type="text" size="40" value="<?php echo $d_directed?>">
 	&nbsp;上映日期：<input id="d_year" name="d_year" type="text" value="<?php echo $d_year?>" size="10"> 
 	&nbsp;豆瓣ID：<input id="d_douban_id" name="d_douban_id" type="text" value="<?php echo $d_douban_id?>" size="10">  
-	</tr>
-	<tr> 
-    <td>图片：</td>
-    <td>&nbsp;<input id="pic" name="pic" type="text" size="40" value="<?php echo $d_pic?>">&nbsp;<iframe src="editor/uploadshow.php?action=vod" scrolling="no" topmargin="0" width="320" height="24" marginwidth="0" marginheight="0" frameborder="0" align="center"></iframe>
-    &nbsp;类别：<input id="d_type_name" name="d_type_name" type="text" size="40" value="<?php echo $d_type_name?>">
-    </td>
 	</tr>
 	
 	<tr> 
@@ -1880,23 +1983,41 @@ function collect(weburls,playerfrom){
      <?php
       
         if(isN($can_search_device)){
-        	$can_search_device="Pad,Mobile,Web";
+        	$can_search_device="iPad,iphone,web,apad,TV,aphone";
         }
-        
         
      ?>
     <input type="checkbox" name="can_search_device[]" value="TV" <?php if(strpos($can_search_device, "TV") !==false){echo "checked";}?> />TV版
-    <input type="checkbox" name="can_search_device[]" value="Pad" <?php if(strpos($can_search_device, "Pad") !==false){echo "checked";}?> />Pad版
-    <input type="checkbox" name="can_search_device[]" value="Mobile" <?php if(strpos($can_search_device, "Mobile") !==false){echo "checked";}?>/>Mobile版
-    <input type="checkbox" name="can_search_device[]" value="Web" <?php if(strpos($can_search_device, "Web") !==false){echo "checked";}?>/>网站版
+    <input type="checkbox" name="can_search_device[]" value="iPad" <?php if(strpos($can_search_device, "iPad") !==false){echo "checked";}?> />iPad版
+    <input type="checkbox" name="can_search_device[]" value="iphone" <?php if(strpos($can_search_device, "iphone") !==false){echo "checked";}?>/>iphone版
+    <input type="checkbox" name="can_search_device[]" value="apad" <?php if(strpos($can_search_device, "apad") !==false){echo "checked";}?> />Android-Pad版
+    <input type="checkbox" name="can_search_device[]" value="aphone" <?php if(strpos($can_search_device, "aphone") !==false){echo "checked";}?>/>Android-phone版
+    <input type="checkbox" name="can_search_device[]" value="web" <?php if(strpos($can_search_device, "web") !==false){echo "checked";}?>/>网站版
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red"><strong>播放时长：</strong></font>
+      <input id="duraning" name="duraning" type="text" value="<?php echo $duraning?>" size="10">  <font color="red"><strong>（格式为：分钟：秒，例如：122:00）</strong></font>
+    </td>
+	</tr>
+	
+	
+	<tr> 
+    <td>类别：</td>
+    <td>&nbsp;<span id="d_type_name_span"><?php echo $d_type_name?></span>
+    </td>
+	</tr>
+	
+	<tr> 
+    <td>图片：</td>
+    <td>&nbsp;<input id="pic" name="pic" type="text" size="50" value="<?php echo $d_pic?>">&nbsp;<iframe src="editor/uploadshow.php?action=vod" scrolling="no" topmargin="0" width="320" height="24" marginwidth="0" marginheight="0" frameborder="0" align="center"></iframe>
     </td>
 	</tr>
 	
 	
 	
+	
 	<tr> 
     <td>图片 For IPad：</td>
-    <td>&nbsp;<input id="d_pic_ipad" name="d_pic_ipad" type="text" size="40" value="<?php echo $d_pic_ipad?>">&nbsp;<iframe src="editor/uploadshow.php?action=vod" scrolling="no" topmargin="0" width="320" height="24" marginwidth="0" marginheight="0" frameborder="0" align="center"></iframe>
+    <td>&nbsp;<input id="d_pic_ipad" name="d_pic_ipad" type="text" size="60" value="<?php echo $d_pic_ipad?>">&nbsp;<iframe src="editor/uploadshow.php?action=vod" scrolling="no" topmargin="0" width="320" height="24" marginwidth="0" marginheight="0" frameborder="0" align="center"></iframe>
     <br /> <font color="red">备注：对于综艺悦榜里的视频，需要两种大图片，他们以逗号分开，格式为：综艺悦榜列表图片地址,综艺详细页面图片地址</font>
     </td>
 	</tr>
@@ -2074,6 +2195,11 @@ function collect(weburls,playerfrom){
     </tr>
 </table>
 </form>
+
+
+<script language="javascript">
+ changeArea('<?php echo $d_type;?>','<?php echo $d_area;?>','<?php echo $d_type_name?>');
+</script>
 <?php
 if($playnum==0){
 ?>
