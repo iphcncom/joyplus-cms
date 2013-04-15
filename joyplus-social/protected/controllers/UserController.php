@@ -380,6 +380,7 @@ class UserController extends Controller
    		}
    		$page_size=Yii::app()->request->getParam("page_size");
    		$page_num=Yii::app()->request->getParam("page_num");
+   		$vodType =Yii::app()->request->getParam("vod_type"); 
    		if(!(isset($page_size) && is_numeric($page_size))){
    			$page_size=100;
    			$page_num=1;
@@ -387,7 +388,11 @@ class UserController extends Controller
    			$page_num=1;
    		}
    		try {
-   			$histories=PlayHistory::model()->getUserHistory($userid,$page_size,$page_size*($page_num-1));
+   			if($vodType === null || $vodType === ''){   			  
+   			  $histories=PlayHistory::model()->getUserHistory($userid,$page_size,$page_size*($page_num-1));
+   			}else {
+   			  $histories=PlayHistory::model()->getUserHistoryVodType($userid,$page_size,$page_size*($page_num-1),$vodType);
+   			}
    			if(isset($histories) && !is_null($histories) && is_array($histories)){
    				IjoyPlusServiceUtils::exportEntity(array('histories'=>$histories));
    			}else {
@@ -397,6 +402,141 @@ class UserController extends Controller
    			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
    		}
 	}
+	
+	function actionClearPlayHistories(){
+
+		header('Content-type: application/json');
+		if(!Yii::app()->request->isPostRequest){
+			IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+			return ;
+		}
+
+		if(!IjoyPlusServiceUtils::validateAPPKey()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);
+			return ;
+		}
+		
+		if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);
+			return ;
+		}
+			
+		try{
+			$userid=Yii::app()->user->id;
+   		    $vodType =Yii::app()->request->getParam("vod_type");		    
+   			if($vodType === null || $vodType === ''){   			  
+   			  PlayHistory::model()->delUserHisotry($userid);
+   			}else {
+   			  PlayHistory::model()->delUserHisotryVodType($userid,$vodType);
+   			}
+			IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
+		} catch (Exception $e) {
+			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+		}
+	}
+    function actionClearFavorities(){
+
+		header('Content-type: application/json');
+		if(!Yii::app()->request->isPostRequest){
+			IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+			return ;
+		}
+
+		if(!IjoyPlusServiceUtils::validateAPPKey()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);
+			return ;
+		}
+		
+		if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);
+			return ;
+		}
+	   $vodType =Yii::app()->request->getParam("vod_type");
+	   $userid=Yii::app()->user->id;	
+       if($vodType === null || $vodType === ''){   			  
+   		   $lists= Yii::app()->db->createCommand()
+				->select('content_id')
+				->from('tbl_my_dynamic ')
+				->where('author_id=:author_id and status=:status and dynamic_type=:type', array(
+					    ':author_id'=>$userid,
+					    ':status'=>Constants::OBJECT_APPROVAL,
+		                ':type'=>Constants::DYNAMIC_TYPE_FAVORITY,
+				))->queryAll();
+   		}else {
+   		   $lists= Yii::app()->db->createCommand()
+				->select('content_id')
+				->from('tbl_my_dynamic ')
+				->where('author_id=:author_id and status=:status and dynamic_type=:type and content_type='.$vodType, array(
+					    ':author_id'=>$userid,
+					    ':status'=>Constants::OBJECT_APPROVAL,
+		                ':type'=>Constants::DYNAMIC_TYPE_FAVORITY,
+				))->queryAll();
+   		}
+   		$count=0;
+   		if(is_array($lists) && count($lists) >0){
+   		  $count=count($lists);
+   		}
+   		
+   		if($count>0){
+   			$contentIds= array();
+   			foreach ($lists as $list){
+   			  $contentIds[]=($list['content_id']);
+   			}
+   			$contentIds=implode(",", $contentIds);
+			$transaction = Yii::app()->db->beginTransaction();			
+			try{
+			    if($vodType === null || $vodType === ''){   
+			         Yii::app()->db->createCommand('update tbl_my_dynamic set status='.Constants::OBJECT_DELETE.' where type='.Constants::DYNAMIC_TYPE_FAVORITY.' and author_id='.$userid .' and content_id in ('.$contentIds.') ')->execute();
+			    }else {
+				     Yii::app()->db->createCommand('update tbl_my_dynamic set status='.Constants::OBJECT_DELETE.' where type='.Constants::DYNAMIC_TYPE_FAVORITY.' and author_id='.$userid .' and content_id in ('.$contentIds.') and content_type='.$vodType )->execute();
+			    }
+				User::model()->updateFavorityCount($userid, 0-$count);
+	   		    Yii::app()->db->createCommand('update mac_vod set favority_user_count= case when favority_user_count>=1 then favority_user_count-1 else 0 end where d_id in ('.$contentIds.')')->execute();		    
+	   			
+	   			$transaction->commit();
+				IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
+			} catch (Exception $e) {
+				$transaction->rollback();
+				IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+		    }
+   		}
+   		IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
+	}
+	
+	
+    function actionClearPlayHistory(){
+
+		header('Content-type: application/json');
+		if(!Yii::app()->request->isPostRequest){
+			IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+			return ;
+		}
+
+		if(!IjoyPlusServiceUtils::validateAPPKey()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);
+			return ;
+		}
+		
+		if(IjoyPlusServiceUtils::validateUserID()){
+			IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);
+			return ;
+		}
+			
+		try{
+			$userid=Yii::app()->user->id;
+   		    $history_id =Yii::app()->request->getParam("history_id");
+		    if( (!isset($history_id)) || is_null($history_id)  ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}		    
+   			PlayHistory::model()->delUserSingleHisotry($userid,$history_id);
+   			
+			IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
+		} catch (Exception $e) {
+			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+		}
+	}
+		
 	
 	/**
 	 * 锟斤拷态
@@ -478,6 +618,9 @@ class UserController extends Controller
 //			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
 //		}
 	}
+	
+	
+	
 	//锟皆硷拷锟侥讹拷态
 	public function actionOwnDynamics(){		
 	    header('Content-type: application/json');
@@ -717,6 +860,7 @@ class UserController extends Controller
    		}
    		$page_size=Yii::app()->request->getParam("page_size");
    		$page_num=Yii::app()->request->getParam("page_num");
+   		$vodType =Yii::app()->request->getParam("vod_type"); 
    		if(!(isset($page_size) && is_numeric($page_size))){
    			$page_size=10;
    			$page_num=1;
@@ -725,7 +869,11 @@ class UserController extends Controller
    		}
 
    		try {
-   			$favorities=Dynamic::model()->searchUserFavorities($userid,$page_size,$page_size*($page_num-1));
+   			if($vodType === null || $vodType === ''){
+   			  $favorities=Dynamic::model()->searchUserFavorities($userid,$page_size,$page_size*($page_num-1));
+   			}else {
+   			  $favorities=Dynamic::model()->searchUserFavoritiesVodType($userid,$page_size,$page_size*($page_num-1),$vodType);
+   			}
    			if(isset($favorities) && !is_null($favorities) && is_array($favorities)){
    				IjoyPlusServiceUtils::exportEntity(array('favorities'=>$favorities));
    			}else {
@@ -787,6 +935,7 @@ class UserController extends Controller
    		}
    		$page_size=Yii::app()->request->getParam("page_size");
    		$page_num=Yii::app()->request->getParam("page_num");
+   		$vodType =Yii::app()->request->getParam("vod_type"); 
    		if(!(isset($page_size) && is_numeric($page_size))){
    			$page_size=10;
    			$page_num=1;
@@ -795,7 +944,11 @@ class UserController extends Controller
    		}
 
    		try {
-   			$favorities=Dynamic::model()->searchUserSupports($userid,$page_size,$page_size*($page_num-1));
+   			if($vodType === null || $vodType === ''){   			  
+   			   $favorities=Dynamic::model()->searchUserSupports($userid,$page_size,$page_size*($page_num-1));
+   			}else {
+   			   $favorities=Dynamic::model()->searchUserSupportsVodType($userid,$page_size,$page_size*($page_num-1),$vodType);
+   			}
    			if(isset($favorities) && !is_null($favorities) && is_array($favorities)){
    				IjoyPlusServiceUtils::exportEntity(array('support'=>$favorities));
    			}else {

@@ -1,5 +1,6 @@
 <?php
 require_once ("admin_conn.php");
+require_once ("genTopRecommendItems.php");
 chkLogin();
 
 $action = be("all","action");
@@ -24,6 +25,14 @@ function editall()
 		$db->Update ("{pre}vod_topic_items",array("flag", "disp_order"),array($t_flag,$t_sort),"id=".$id);
 	}
 	updateCacheFile();
+	$topic_id= getBody(getReferer(), 'topic_id=', '&');
+	if(isN($topic_id)){
+		$topic_id= getBodys(getReferer(), 'topic_id=');
+	}
+	
+	if(!isN($topic_id)){
+	   replaceTopRecommend($topic_id);
+	}
 	echo "修改完毕";
 }
 

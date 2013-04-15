@@ -66,16 +66,56 @@ class PlayHistory extends CActiveRecord
 		));
 	}
 	
+	public function getHisotryByShowProd($userid, $prod_id,$prod_subname){
+	   return  $this->find(array(
+			'condition'=>'author_id=:author_id and prod_id=:content_id and prod_subname=:prod_subname',
+			'params'=>array(
+			    ':author_id'=>$userid,
+			    ':content_id'=>$prod_id,
+			    ':prod_subname'=>$prod_subname,
+			 ),
+		));
+	}
+   //删除用户的播放记录 
+   public function delUserHisotry($userid){		
+	      Yii::app()->db->createCommand('update tbl_play_history set status='.Constants::OBJECT_DELETE.' where author_id='.$userid)->execute();
+	}
+	
+   //删除用户的播放记录 
+   public function delUserHisotryVodType($userid,$vodType){
+	      Yii::app()->db->createCommand('update tbl_play_history set status='.Constants::OBJECT_DELETE.' where author_id='.$userid.' and prod_type='.$vodType)->execute();
+	}
+	
+    public function delUserSingleHisotry($userid,$history_id){	 	      
+	      Yii::app()->db->createCommand('update tbl_play_history set status='.Constants::OBJECT_DELETE.' where author_id='.$userid.' and id='.$history_id)->execute();
+	}
 	
    public function getUserHistory($userid,$limit=20,$offset=0){
 		return Yii::app()->db->createCommand()
-		->select('prod_type, prod_name, prod_subname, prod_id, create_date, play_type, playback_time, video_url, duration')
-		->from('tbl_play_history')
-		->where('author_id=:author_id', array(
+		->select('a.id,a.prod_type, a.prod_name, a.prod_subname, a.prod_id, a.create_date, a.play_type, a.playback_time, a.video_url, a.duration,	a.create_date ,vod.d_pic as prod_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url  , vod.d_level as definition,vod.d_content as prod_summary, vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode  ')
+		->from('tbl_play_history as a ')
+		->join('mac_vod vod', "a.prod_id=vod.d_id")
+		->where('a.author_id=:author_id and a.status=:status', array(
 			    ':author_id'=>$userid,
-		))->order('create_date DESC')->limit($limit)->offset($offset)
+		        ':status'=>Constants::OBJECT_APPROVAL,
+		))->order('a.create_date DESC')->limit($limit)->offset($offset)
 		->queryAll();
 	}
+	
+	
+	
+   public function getUserHistoryVodType($userid,$limit=20,$offset=0,$vodType){
+		return Yii::app()->db->createCommand()
+		->select('a.id,a.prod_type, a.prod_name, a.prod_subname, a.prod_id, a.create_date, a.play_type, a.playback_time, a.video_url, a.duration,	a.create_date ,vod.d_pic as content_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_content_pic_url  , vod.d_level as definition,vod.d_content as prod_summary,  vod.d_pic_ipad as prod_pic_url,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode  ')
+		->from('tbl_play_history as a ')
+		->join('mac_vod vod', "a.prod_id=vod.d_id")
+		->where('a.author_id=:author_id and a.status=:status and a.prod_type='.$vodType, array(
+			    ':author_id'=>$userid,
+		        ':status'=>Constants::OBJECT_APPROVAL,
+		))->order('a.create_date DESC')->limit($limit)->offset($offset)
+		->queryAll();
+	}
+	
 	/**
 	 * @return array relational rules.
 	 */

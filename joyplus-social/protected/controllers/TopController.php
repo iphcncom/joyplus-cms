@@ -2,6 +2,37 @@
 
 class TopController extends Controller
 {
+	
+  function actionTVNet(){
+        header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}
+		
+		$page_size=Yii::app()->request->getParam("page_size");
+		$page_num=Yii::app()->request->getParam("page_num");
+		if(!(isset($page_size) && is_numeric($page_size))){
+			$page_size=10;
+			$page_num=1;
+		}else if(!(isset($page_num) && is_numeric($page_num))){
+			$page_num=1;
+		}
+		
+        $top_id= 4677;
+		
+		try{
+		  $lists = SearchManager::listTVNetItems($top_id,$page_size,$page_size*($page_num-1));
+		  if(isset($lists) && is_array($lists)){				
+		    IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
+		    }else {
+			  IjoyPlusServiceUtils::exportEntity(array('items'=>array()));
+			}
+		}catch (Exception $e){
+			Yii::log( CJSON::encode($e), "error");
+		  IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);	
+		}
+  }
   function actionTopItems(){
        header('Content-type: application/json');
 	    if(!IjoyPlusServiceUtils::validateAPPKey()){
@@ -23,6 +54,50 @@ class TopController extends Controller
 			IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
 			return;
 		}
+		try{
+		  $lists = SearchManager::listItems($top_id,$page_size,$page_size*($page_num-1));
+		  if(isset($lists) && is_array($lists)){				
+		    IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
+		    }else {
+			  IjoyPlusServiceUtils::exportEntity(array('items'=>array()));
+			}
+		}catch (Exception $e){
+			Yii::log( CJSON::encode($e), "error");
+		  IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);	
+		}
+	}
+	
+   function actionRecommendItems(){
+       header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}
+		
+		$page_size=Yii::app()->request->getParam("page_size");
+		$page_num=Yii::app()->request->getParam("page_num");
+		if(!(isset($page_size) && is_numeric($page_size))){
+			$page_size=10;
+			$page_num=1;
+		}else if(!(isset($page_num) && is_numeric($page_num))){
+			$page_num=1;
+		}
+		
+        $vod_type= Yii::app()->request->getParam("vod_type");
+              
+        if($vod_type === '1'){
+            $top_id='7280'; 
+        }else if($vod_type === '2'){
+            $top_id='7282'; 
+        }else if($vod_type === '131'){
+            $top_id='7284'; 
+        }
+        
+		if( (!isset($top_id)) || is_null($top_id)  ){
+			IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+			return;
+		}
+		
 		try{
 		  $lists = SearchManager::listItems($top_id,$page_size,$page_size*($page_num-1));
 		  if(isset($lists) && is_array($lists)){				
@@ -86,7 +161,12 @@ class TopController extends Controller
 			$page_num=1;
 		}
 		try{
-		  $lists = SearchManager::tops($page_size,$page_size*($page_num-1));
+		  $topic_type=Yii::app()->request->getParam("topic_type");
+		  if($topic_type === null || $topic_type ===''){
+		    $lists = SearchManager::tops($page_size,$page_size*($page_num-1));
+		  }else {
+		    $lists = SearchManager::tops_type($page_size,$page_size*($page_num-1),$topic_type);
+		  }
 		  if(isset($lists) && is_array($lists)){				
 		    IjoyPlusServiceUtils::exportEntity(array('tops'=>$lists));
 		    }else {

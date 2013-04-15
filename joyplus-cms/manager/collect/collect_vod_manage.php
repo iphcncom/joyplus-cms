@@ -1470,7 +1470,7 @@ function lastsave()
 		$p_pagebatchurl = replaceStr($p_pagebatchurl,"{ID}",$p_pagebatchid1);
 		$linkcode = getPage($p_pagebatchurl,$p_coding);
 	}
-	
+	var_dump($p_playtype);
 	if ($linkcode ==False) { 
 		errmsg ("采集提示","获取内容页失败!" );
 	    return;
@@ -1488,9 +1488,15 @@ function lastsave()
 		}
 	}
 	else{
-		$titlecode = getBody($linkcode,$p_titlestart,$p_titleend);
+		$titlecode = getBodytt($linkcode,$p_titlestart,$p_titleend);
+		
+		var_dump($titlecode);
+		
 	}
 	
+
+	$titlecode=chr($titlecode);
+	var_dump($titlecode);
 	if ($p_starringtype ==1) {
 		switch($starringarrcode)
 		{
@@ -1559,7 +1565,7 @@ function lastsave()
 		$typearr = getValueByArray($cache[0], "t_id" ,$typecode );
 		$typecode = $typearr["t_name"];
 	}
-		
+	
 	if ($p_playcodetype ==1) {
 		$playcode = getBody($linkcode,$p_playcodestart,$p_playcodeend);
 		if ($p_playlinktype >0) {

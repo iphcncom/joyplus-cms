@@ -74,7 +74,7 @@ function save()
     $d_letter = be("post", "d_letter"); 
     $d_type_name= be("arr", "d_type_name");
     $d_pic_ipad= be("post", "d_pic_ipad");
-    $can_play_device= be("post", "can_play_device");
+    $can_play_device= be("post", "can_play_device"); 
     
     $can_search_device=be("arr","can_search_device");
     
@@ -86,11 +86,19 @@ function save()
     
     
     $urlid = be("arr", "urlid"); $url = be("arr", "url"); $urlfrom = be("arr", "urlfrom"); $urlserver = be("arr", "urlserver");
+    if(strpos($urlfrom, "no")  !==false){
+    	echo 'no';
+    	return;
+    }
     $urlidsarr = explode(",",$urlid); $urlarr = explode(",",$url); $urlfromarr = explode(",",$urlfrom); $urlserverarr = explode(",",$urlserver);
     $urlarr = $_POST["url"];
     $d_douban_id= $_POST["d_douban_id"];
     
     $downurlid = be("arr", "downurlid"); $downurl = be("arr", "downurl"); $downurlfrom = be("arr", "downurlfrom");
+      if(strpos($downurlfrom, "no") !==false){
+    	echo 'no';
+    	return;
+    }
     $downurlidsarr = explode(",",$downurlid); $downurlarr = explode(",",$downurl); $downurlfromarr = explode(",",$downurlfrom);
     $downurlarr = $_POST["downurl"];
     
@@ -1027,6 +1035,7 @@ function doubanThumbs(){
 }
 
 
+
 function showpic(){
 	$.get("admin_vod.php?action=chkpic&rnd=" + Math.random(),function(obj){
 		if(Number(obj)>0){
@@ -1362,10 +1371,15 @@ function sendWeiboText(){
 	 <?php }?> 
 		
 	<a href="admin_vod.php?action=doubanPic&id=<?php echo $d_id?>">豆瓣图片</a> | <a href="admin_vod.php?action=doubanThumb&id=<?php echo $d_id?>">豆瓣缩略图</a> 
-	<?php if($loginname ==='dale' || $loginname ==='admin'  || $loginname ==='lulu' || $loginname ==='scottliyq' || $loginname ==='zhouyinlong'  ){?>
-	|
-	 <a class="thickbox" href="#TB_inline?height=200&width=400&inlineId=myOnPageContent" onclick="javascript:{prepareWeiboText('<?php echo $row["d_type"]?>','<?php echo $d_id?>','<?php echo substring($row["d_name"],20)?>');}" > 消息推送</a>	  
+	
+	<?php if($row["d_type"] !=='1' ){ ?>
+	  |<a href="#" onClick="ajaxsubmit('<?php echo $d_id;?>','subscribe_msg_list','vod');">添加到追剧列表</a>
 	<?php }?>
+	 <?php if($loginname ==='dale' || $loginname ==='admin'  || $loginname ==='lulu' || $loginname ==='scottliyq' || $loginname ==='zhouyinlong'  ){?>
+<!--	|-->
+<!--	 <a class="thickbox" href="#TB_inline?height=200&width=400&inlineId=myOnPageContent" onclick="javascript:{prepareWeiboText('<?php echo $row["d_type"]?>','<?php echo $d_id?>','<?php echo substring($row["d_name"],20)?>');}" > 消息推送</a>	  -->
+	<?php }?>
+	
 	| <A href="admin_vod.php?action=del&d_id=<?php echo $d_id?>" onClick="return confirm('确定要删除吗?');">删除</a></td>
     </tr>
 	<?php
@@ -1731,7 +1745,7 @@ $(document).ready(function(){
 			},
 			d_name:{
 				required:true,
-				maxlength:254
+				maxlength:254,
 			},
 			d_subname:{
 				maxlength:254
@@ -1804,7 +1818,12 @@ $(document).ready(function(){
 		        });
 	        }
 	        else{
-	        	location.href = $("#backurl").val();
+	           if(data.indexOf('no') >-1){ 
+	           alert("存在播放器为no，不能保存。");
+			   }else {
+				   location.href = $("#backurl").val();
+			   }
+	        	//
 	        }
 	    }
 	});
@@ -1828,34 +1847,37 @@ $(document).ready(function(){
 	function changeArea(prod_type,area,typename){
 //	  alert(prod_type);alert(area);
 //	  var areaArray=
-	  var content='<option value="0">请选择地区</option>';
+//	  var content='<option value="0">请选择地区</option>';
+      var content='';
 	  if(prod_type =='1'){
-		  areaArray='内地,香港,台湾,美国,日本,韩国,欧洲,东南亚,其他'.split(',');
+		  content='内地,香港,台湾,美国,日本,韩国,欧洲,东南亚,其他';
 	  }
 	  if(prod_type =='2'){
-		  areaArray='内地,香港,台湾,韩国,美国,日本,其他'.split(',');
+		  content='内地,香港,台湾,韩国,美国,日本,其他';
 	  }
 	  if(prod_type =='3'){
-		  areaArray='港台,内地,日韩,欧美,其他'.split(',');
+		  content='港台,内地,日韩,欧美,其他';
 	  }
 	  if(prod_type =='131'){
-		  areaArray='日本,欧美,国产,其他'.split(',');
+		  content='日本,欧美,国产,其他';
 	  }
-	  var obj=$("#d_area");
-	  //alert(obj[0].innerHTML);
-	  for(var i=0;i<areaArray.length;i++){
-          if(area==areaArray[i]){
-        	  content=content+'<option value="'+area+'" selected="">'+area+'</option>';
-          }else {
-        	  content=content+'<option value="'+areaArray[i]+'" >'+areaArray[i]+'</option>';
-          }
-       }
+	  var obj=$("#d_area_span");
+
 	  obj[0].innerHTML=content;
+//	  //alert(obj[0].innerHTML);
+//	  for(var i=0;i<areaArray.length;i++){
+//          if(area==areaArray[i]){
+//        	  content=content+'<option value="'+area+'" selected="">'+area+'</option>';
+//          }else {
+//        	  content=content+'<option value="'+areaArray[i]+'" >'+areaArray[i]+'</option>';
+//          }
+//       }
+//	  obj[0].innerHTML=content;
 
 	//<input type="checkbox" name="can_search_device[]" value="TV" "checked" />TV版
 	     var typenameContent='';
 	     if(prod_type =='1'){
-	    	 typeNameArray='恐怖,惊悚,悬疑,伦理,爱情,剧情,西区,科幻,动作,战争,冒险,音乐,动画,运动,奇幻,传记,古装,犯罪,武侠,其他'.split(',');
+	    	 typeNameArray='恐怖,惊悚,悬疑,伦理,爱情,剧情,喜剧,科幻,动作,战争,冒险,音乐,动画,运动,奇幻,传记,古装,犯罪,武侠,其他'.split(',');
 		  }
 		  if(prod_type =='2'){
 			  typeNameArray='剧情,情感,青春偶像,家庭伦理,喜剧,犯罪,战争,古装,动作,奇幻,经典,乡村,商战,历史,情景,TVB,其他'.split(',');
@@ -1904,6 +1926,9 @@ $(document).ready(function(){
 	<option value="3" <?php if($d_level == 3) { echo "selected";} ?>>推荐3</option>
 	<option value="4" <?php if($d_level == 4) { echo "selected";} ?>>推荐4</option>
 	<option value="5" <?php if($d_level == 5) { echo "selected";} ?>>推荐5</option>
+	<option value="6" <?php if($d_level == 6) { echo "selected";} ?>>推荐6</option>
+	<option value="7" <?php if($d_level == 7) { echo "selected";} ?>>推荐7</option>
+	<option value="8" <?php if($d_level == 8) { echo "selected";} ?>>推荐8</option>
 	</select>
 	&nbsp;<select id="d_color" name="d_color" >
 	<option style="background-color:<?php echo $d_color?>;color: <?php echo $d_color?>" value="<?php echo $d_color?>">选择颜色</option>
@@ -1913,11 +1938,12 @@ $(document).ready(function(){
 	<option style="background-color:#FF33CC;color: #FF33CC" value="#FF33CC">#FF33CC</option>
 	<option style="background-color:#00FF00;color: #00FF00" value="#00FF00">#00FF00</option>
 	</select>
-	&nbsp;<select id="d_area" name="d_area">
-	<option value="0">请选择地区</option>
-	  <?php echo makeSelectAreaLang("area",$d_area)?>
-    </select>
 	&nbsp;
+	<!--<select id="d_area" name="d_area">
+	<option value="0">请选择地区</option>
+	  <?php //echo makeSelectAreaLang("area",$d_area) ?>
+    </select>
+    -->
     <select id="d_language" name="d_language">
     <option value="0">请选择语言</option>
     <?php echo makeSelectAreaLang("lang",$d_language)?>
@@ -2003,6 +2029,12 @@ $(document).ready(function(){
 	<tr> 
     <td>类别：</td>
     <td>&nbsp;<span id="d_type_name_span"><?php echo $d_type_name?></span>
+    </td>
+	</tr>
+	<tr> 
+    <td>地区：</td>
+    <td>&nbsp;<input id="d_area" name="d_area" type="text" size="50" value="<?php echo $d_area?>">可以多个，以空格分开
+    <br/> <span id='d_area_span'></span>
     </td>
 	</tr>
 	

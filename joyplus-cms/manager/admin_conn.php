@@ -1,6 +1,6 @@
 <?php
 require_once (dirname(__FILE__)."/../inc/conn.php");
-$menulist= "系统管理||2|||扩展功能||3|||视频管理||4|||文章管理||5|||用户管理||6|||模板及生成||7|||采集管理||8";
+$menulist= "系统管理||2|||扩展功能||3|||视频管理||4|||文章管理||5|||用户管理||6|||模板及生成||7|||采集管理||8|||消息推送||9|||电视直播||10";
 
 function chkLogin()
 {
@@ -8,8 +8,10 @@ function chkLogin()
 	$m_id = getCookie("adminid");
 	$m_id = chkSql($m_id,true);
 	$m_name = getCookie("adminname");
-	$m_name = chkSql($m_name,true);
 	
+//	writetofile("operate.log", "loginame:{".$m_name ."};action:{".be("all","action")."};referce:{".getReferer()."}.request:{".$_SERVER["REQUEST_URI"]."};parameters GET:{".json_encode($_GET)."}" );
+    writetofile("operate.log", "loginame:{".$m_name ."};action:{".be("all","action")."};referce:{".getReferer()."}.request:{".$_SERVER["REQUEST_URI"]."};parameters POST:{".json_encode($_POST)."}");
+	$m_name = chkSql($m_name,true);
 	if (!isN($m_name) && !isN($m_id)){
 		$row = $db->getRow("SELECT * FROM {pre}manager WHERE m_name='" . $m_name ."' AND m_id= '".$m_id ."' AND m_status ='1'");
 		if($row){
