@@ -19,6 +19,9 @@
  * @property string $author_photo_url
  * @property string $author_username
  * @property integer $comments_leaf
+ * @property integer $comment_type
+ * @property integer $douban_comment_id
+ * @property string $comment_title
  *
  * The followings are the available model relations:
  * @property TblUser $author
@@ -48,7 +51,7 @@ class Comment extends CActiveRecord
 	
     public function getCommentsByProgram($programid,$limit=3,$offset=0){
      return $this->findAll(array(
-			'condition'=>'content_id=:prod_id and status=:status',
+			'condition'=>'content_id=:prod_id and status=:status and comment_type=0',
 			'order'=>'create_date DESC',
 			'limit'=>$limit,
             'offset'=>$offset,
@@ -57,6 +60,28 @@ class Comment extends CActiveRecord
                 ':status'=>Constants::OBJECT_APPROVAL,
 			),
 		));
+    }
+    
+   public function getReviewsByProgram($programid,$limit=3,$offset=0){     
+		$key ='PROGRAM_REVIEW_LIST_PROD_ID'.$prod_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+        $lists = CacheManager::getValueFromCache($key);
+	    if($lists){
+	    	return $lists;
+	    }
+	    $lists= Yii::app()->db->createCommand()
+		->select('id as review_id, comment_title as title, comments ,douban_comment_id as douban_review_id,create_date as create_date ')
+		->from($this->tableName())
+		->where('status=:status and content_id=:prod_id and comment_type=1',
+		        array(
+			    ':status'=>Constants::OBJECT_APPROVAL,
+		        ':prod_id'=>$programid,
+		))->order('create_date DESC')->limit($limit)->offset($offset)
+		->queryAll();
+        if(count($lists)>0){
+	  	    $prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
+	  	    CacheManager::setValueToCache($key, $lists,$prodExpired);
+	    }
+	  	 return $lists;
     }
     
    public function getCommentReplies($thread_id,$limit=3,$offset=0){

@@ -58,6 +58,9 @@ class SearchController extends Controller
    			IjoyPlusServiceUtils::exportServiceError(Constants::KEYWORD_IS_NULL);	
    			return ;	   			
    		}
+   		$keyword= trim($keyword);
+   		Lookup::model()->saveLookup($keyword);
+   		
    		if( !FilterUtils::keyWordValid($keyword)){
    			 IjoyPlusServiceUtils::exportEntity(array('results'=>array()));
    			 return;
@@ -65,7 +68,7 @@ class SearchController extends Controller
 //   		$keyword= iconv("GBK","UTF-8",$keyword);n
 //   		var_dump($keyword);
    		//$keyword='???';
-		Lookup::model()->saveLookup($keyword);
+		
 //        var_dump($keyword);
 		
    		$keyword=strtr($keyword, array('%'=>'\%', '_'=>'\_'));
@@ -85,6 +88,38 @@ class SearchController extends Controller
 		  }else {
 		    $prods = SearchManager::searchProgramByType($keyword,$type,$page_size,$page_size*($page_num-1));
 		  }
+		  if(isset($prods) && is_array($prods)){				
+		    IjoyPlusServiceUtils::exportEntity(array('results'=>$prods));
+		    }else {
+			  IjoyPlusServiceUtils::exportEntity(array('results'=>array()));
+			}
+		}catch (Exception $e){
+			var_dump($e);
+		  IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);	
+		}
+	}
+	
+   function actionFilter(){
+        header('Content-type: application/json');
+	    if(!IjoyPlusServiceUtils::validateAPPKey()){
+  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+		   return ;
+		}
+		
+        $page_size=Yii::app()->request->getParam("page_size");
+		$page_num=Yii::app()->request->getParam("page_num");
+		if(!(isset($page_size) && is_numeric($page_size))){
+			$page_size=10;
+			$page_num=1;
+		}else if(!(isset($page_num) && is_numeric($page_num))){
+			$page_num=1;
+		}
+		$type= Yii::app()->request->getParam("type");
+		$sub_type= Yii::app()->request->getParam("sub_type");
+		$area= Yii::app()->request->getParam("area");
+		$year= Yii::app()->request->getParam("year");		
+		try{
+		  $prods = SearchManager::filterPrograms($type, $sub_type, $area, $year,$page_size,$page_size*($page_num-1));
 		  if(isset($prods) && is_array($prods)){				
 		    IjoyPlusServiceUtils::exportEntity(array('results'=>$prods));
 		    }else {
@@ -177,8 +212,8 @@ class SearchController extends Controller
 		}
 		try{
 		  $prods = SearchManager::popularProgram(SearchManager::POPULAR_TV_SET_SPECIAL_ID,$page_size,$page_size*($page_num-1));
-		  if(isset($prods) && is_array($prods)){				
-		    IjoyPlusServiceUtils::exportEntity(array('tv'=>$prods));
+		    if(isset($prods) && is_array($prods)){				
+		      IjoyPlusServiceUtils::exportEntity(array('tv'=>$prods));
 		    }else {
 			  IjoyPlusServiceUtils::exportEntity(array('tv'=>array()));
 			}

@@ -292,6 +292,50 @@ function cjList()
 	writetofile("crawel_info.log", $p_id.'{=====}'.$strListUrl ."{=====}List===start");
 	$listnum =$listnum+1; $tempStep = 1;
 	
+	if($p_playtype ==='tv_live'){
+	if( isN($_SESSION["strListCodeCut"] )){
+				$strListCodeCut = getBody($strListCode,$p_listcodestart,$p_listcodeend);
+				$_SESSION["strListCodeCut"] = $strListCodeCut;
+			}
+			else{
+				$strListCodeCut = $_SESSION["strListCodeCut"];
+			}
+			if( isN($_SESSION["linkarrcode"] )){
+				$linkarrcode = getArray($strListCodeCut,$p_listlinkstart,$p_listlinkend);
+				$_SESSION["linkarrcode"] = $linkarrcode;
+			}
+			else{
+				$linkarrcode = $_SESSION["linkarrcode"];
+			}
+			
+			if ($p_starringtype ==1) {
+				$starringarrcode = getArray($strListCodeCut,$p_starringstart,$p_starringend);
+			}
+			if ($p_titletype ==1) {
+				$titlearrcode = getArray($strListCodeCut,$p_titlestart,$p_titleend);
+			}
+			if ($p_pictype ==1) {
+				$picarrcode = getArray($strListCodeCut,$p_picstart,$p_picend);
+			}
+			
+//			writetofile("tv.log",$starringarrcode);
+//			writetofile("tv.log",$titlearrcode);
+	        if ($p_starringtype ==1) {
+				$starringarr = explode("{Array}",$starringarrcode);
+			}
+			if ($p_titletype ==1) {
+				$titlearr = explode("{Array}",$titlearrcode);
+			}
+			if(is_array($titlearr)){
+				$count= count($titlearr);
+				for ($i=0;$i<$count;$i++ ){
+					writetofile("tv.log",'name:'.$titlearr[$i].'  code' .$starringarr[$i]);
+					$db->query("insert into mac_tv(tv_name,tv_code,country,create_date) values('".$titlearr[$i]."','".$starringarr[$i]."','中国','".date('Y-m-d H:i:s',time())."')");
+				}
+			}
+			
+		return;
+	}
 	
 	switch($p_pagetype)
 	{
@@ -488,8 +532,11 @@ function cjBaiduView($strlink,$num){
 			$titlecode = $titlearr[$num];
 			
 		}
-		else{
-			$titlecode = $info->title;
+		else{		
+			$titlecode = getBody($strViewCode,$p_titlestart,$p_titleend);
+			if(isN($titlecode)){
+			  $titlecode = $info->title;
+			}
 		}
 		
 		$titlecode = filterScript($titlecode,$p_script);
@@ -584,7 +631,10 @@ function cjBaiduView($strlink,$num){
 			$contentcode = filterScript(replaceFilters($contentcode,$p_id,2,0),$p_script);
 			$contentcode = replaceStr(replaceStr(replaceStr($contentcode,","," "),"'",""),"\"\"","");
 			$contentcode = trim($contentcode);
-				
+			
+			//备注
+			$duration = !isN($info->duration)?$info->duration:"";
+			//var_dump($info->duration); var_dump($duration);	
 			$m_area = $areacode;
 			$m_languageid = $languagecode;
 			$piccode="";
@@ -595,14 +645,14 @@ function cjBaiduView($strlink,$num){
 //				var_dump('----------------');
 //				var_dump($weburlitem);
                  
-				$movieid = updateVod($baiduwebUrls,$p_id,$titlecode,$piccode,$typecode,$areacode,$strlink,$starringcode,$directedcode,$timecode,$p_playtypebaiduweb,$contentcode,$m_typeid,$lzcode,$languagecode,$remarkscode);
+				$movieid = updateVod($baiduwebUrls,$p_id,$titlecode,$piccode,$typecode,$areacode,$strlink,$starringcode,$directedcode,$timecode,$p_playtypebaiduweb,$contentcode,$m_typeid,$lzcode,$languagecode,$remarkscode,$duration);
 			}
 		
 	   }
 	}
 }
 
-function updateVod($baiduwebUrls,$p_id,$titlecode,$piccode,$typecode,$areacode,$strlink,$starringcode,$directedcode,$timecode,$p_playtype,$contentcode,$m_typeid,$lzcode,$languagecode,$remarkscode){
+function updateVod($baiduwebUrls,$p_id,$titlecode,$piccode,$typecode,$areacode,$strlink,$starringcode,$directedcode,$timecode,$p_playtype,$contentcode,$m_typeid,$lzcode,$languagecode,$remarkscode,$duration){
 	global $db,$cg;
        $sql="select m_id,m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_addtime,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state from {pre}cj_vod where m_pid='".$p_id."' and m_name='".$titlecode."'  and m_playfrom='".$p_playtype."'  order by m_id desc";
 			
@@ -622,13 +672,13 @@ function updateVod($baiduwebUrls,$p_id,$titlecode,$piccode,$typecode,$areacode,$
 				if(isN($piccode)){
 					$piccode = $rowvod["m_pic"];
 				}
-				$sql = "update {pre}cj_vod set m_pic='".$piccode."', m_type='".$typecode."',m_area='".$areacode."',m_urltest='".$strlink."',m_name='".$titlecode."',m_starring='".$starringcode."',m_directed='".$directedcode."',m_year='".$timecode."',m_playfrom='".$p_playtype."',m_content='".$contentcode."',m_addtime='".date('Y-m-d H:i:s',time())."',m_zt='0',m_pid='".$p_id."',m_typeid='".$m_typeid."',m_playserver='',m_state='".$lzcode."',m_language='".$languagecode."',m_remarks='".$remarkscode."' where m_id=".$rowvod["m_id"];
+				$sql = "update {pre}cj_vod set duraning='".$duration."' , m_pic='".$piccode."', m_type='".$typecode."',m_area='".$areacode."',m_urltest='".$strlink."',m_name='".$titlecode."',m_starring='".$starringcode."',m_directed='".$directedcode."',m_year='".$timecode."',m_playfrom='".$p_playtype."',m_content='".$contentcode."',m_addtime='".date('Y-m-d H:i:s',time())."',m_zt='0',m_pid='".$p_id."',m_typeid='".$m_typeid."',m_playserver='',m_state='".$lzcode."',m_language='".$languagecode."',m_remarks='".$remarkscode."' where m_id=".$rowvod["m_id"];
 				writetofile("sql.txt", $sql);
 				$db->query($sql);
 			}
 			else{
 				$cg=$cg+1;
-				$sql="insert {pre}cj_vod (m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state,m_addtime,m_language,m_remarks) values('".$titlecode."','".$typecode."','".$areacode."','".$p_playtype."','".$starringcode."','".$directedcode."','".$piccode."','".$contentcode."','".$timecode."','".$strlink."','0','".$p_id."','".$m_typeid."','0','','".$lzcode."','".date('Y-m-d H:i:s',time())."','".$languagecode."','".$remarkscode."')";
+				$sql="insert {pre}cj_vod (duraning,m_name,m_type,m_area,m_playfrom,m_starring,m_directed,m_pic,m_content,m_year,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_playserver,m_state,m_addtime,m_language,m_remarks) values('".$duration."', '".$titlecode."','".$typecode."','".$areacode."','".$p_playtype."','".$starringcode."','".$directedcode."','".$piccode."','".$contentcode."','".$timecode."','".$strlink."','0','".$p_id."','".$m_typeid."','0','','".$lzcode."','".date('Y-m-d H:i:s',time())."','".$languagecode."','".$remarkscode."')";
 				writetofile("sql.txt", $sql);
 	 			$db->query($sql);
 				$movieid= $db->insert_id();
@@ -687,12 +737,13 @@ function cjView($strlink,$num)
 {
 	global $starringarr,$titlearr,$picarr,$strListUrl,$p_playspecialtype,$p_playtype, $p_videocodeType,$p_videocodeApiUrl,$p_id,$p_videocodeApiUrlParamstart,$p_videocodeApiUrlParamend,$p_videourlstart,$p_videourlend, $playcodeApiUrl,$playcodeApiUrlParamstart,$p_playcodeApiUrlParamend,$playcodeApiUrltype,$db,$strListUrl,$p_titletype,$starringarr,$titlearr,$picarr,$p_id,$p_titlestart,$p_titleend,$p_lzstart,$p_lzend,$p_hitsstart,$p_hitsend,$p_starringtype,$p_starringstart,$p_starringend,$p_picstart,$p_picend,$p_typestart,$p_typeend,$p_pictype,$p_classtype,$p_collect_type,$p_timestart,$p_timeend,$p_areastart,$p_areaend,$p_contentstart,$p_contentend,$p_playcodestart,$p_playcodeend,$p_playlinkstart,$p_playlinkend,$p_playurlstart,$p_playurlend,$p_playcodetype,$p_playlinktype,$p_playtype,$p_coding,$p_lzstart,$p_lzend,$p_lzcodetype,$p_lzcodestart,$p_lzcodeend,$p_languagestart,$p_languageend,$p_remarksstart,$p_remarksend,$p_script,$p_showtype,$p_savefiles,$strdstate,$p_server,$p_setnametype,$p_setnamestart,$p_setnameend,$p_directedstart,$p_directedend,$cache;
 	$androidUrl="";
-	//var_dump($strlink);var_dump($strListUrl);
+//	var_dump($strlink);var_dump($strListUrl);
     try {
 	  $pos = strpos($strlink, "href=\"");
 	  if ($pos !== false) {
 		$strlink=substr($strlink, $pos+6);
 	  }
+	  
 	  $pos = strpos($strlink, "\"");
 	  if ($pos !== false) {
 		$strlink=substr($strlink, 0,$pos);

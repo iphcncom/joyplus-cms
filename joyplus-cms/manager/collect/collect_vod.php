@@ -113,7 +113,7 @@ function noInflowProject()
 
     $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_zt=0 and m_typeid>0 and m_name IS NOT NULL AND m_name != ''   ".$where);
     $sql="select * from {pre}cj_vod where m_zt=0 and m_typeid>0  and m_name IS NOT NULL AND m_name != ''  ".$where;
-    // var_dump($count); var_dump($sql);
+   //var_dump($count); var_dump($sql);
     MovieInflow($sql,$count);
 	
 }
@@ -212,6 +212,7 @@ function edit()
 	$m_playfrom=$row["m_playfrom"];
 	$m_starring=$row["m_starring"];
 	$m_directed=$row["m_directed"];
+	$duraning=$row["duraning"];
 	$m_pic=$row["m_pic"];
 	$m_content=$row["m_content"];
 	$m_year=$row["m_year"];
@@ -307,6 +308,7 @@ $(document).ready(function(){
 	<td>上映：</td>
 	<td><input id="m_year" name="m_year" type="text" value="<?php echo $m_year?>" size="50">
 	&nbsp;人气：<input id="m_hits" name="m_hits" type="text" value="<?php echo $m_hits?>" size="50"> 
+	&nbsp;时长：<?php echo $duraning?>
 	</td>
     </tr>
     <tr>
@@ -351,7 +353,7 @@ $(document).ready(function(){
         while ($row = $db ->fetch_array($rs))
         {
         $i=$i+1;
-        echo "<input type=\"text\" name=\"url".$i."\" size=10 value=\"".$row["u_url"]."\">  视频地址<input type=\"text\" name=\"videourl".$i."\" size=40 value=\"".$row["iso_video_url"]."\">&nbsp;网页地址<input type=\"text\" name=\"weburl".$i."\" size=40 value=\"".$row["u_weburl"]."\">&nbsp;剧集<input type=\"text\" name=\"setname".$i."\" size=25 value=\"".$row["name"]."\">&nbsp;第".$i."集&nbsp;&nbsp;&nbsp;<a href=\"?action=delurl&u_id=".$row["u_id"]."\"><font color=\"#FF0000\">删除</font></a><br>\r\n</hr>";
+        echo "<input type=\"text\" name=\"url".$i."\" size=10 value=\"".$row["u_url"]."\">  视频地址<input type=\"text\" name=\"videourl".$i."\" size=40 value=\"".$row["iso_video_url"].$row["android_vedio_url"]."\">&nbsp;网页地址<input type=\"text\" name=\"weburl".$i."\" size=40 value=\"".$row["u_weburl"]."\">&nbsp;剧集<input type=\"text\" name=\"setname".$i."\" size=25 value=\"".$row["name"]."\">&nbsp;第".$i."集&nbsp;&nbsp;&nbsp;<a href=\"?action=delurl&u_id=".$row["u_id"]."\"><font color=\"#FF0000\">删除</font></a><br>\r\n</hr>";
 		}
         ?>
         </td>
@@ -402,7 +404,7 @@ function main()
 		$sql = $sql . " and a.m_playfrom ='" . $from."' ";
 	}
 	
-	$sql = $sql . " order by  m_addtime desc, m_zt asc,m_name desc " ;
+	$sql = $sql . " order by  m_zt asc, m_addtime desc,m_name desc " ;
 	
 	$rscount = $db->query($sql);
 	$nums= $db -> num_rows($rscount);//总记录数
@@ -586,6 +588,7 @@ $(document).ready(function(){
 	<input type="checkbox" name="CCTV6" value="6">语言
 	<input type="checkbox" name="CCTV7" value="7">备注
 	<input type="checkbox" name="CCTV8" value="8">导演
+	<input type="checkbox" name="CCTV9" value="9">影片长度
     <br />
     <font color="#FF0000">注意 ：自动判断播放来源，如遇到相同来源则更新数据。</font>
 	</td>
@@ -600,7 +603,7 @@ $(document).ready(function(){
 }
 
 function MovieInflow($sql_collect,$MovieNumW)
-{
+{  
 	global $db;
 ?>
 <table class=tb>
@@ -616,7 +619,7 @@ function MovieInflow($sql_collect,$MovieNumW)
 <?php
 	$iscover= be("iscover","get");
 	$rs = $db->query($sql_collect);
-	$rscount = $db -> num_rows($rs);
+	$rscount = $MovieNumW;
 //	var_dump($rscount);
 	if($rscount==0){
 		echo "<script>alert('没有可入库的数据!'); location.href='collect_vod.php';</script>";
@@ -665,16 +668,27 @@ function MovieInflow($sql_collect,$MovieNumW)
 			$flag=true;
 			$d_pic= replaceStr($row["m_pic"],"'","''");
 			$d_addtime= date('Y-m-d H:i:s',time());
-			$d_year=$row["m_year"]; 
+			$d_year=$row["m_year"]; 				
+			if(isN($d_year) || $d_year==='未知'){
+				$d_year='其他';
+			}
 			$d_content=$row["m_content"];
 			$d_hits= $row["m_hits"];
-			$d_area = $row["m_area"];
+			$d_area = $row["m_area"];		
+			if(isN($d_area) || $d_area==='未知'){
+				$d_area='其他';
+			}
 			$d_language = $row["m_language"];
 			$d_remarks = $row["m_remarks"];
 			$d_state = $row["m_state"];
 			$d_starring = $row["m_starring"];
 			$d_directed = $row["m_directed"];
+			$duraning = $row["duraning"];
 			$d_name = $title;
+			$typeName=$row["m_type"];
+			if(isN($typeName) || $typeName==='未知'){
+				$typeName='其他';
+			}
 			$d_enname = hanzi2pinyin($d_name);
 			if (isN($d_letter)) { $d_letter = strtoupper(substring($d_enname,1)); }
 			if ($row["m_typeid"] > 0) {
@@ -688,15 +702,15 @@ function MovieInflow($sql_collect,$MovieNumW)
 					unset($rowtype);
 				}
 			}
-			
-			$sql="insert {pre}vod (d_type_name,d_type,d_pic,d_addtime,d_time,d_year,d_content,d_hits,d_area,d_language,d_name,d_enname,d_starring,d_directed,d_state,d_remarks) values('".$row["m_type"]."','".$d_type."','".$d_pic."','".$d_addtime."','".$d_addtime."','".$d_year."','".$d_content."','".$d_hits."','".$d_area."','".$d_language."','".$d_name."','".$d_enname."','".$d_starring."','".$d_directed."','".$d_state."','".$d_remarks."') ";
-			
+			//writetofile("gaoca.txt", $duraning);
+			$sql="insert {pre}vod (duraning,d_type_name,d_type,d_pic,d_addtime,d_time,d_year,d_content,d_hits,d_area,d_language,d_name,d_enname,d_starring,d_directed,d_state,d_remarks) values('".$duraning."' , '".$typeName."','".$d_type."','".$d_pic."','".$d_addtime."','".$d_addtime."','".$d_year."','".$d_content."','".$d_hits."','".$d_area."','".$d_language."','".$d_name."','".$d_enname."','".$d_starring."','".$d_directed."','".$d_state."','".$d_remarks."') ";
+			writetofile("gaoca.txt", $sql);
 			$db->query($sql);
 			$did = $db->insert_id();
 		}
 		//插入新数据结束
 		else{  //同名不处理， 如果是电影也不更新
-			if( be("post","CCTV")=="3"  || $d_type==='1' ||$d_type ==1){			
+			if( be("post","CCTV")=="3" ){			
 				//var_dump("dd");
 				continue;
 			}
@@ -712,12 +726,18 @@ function MovieInflow($sql_collect,$MovieNumW)
 					unset($rowtype);
 				}
 			}
+			
+			
+			
 			$strSet .=" d_type='".$d_type."', ";
 			
-			$strSet .=" d_type_name='".$row["m_type"]."', ";
+			$strSet .=" d_type_name='".$typeName."', ";
 			
 			if (be("post","CCTV2")=="2") {
 				$d_area = $row["m_area"];
+				if(isN($d_area) || $d_area==='未知'){
+					$d_area='其他';
+				}
 				$strSet .="d_area='".$d_area."',";
 			}
 			if (be("post","CCTV6")=="6") {
@@ -732,8 +752,16 @@ function MovieInflow($sql_collect,$MovieNumW)
 				$d_directed = $row["m_directed"];
 				$strSet .="d_directed='".$d_directed."',";
 			}
+			
+		    if (be("post","CCTV9")=="9" && !isN($duraning)) { 				
+				$strSet .=" duraning='".$duraning."', ";
+			}
+			
 			if (be("post","CCTV1")=="1") { 
 				$d_year=$row["m_year"];
+				if(isN($d_year) || $d_year==='未知'){
+					$d_year='其他';
+				}
 				$strSet .="d_year='".$d_year."',";
 			}
 			if (be("post","CCTV3")=="3") {
@@ -750,6 +778,8 @@ function MovieInflow($sql_collect,$MovieNumW)
 			}
 			$d_state = $row["m_state"];
 			$strSet .="d_state='".$d_state."',";
+			$d_remarks = $row["m_remarks"];			
+			$strSet .="d_remarks='".$d_remarks."',";
 			$strSet .="d_name='".$title."',";
 			$d_enname = hanzi2pinyin($title);
 			$strSet .="d_enname='".$d_enname."',";
@@ -948,8 +978,8 @@ function MovieInflow($sql_collect,$MovieNumW)
 	echo "<script type=\"text/javascript\" language=\"javascript\">";
 			echo "document.getElementById(\"refreshlentext\").style.width = \"100%\";";
 			echo "document.getElementById(\"refreshlentext\").innerHTML = \"100%\";";
-			echo "document.getElementById(\"storagetext\").innerHTML = \"入库完毕 <a href='collect_vod.php'>返回</a>\";";
-			echo "alert('入库完毕'); location.href='collect_vod.php';";
+			echo "document.getElementById(\"storagetext\").innerHTML = \"入库完毕 <a href='".getReferer()."'>返回</a>\";";
+			echo "alert('入库完毕'); ";
 			echo "</script>";
 	unset($rs);
 }
@@ -996,7 +1026,7 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
 	$videoUrl="";
 	$sql2="select * from {pre}cj_vod_url where u_movieid=".$id ." order by u_id asc";
 	$rs_collect2= $db->query($sql2);
-	$rscount = $db -> num_rows($rs_collect2);
+	$rscount =$db->getOne("Select count(m_id) as cc from {pre}cj_vod_url where u_movieid=".$id );
 	$num=1;
 	$playNum=1;
 	while ($row = $db ->fetch_array($rs_collect2))
@@ -1019,11 +1049,12 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
            $playNum=$setname.'$';
 		}else {
 			$playNum=$num.'$';
+			 if( $m_playfrom === 'letv' && $d_type ==='2'){
+	            	$playNum=getNumber($urstee).'$';
+	         }
 //			var_dump($m_playfrom);var_dump($d_type);var_dump($urstee);
 		}
-	     if( $m_playfrom === 'letv' && $d_type ==='2'){
-            	$playNum=getNumber($urstee).'$';
-         }
+	    
 		if ($num ==1) {
 			$webUrl .= $playNum.$urstee;
 		}
@@ -1052,10 +1083,11 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
 	            $playNum=$setname.'$';
 		      } else {
 					$playNum=$num.'$';
+			      if( $m_playfrom === 'letv' && $d_type ==='2'){
+			            	$playNum=getNumber($urstee).'$';
+			       }
 				}
-				if( $m_playfrom === 'letv' && $d_type ==='2'){
-		            	$playNum=getNumber($urstee).'$';
-		        }
+				
 		        if(!isN($videourstee)){
 					if ($num ==1) {
 						$videoUrl .= $playNum.$videourstee;

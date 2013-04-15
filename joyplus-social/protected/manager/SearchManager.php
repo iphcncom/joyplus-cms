@@ -16,7 +16,7 @@ class SearchManager {
 	const CACHE_MOVIE_TOPS_LIMIT_OFFSET="CACHE_MOVIE_TOPS_LIMIT_OFFSET";
 	
 	const CACHE_TV_TOPS_LIMIT_OFFSET="CACHE_TV_TOPS_LIMIT_OFFSET";
-	
+	const CACHE_ANAMATION_TOPS_LIMIT_OFFSET="CACHE_ANAMATION_TOPS_LIMIT_OFFSET";
 	const CACHE_SHOW_TOPS_LIMIT_OFFSET="CACHE_SHOW_TOPS_LIMIT_OFFSET";
 	
 	const CACHE_LUN_BO="CACHE_LUN_BO";
@@ -76,15 +76,22 @@ ORDER BY d.disp_order asc ';
    
    //yuedan
    public static function tops($limit,$offset){
-        $key =SearchManager::CACHE_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
 	    $lists = CacheManager::getValueFromCache($key);
 	    if($lists){
 	    	return $lists;
 	    }
-	    $lists= Yii::app()->db->createCommand()
+	     $lists= Yii::app()->db->createCommand()
 			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content,t_toptype as toptype')
 			->from('mac_vod_topic ')
-			->where('t_flag=:t_flag and t_id>4 and t_bdtype=1', array(
+			->where('t_flag=:t_flag and t_id>4 and t_bdtype=1'.$where, array(
 				    ':t_flag'=>1,
 			))->order('t_toptype desc ,t_sort desc ,create_date desc')->limit($limit)->offset($offset)
 			->queryAll();	   
@@ -97,6 +104,65 @@ ORDER BY d.disp_order asc ';
 	  	 		if(!(isset($list['pic_url']) && is_null($list['pic_url']))){
 	  	 			$list['pic_url']=$items[0]['prod_pic_url'];
 	  	 		}
+	  	 		$list['big_pic_url']=$items[0]['big_prod_pic_url'];
+	  	 		
+	  	 			
+	  	 	}
+	  	 	
+	  	    $itemNum = SearchManager::listItemNums($list['id']);
+	  	 	if(isset($itemNum) && is_array($itemNum) && count($itemNum)>0 && array_key_exists('countNum', $itemNum[0])){
+	  	 		$list['num']=$itemNum[0]['countNum'];
+	  	 	}
+	  	 	
+	  	 	$temp[]=$list;
+	  	 }
+	  	  if(count($temp)>0){
+	  	    $prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
+	  	    CacheManager::setValueToCache($key, $temp,$prodExpired);
+	  	  }
+	  }	
+	  
+	  return $temp;	
+	  
+   }
+   
+   //yuedan
+   public static function tops_type($limit,$offset,$type){
+   	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_TYPE_'.$type;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device.'_TYPE_'.$type;
+   	    }
+	    $lists = CacheManager::getValueFromCache($key);
+	    if($lists){
+	    	return $lists;
+	    }
+	     $lists= Yii::app()->db->createCommand()
+			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content,t_toptype as toptype')
+			->from('mac_vod_topic ')
+			->where('t_flag=:t_flag and t_type='.$type.' and t_id>4 and t_bdtype=1 '.$where, array(
+				    ':t_flag'=>1,
+			))->order('t_toptype desc ,t_sort desc ,create_date desc')->limit($limit)->offset($offset)
+			->queryAll();	   
+	  $temp = array();
+	  if(isset($lists) && is_array($lists)){	  	
+	  	 foreach ($lists as $list){	  	 	
+	  	 	$items = SearchManager::listItems($list['id'], SearchManager::TOPS_LIST_ITEM_NUM, 0);
+	  	 	if(isset($items) && is_array($items) && count($items)>0){
+	  	 		$list['items']=$items;
+	  	 		if(!(isset($list['pic_url']) && is_null($list['pic_url']))){
+	  	 			$list['pic_url']=$items[0]['prod_pic_url'];
+	  	 		}
+	  	 		$list['big_pic_url']=$items[0]['big_prod_pic_url'];
+	  	 	}
+	  	 	
+	  	 	
+	  	    $itemNum = SearchManager::listItemNums($list['id']);
+	  	 	if(isset($itemNum) && is_array($itemNum) && count($itemNum)>0 && array_key_exists('countNum', $itemNum[0])){
+	  	 		$list['num']=$itemNum[0]['countNum'];
 	  	 	}
 	  	 	$temp[]=$list;
 	  	 }
@@ -112,7 +178,14 @@ ORDER BY d.disp_order asc ';
    
    //yuedan
    public static function movie_tops($limit,$offset){
-        $key =SearchManager::CACHE_MOVIE_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+        $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_MOVIE_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_MOVIE_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
 	    $lists = CacheManager::getValueFromCache($key);
 	    if($lists){
 	    	return $lists;
@@ -120,10 +193,10 @@ ORDER BY d.disp_order asc ';
 	    $lists= Yii::app()->db->createCommand()
 			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
 			->from('mac_vod_topic ')
-			->where('t_flag=:t_flag and t_id>4 and t_bdtype=2 and t_type='.Constants::PROGRAM_TYPE_MOVIE, array(
+			->where('t_flag=:t_flag and t_id>4 and t_bdtype=2 and t_type='.Constants::PROGRAM_TYPE_MOVIE .$where, array(
 				    ':t_flag'=>1,
 			))->order('t_sort desc ,create_date desc')->limit($limit)->offset($offset)
-			->queryAll();	   
+			->queryAll();
 	  $temp = array();
 	  if(isset($lists) && is_array($lists)){	  	
 	  	 foreach ($lists as $list){	  	 	
@@ -133,6 +206,7 @@ ORDER BY d.disp_order asc ';
 	  	 		if(!(isset($list['pic_url']) && is_null($list['pic_url']))){
 	  	 			$list['pic_url']=$items[0]['prod_pic_url'];
 	  	 		}
+	  	 		$list['big_pic_url']=$items[0]['big_prod_pic_url'];
 	  	 	}
 	  	 	$temp[]=$list;
 	  	 }
@@ -145,7 +219,14 @@ ORDER BY d.disp_order asc ';
    }
    
    public static function show_tops($limit,$offset){
-        $key =SearchManager::CACHE_TV_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+        $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_SHOW_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_SHOW_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
 	    $lists = CacheManager::getValueFromCache($key);
 	    if($lists){
 	    	return $lists;
@@ -153,7 +234,7 @@ ORDER BY d.disp_order asc ';
 	    $lists= Yii::app()->db->createCommand()
 			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
 			->from('mac_vod_topic ')
-			->where('t_flag=:t_flag and t_id>4 and t_bdtype=2 and t_type='.Constants::PROGRAM_TYPE_SHOW, array(
+			->where('t_flag=:t_flag and t_id>4 and t_bdtype=2 and t_type='.Constants::PROGRAM_TYPE_SHOW .$where, array(
 				    ':t_flag'=>1,
 			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
 			->queryAll();
@@ -166,6 +247,7 @@ ORDER BY d.disp_order asc ';
 	  	 		if(!(isset($list['pic_url']) && is_null($list['pic_url']))){
 	  	 			$list['pic_url']=$items[0]['prod_pic_url'];
 	  	 		}
+	  	 		$list['big_pic_url']=$items[0]['big_prod_pic_url'];
 	  	 	}
 	  	 	$temp[]=$list;
 	  	 }
@@ -177,17 +259,24 @@ ORDER BY d.disp_order asc ';
 	  return $temp;	
    }
    
-//yuedan
+   //yuedan
    public static function tv_tops($limit,$offset){
-        $key =SearchManager::CACHE_TV_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+        $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_TV_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_TV_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
 	    $lists = CacheManager::getValueFromCache($key);
 	    if($lists){
 	    	return $lists;
 	    }
-	    $lists= Yii::app()->db->createCommand()
+	     $lists= Yii::app()->db->createCommand()
 			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
 			->from('mac_vod_topic ')
-			->where('t_flag=:t_flag and t_id>4 and t_bdtype=2 and t_type='.Constants::PROGRAM_TYPE_TV, array(
+			->where('t_flag=:t_flag and t_id>4 and t_bdtype=2 and t_type='.Constants::PROGRAM_TYPE_TV .$where, array(
 				    ':t_flag'=>1,
 			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
 			->queryAll();
@@ -200,6 +289,48 @@ ORDER BY d.disp_order asc ';
 	  	 		if(!(isset($list['pic_url']) && is_null($list['pic_url']))){
 	  	 			$list['pic_url']=$items[0]['prod_pic_url'];
 	  	 		}
+	  	 		$list['big_pic_url']=$items[0]['big_prod_pic_url'];
+	  	 	}
+	  	 	$temp[]=$list;
+	  	 }
+	     if(count($temp)>0){
+	  	    $prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
+	  	    CacheManager::setValueToCache($key, $temp,$prodExpired);
+	  	 }
+	  }	
+	  return $temp;	
+   }
+   
+   public static function animation_tops($limit,$offset){
+        $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_ANAMATION_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	       $where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	       $key =SearchManager::CACHE_ANAMATION_TOPS_LIMIT_OFFSET.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
+	    $lists = CacheManager::getValueFromCache($key);
+	    if($lists){
+	    	return $lists;
+	    }
+	    $lists= Yii::app()->db->createCommand()
+			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
+			->from('mac_vod_topic ')
+			->where('t_flag=:t_flag and t_id>4 and t_bdtype=2 and t_type='.Constants::PROGRAM_ANIMATION .$where, array(
+				    ':t_flag'=>1,
+			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
+			->queryAll();
+	  $temp = array();
+	  if(isset($lists) && is_array($lists)){	  	
+	  	 foreach ($lists as $list){	  	 	
+	  	 	$items = SearchManager::listItems($list['id'], SearchManager::BD_TOPS_LIST_ITEM_NUM, 0);	  	 	
+	  	 	if(isset($items) && is_array($items) && count($items)>0){
+	  	 		$list['items']=$items;
+	  	 		if(!(isset($list['pic_url']) && is_null($list['pic_url']))){
+	  	 			$list['pic_url']=$items[0]['prod_pic_url'];
+	  	 		}
+	  	 		$list['big_pic_url']=$items[0]['big_prod_pic_url'];
 	  	 	}
 	  	 	$temp[]=$list;
 	  	 }
@@ -212,31 +343,38 @@ ORDER BY d.disp_order asc ';
    }
    
    public static function lists($userid,$limit,$offset,$type){
-	    $key =SearchManager::CACHE_LISTS_BY_TYPE_LIMIT_OFFSET.'_'.$userid.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_LISTS_BY_TYPE_LIMIT_OFFSET.'_USER_'.$userid.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_LISTS_BY_TYPE_LIMIT_OFFSET.'_USER_'.$userid.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
 	    $lists = CacheManager::getValueFromCache($key);
 	    if($lists){
 	    	return $lists;
 	    }
 	    if($userid >0){
 		    $lists= Yii::app()->db->createCommand()
-			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
-			->from('mac_vod_topic ')
-			->where('t_userid=:t_userid and t_id>4', array(
-				    ':t_userid'=>$userid,
-			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
-			->queryAll();
+				->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
+				->from('mac_vod_topic ')
+				->where('t_userid=:t_userid and t_id>4'.$where, array(
+					    ':t_userid'=>$userid,
+				))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
+				->queryAll();
 	    } else {
 	    	$lists= Yii::app()->db->createCommand()
-			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
-			->from('mac_vod_topic ')
-			->where('t_flag=:t_flag and t_id>4 and t_bdtype=:type', array(
-				    ':t_flag'=>1,
-			        ':type'=>$type,
-			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
-			->queryAll();
+				->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
+				->from('mac_vod_topic ')
+				->where('t_flag=:t_flag and t_id>4 and t_bdtype=:type'.$where, array(
+					    ':t_flag'=>1,
+				        ':type'=>$type,
+				))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
+				->queryAll();
 	    }
 	    
-	    $temp = array();
+	  $temp = array();
 	  if(isset($lists) && is_array($lists)){	  	
 	  	 foreach ($lists as $list){	  	 	
 	  	 	$items = SearchManager::listItems($list['id'], SearchManager::USER_TOPS_LIST_ITEM_NUM, 0);	  	 	
@@ -245,6 +383,7 @@ ORDER BY d.disp_order asc ';
 	  	 		if(!(isset($list['pic_url']) && is_null($list['pic_url']))){
 	  	 			$list['pic_url']=$items[0]['prod_pic_url'];
 	  	 		}
+	  	 		$list['big_pic_url']=$items[0]['big_prod_pic_url'];
 	  	 	}
 	  	 	$temp[]=$list;
 	  	 }
@@ -258,28 +397,35 @@ ORDER BY d.disp_order asc ';
 	}
 	
     public static function listsByProdType($userid,$limit,$offset,$type,$prodType){
-	    $key =SearchManager::CACHE_LISTS_BY_TYPE_LIMIT_OFFSET.'_'.$userid.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_type_'.$prodType;
+	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_LISTS_BY_TYPE_LIMIT_OFFSET.'_USER_'.$userid.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_type_'.$prodType;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	       $key =SearchManager::CACHE_LISTS_BY_TYPE_LIMIT_OFFSET.'_USER_'.$userid.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_type_'.$prodType.'_DEVICE_'.$device;
+   	    }
 	    $lists = CacheManager::getValueFromCache($key);
 	    if($lists){
 	    	return $lists;
 	    }
 	    if($userid >0){
-		    $lists= Yii::app()->db->createCommand()
-			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
-			->from('mac_vod_topic ')
-			->where('t_userid=:t_userid and t_id>4 and t_type in ('.$prodType.')', array(
-				    ':t_userid'=>$userid,
-			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
-			->queryAll();
+	    	$lists= Yii::app()->db->createCommand()
+				->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
+				->from('mac_vod_topic ')
+				->where('t_userid=:t_userid and t_id>4 and t_type in ('.$prodType.')' .$where, array(
+					    ':t_userid'=>$userid,
+				))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
+				->queryAll();
 	    } else {
 	    	$lists= Yii::app()->db->createCommand()
-			->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
-			->from('mac_vod_topic ')
-			->where('t_flag=:t_flag and t_id>4 and t_bdtype=:type and t_type in ('.$prodType.')', array(
-				    ':t_flag'=>1,
-			        ':type'=>$type,
-			))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
-			->queryAll();
+				->select('t_id as id, t_name as name, t_type as prod_type, 	t_pic as pic_url,t_des as content')
+				->from('mac_vod_topic ')
+				->where('t_flag=:t_flag and t_id>4 and t_bdtype=:type and t_type in ('.$prodType.')' .$where, array(
+					    ':t_flag'=>1,
+				        ':type'=>$type,
+				))->order('t_sort desc,create_date desc ')->limit($limit)->offset($offset)
+				->queryAll();
 	    }
 	    
 	    $temp = array();
@@ -291,6 +437,7 @@ ORDER BY d.disp_order asc ';
 	  	 		if(!(isset($list['pic_url']) && is_null($list['pic_url']))){
 	  	 			$list['pic_url']=$items[0]['prod_pic_url'];
 	  	 		}
+	  	 		$list['big_pic_url']=$items[0]['big_prod_pic_url'];
 	  	 	}
 	  	 	$temp[]=$list;
 	  	 }
@@ -303,22 +450,58 @@ ORDER BY d.disp_order asc ';
 	    return $temp;
 	}
 	
+   
+	
 	public static function listItems($top_id,$limit,$offset){
-	    $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOP_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	       $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOP_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
 	    $items = CacheManager::getValueFromCache($key);
 	    if($items){
 	    	return $items;
 	    }
 	    $items= Yii::app()->db->createCommand()
-		->select('items.id as id, vod.d_id as prod_id,vod.d_name as prod_name, vod.d_type as prod_type, vod.d_pic as prod_pic_url,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area ')
-		->from('mac_vod_topic_items as items')
-		->join("mac_vod as vod","items.vod_id=vod.d_id")
-		->where('items.flag=:t_flag and items.topic_id=:topic_id and  vod.d_hide=0 ', array(
-			    ':t_flag'=>1,
-			    ':topic_id'=>$top_id,
-		))->order('items.disp_order desc, vod.d_level desc ,vod.d_good desc,vod.d_time DESC ')->limit($limit)->offset($offset)
-		->queryAll();
-		
+			->select('items.id as id, vod.d_id as prod_id,vod.d_name as prod_name, vod.d_level as definition, vod.d_type as prod_type, vod.d_pic as prod_pic_url,substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode , vod.duraning as duration ')
+			->from('mac_vod_topic_items as items')
+			->join("mac_vod as vod","items.vod_id=vod.d_id")
+			->where('items.flag=:t_flag and items.topic_id=:topic_id and  vod.d_hide=0 '.$where, array(
+				    ':t_flag'=>1,
+				    ':topic_id'=>$top_id,
+			))->order('items.disp_order desc, vod.d_level desc ,vod.d_good desc,vod.d_time DESC ')->limit($limit)->offset($offset)
+			->queryAll();
+	    if(isset($items) && !is_null($items)){
+	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
+	  	    CacheManager::setValueToCache($key, $items,$prodExpired);
+	    }
+	    return $items;
+	}
+	
+	public static function listItemNums($top_id){
+	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOP_NUM_'.$top_id;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	       $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOP_NUM_'.$top_id.'_DEVICE_'.$device;
+   	    }
+	    $items = CacheManager::getValueFromCache($key);
+	    if($items){
+	    	return $items;
+	    }
+	    $items= Yii::app()->db->createCommand()
+			->select('count(items.id) as countNum ')
+			->from('mac_vod_topic_items as items')
+			->join("mac_vod as vod","items.vod_id=vod.d_id")
+			->where('items.flag=:t_flag and items.topic_id=:topic_id and  vod.d_hide=0 '.$where, array(
+				    ':t_flag'=>1,
+				    ':topic_id'=>$top_id,
+			))->queryAll();
 	    if(isset($items) && !is_null($items)){
 	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
 	  	    CacheManager::setValueToCache($key, $items,$prodExpired);
@@ -328,21 +511,27 @@ ORDER BY d.disp_order asc ';
 	
 	
    public static function listShowItems($top_id,$limit,$offset){
-	    $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOP_SHOW_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOP_SHOW_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
 	    $items = CacheManager::getValueFromCache($key);
 	    if($items){
 	    	return $items;
 	    }
 	    $items= Yii::app()->db->createCommand()
-		->select('items.id as id, vod.d_id as prod_id,vod.d_name as prod_name, vod.d_type as prod_type, vod.d_pic_ipad as prod_pic_url,vod.webUrls as cur_item_url ,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area')
-		->from('mac_vod_topic_items as items')
-		->join("mac_vod as vod","items.vod_id=vod.d_id")
-		->where('items.flag=:t_flag and items.topic_id=:topic_id and vod.d_hide=0 ', array(
-			    ':t_flag'=>1,
-			    ':topic_id'=>$top_id,
-		))->order('items.disp_order desc, vod.d_level desc ,vod.d_good desc,vod.d_time DESC ')->limit($limit)->offset($offset)
-		->queryAll();
-		
+			->select('items.id as id, vod.d_id as prod_id,vod.d_name as prod_name, vod.d_level as definition, vod.d_type as prod_type,d_pic_ipad  as prod_pic_url ,substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url, vod.webUrls as cur_item_url ,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode , vod.duraning as duration ')
+			->from('mac_vod_topic_items as items')
+			->join("mac_vod as vod","items.vod_id=vod.d_id")
+			->where('items.flag=:t_flag and items.topic_id=:topic_id and vod.d_hide=0 '.$where, array(
+				    ':t_flag'=>1,
+				    ':topic_id'=>$top_id,
+			))->order('items.disp_order desc, vod.d_level desc ,vod.d_good desc,vod.d_time DESC ')->limit($limit)->offset($offset)
+			->queryAll();
 		
 	    $tempList= array();
 	    if(isset($items) && !is_null($items) && is_array($items)){
@@ -372,9 +561,7 @@ ORDER BY d.disp_order asc ';
 	    	    	   }
 	    	        }
 	    	  }
-	    	}
-	    	
-	    	   
+	    	}	    	   
 	    	$item['cur_item_url']=$cur_url;
 	    	$item['cur_item_name']=$cur_name;
 	    	$tempList[]=$item;
@@ -385,9 +572,51 @@ ORDER BY d.disp_order asc ';
 	    return $tempList;
 	}
 	
+    public static function listTVNetItems($top_id,$limit,$offset){
+	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOPTVNet_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOPTVNet_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
+	    $items = CacheManager::getValueFromCache($key);
+	    if($items){
+	    	return $items;
+	    }
+	    $items= Yii::app()->db->createCommand()
+			->select('items.id as id, vod.d_id as prod_id,vod.d_name as prod_name, vod.d_level as definition,vod.d_content as prod_summary, vod.d_type as prod_type,  substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as prod_pic_url,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode , vod.duraning as duration ')
+			->from('mac_vod_topic_items as items')
+			->join("mac_vod as vod","items.vod_id=vod.d_id")
+			->where('items.flag=:t_flag and items.topic_id=:topic_id and vod.d_hide=0 '.$where, array(
+				    ':t_flag'=>1,
+				    ':topic_id'=>$top_id,
+			))->order('items.disp_order desc, vod.d_level desc ,vod.d_good desc,vod.d_time DESC ')->limit($limit)->offset($offset)
+			->queryAll();
+		
+	    $tempList= array();
+	    if(isset($items) && !is_null($items) && is_array($items)){
+	    	foreach ($items as $item){
+	    	  $item['definition']='4';
+	    	  $tempList[]=$item;
+	      }
+	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
+	  	    CacheManager::setValueToCache($key, $tempList,$prodExpired);
+	    }
+	    return $tempList;
+	}
+	
    
    public static function searchProgram($keyword,$limit,$offset){
-	    $key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_'.$keyword.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_'.$keyword.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	       $key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_'.$keyword.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
 	    $prods = CacheManager::getValueFromCache($key);
 	    if($prods){
 	    	return $prods;
@@ -395,14 +624,13 @@ ORDER BY d.disp_order asc ';
 	    
 	    $keyword='%'.$keyword.'%';
 //	    $keyword= iconv("iso-8859-1","UTF-8",$keyword);
-
 	    $prods= Yii::app()->db->createCommand()
-		->select('d_id as prod_id, d_name as prod_name, d_type as prod_type,d_pic as prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area')
-		->from('mac_vod ')
-		->where('d_hide=:d_hide  and d_type in (1,2,3,131) and ( d_directed like \''.$keyword.'\' or d_starring like \''.$keyword.'\' or d_name like \''.$keyword.'\' or d_enname like \''.$keyword.'\'   )', array(
-			    ':d_hide'=>0,
-		))->order('d_type asc ,d_level desc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
-		->queryAll();
+			->select('d_id as prod_id, d_name as prod_name, d_type as prod_type, d_level as definition,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area , d_remarks as max_episode, d_state as cur_episode , duraning as duration ')
+			->from('mac_vod ')
+			->where('d_hide=:d_hide  and d_type in (1,2,3,131) and ( d_directed like \''.$keyword.'\' or d_starring like \''.$keyword.'\' or d_name like \''.$keyword.'\' or d_enname like \''.$keyword.'\'   )' .$where, array(
+				    ':d_hide'=>0,
+			))->order('d_level desc ,d_play_num desc,d_type asc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
+			->queryAll();
 	    if(isset($prods) && !is_null($prods)){
 	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
 	  	    CacheManager::setValueToCache($key, $prods,$prodExpired);
@@ -410,8 +638,15 @@ ORDER BY d.disp_order asc ';
 	    return $prods;
 	}
 	
- public static function searchProgramByType($keyword,$type,$limit,$offset){
-	    $key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_'.$keyword.'_type_'.$type.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   public static function searchProgramByType($keyword,$type,$limit,$offset){
+	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    if($device ===false){
+            $key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_'.$keyword.'_type_'.$type.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_'.$keyword.'_type_'.$type.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
 	    $prods = CacheManager::getValueFromCache($key);
 	    if($prods){
 	    	return $prods;
@@ -419,14 +654,73 @@ ORDER BY d.disp_order asc ';
 	    
 	    $keyword='%'.$keyword.'%';
 //	    $keyword= iconv("iso-8859-1","UTF-8",$keyword);
-
 	    $prods= Yii::app()->db->createCommand()
-		->select('d_id as prod_id, d_name as prod_name, d_type as prod_type,d_pic as prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area')
-		->from('mac_vod ')
-		->where('d_hide=:d_hide and d_type in ('.$type.') and ( d_name like \''.$keyword.'\' or d_enname like \''.$keyword.'\'   )', array(
-			    ':d_hide'=>0,
-		))->order('d_type asc ,d_level desc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
-		->queryAll();
+			->select('d_id as prod_id, d_name as prod_name, d_type as prod_type, d_level as definition,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode , duraning as duration ')
+			->from('mac_vod ')
+			->where('d_hide=:d_hide and d_type in ('.$type.') and ( d_directed like \''.$keyword.'\' or d_starring like \''.$keyword.'\' or d_name like \''.$keyword.'\' or d_enname like \''.$keyword.'\'   ) '.$where, array(
+				    ':d_hide'=>0,
+			))->order('d_level desc ,d_play_num desc,d_type asc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
+			->queryAll();
+	    if(isset($prods) && !is_null($prods)){
+	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
+	  	    CacheManager::setValueToCache($key, $prods,$prodExpired);
+	    }
+	    return $prods;
+	}
+	
+   public static function filterPrograms($type,$sub_type,$area,$year,$limit,$offset){
+   	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $whereDevice='';
+   	    if($device ===false){
+           $key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_subtype_'.$sub_type.'_area_'.$area.'_year_'.$year.'_type_'.$type.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else{
+   	    	$whereDevice=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_subtype_'.$sub_type.'_area_'.$area.'_year_'.$year.'_type_'.$type.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
+	    $prods = CacheManager::getValueFromCache($key);
+	    if($prods){
+	    	return $prods;
+	    }
+	    $where=" ";	   
+	    
+	    if (!(is_null($year) || $year==='')){
+	    	if($year==='其他'){
+	    		$where=$where." and d_year < '2004' or d_year like '%".$year."%'";
+	    	}else {
+	        	$where=$where." and d_year like '%".$year."%' ";
+	    	}
+	    }
+	    
+	    if (!(is_null($sub_type) || $sub_type==='')){
+	    	$where=$where." and d_type_name like '%".$sub_type."%' ";
+	    }
+	    
+        if (!(is_null($area) || $area==='')){
+        	$areaGroup="";
+        	if (!(is_null($type) || $type=='')){
+        		if(array_key_exists('area_group', Yii::app()->params) && array_key_exists($type, Yii::app()->params['area_group']) && array_key_exists($area, Yii::app()->params['area_group'][$type]) ){
+        		  $areaGroup = Yii::app()->params['area_group'][$type][$area];
+        		}
+        	}        	
+	        if (!(is_null($areaGroup) || $areaGroup=='')){
+		    	$where=$where." and ( d_area like '%".$area."%'  or substring_index( d_area, ' ', 1 ) in (".$areaGroup.") ) ";
+		    }else {
+		    	$where=$where." and d_area like '%".$area."%' ";
+		    }	    
+	    } 
+	    
+	    if (!(is_null($type) || $type=='')){
+	    	$where=$where." and d_type=".$type." ";
+	    }
+	    
+	    $prods= Yii::app()->db->createCommand()
+			->select('d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration ')
+			->from('mac_vod ')
+			->where('d_hide=:d_hide '.$where .$whereDevice, array(
+				    ':d_hide'=>0,
+			))->order('d_level desc ,d_play_num desc,d_good desc,d_time DESC')->limit($limit)->offset($offset)
+			->queryAll();
+			
 	    if(isset($prods) && !is_null($prods)){
 	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
 	  	    CacheManager::setValueToCache($key, $prods,$prodExpired);

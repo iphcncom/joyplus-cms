@@ -50,6 +50,8 @@
  * @property string $share_number
  * @property string $good_number 
  * @property string $total_comment_number 
+ * @property integer $can_play_device
+ * @property integer $d_douban_id
  */
 class Program extends CActiveRecord
 {
@@ -85,13 +87,23 @@ class Program extends CActiveRecord
 	
 	 function incLoveUserCount($id){		
 		  try{
-//			  Yii::app()->db->createCommand()->update($this->tableName(),array('love_user_count'=>':love_user_count'), 'd_id=:d_id', 
-//		      array(
-//		        ':love_user_count'=>'love_user_count+1',
-//		        ':d_id'=>$id,
-//		      )
-//		      );
 		      Yii::app()->db->createCommand("update ".$this->tableName() .' set love_user_count=love_user_count+1' .' where d_id='.$id)->execute();
+		      return Constants::SUCC;
+		  }catch (Exception $e){
+		    return Constants::SYSTEM_ERROR;
+		  }
+		}
+      function incPlayCount($id){		
+		  try{
+		      Yii::app()->db->createCommand("update ".$this->tableName() .' set d_play_num=d_play_num+1' .' where d_id='.$id)->execute();
+		      return Constants::SUCC;
+		  }catch (Exception $e){
+		    return Constants::SYSTEM_ERROR;
+		  }
+	 }
+     function invalid($id){		
+		  try{
+		      Yii::app()->db->createCommand("update ".$this->tableName() .' set d_play_check=1' .' where d_id='.$id)->execute();
 		      return Constants::SUCC;
 		  }catch (Exception $e){
 		    return Constants::SYSTEM_ERROR;

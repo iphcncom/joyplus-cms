@@ -179,6 +179,52 @@ class ProgramController extends Controller
 			}
 		}
 		
+	   function actionRecordPlay(){
+	     header('Content-type: application/json');
+		    if(!Yii::app()->request->isPostRequest){   
+		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+		   		 return ;
+		   	}
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}
+			$prod_id= Yii::app()->request->getParam("prod_id");
+			$prod_name= Yii::app()->request->getParam("prod_name");
+			$prod_subname= Yii::app()->request->getParam("prod_subname");
+			$prod_type= Yii::app()->request->getParam("prod_type");
+			
+			if( (!isset($prod_id)) || is_null($prod_id) || (!isset($prod_type)) || is_null($prod_type)  ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}
+						
+            if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
+			
+			 try{
+			    $userid=Yii::app()->user->id;			
+				Program::model()->incPlayCount($prod_id);
+				$HTTP_CLIENT= isset($_SERVER['HTTP_CLIENT'])?$_SERVER['HTTP_CLIENT']:"";
+				$history = new PlayRecords();		
+				$history->author_id=$userid;
+				$history->client=$HTTP_CLIENT;
+				$history->prod_type=$prod_type;
+				$history->prod_name=$prod_name;
+				$history->prod_subname=$prod_subname;
+				$history->prod_id=$prod_id;
+				$history->create_date=new CDbExpression('NOW()');
+				$history->save();
+			    IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
+			  } catch (Exception $e) {
+				$transaction->rollback();
+				IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+			  }
+		
+	   }
+	   
        function actionPlay(){
 	        header('Content-type: application/json');
 		    if(!Yii::app()->request->isPostRequest){   
@@ -215,8 +261,17 @@ class ProgramController extends Controller
 			
 		 try{
 		    $userid=Yii::app()->user->id;
+		    		    
+			$HTTP_CLIENT= isset($_SERVER['HTTP_CLIENT'])?$_SERVER['HTTP_CLIENT']:"";
 			
-			$history = PlayHistory::model()->getHisotryByProd($userid, $prod_id);
+			if($HTTP_CLIENT ===null || $HTTP_CLIENT ===''){
+			  Program::model()->incPlayCount($prod_id);
+			}
+			if($prod_type ==='3'){
+			   $history = PlayHistory::model()->getHisotryByShowProd($userid, $prod_id,$prod_subname);
+			}else {
+			   $history = PlayHistory::model()->getHisotryByProd($userid, $prod_id);
+			}
 			if($history === null){
 			     $history = new PlayHistory();
 			}		
@@ -239,6 +294,126 @@ class ProgramController extends Controller
 		  }
 		}
 		
+       function actionSubscribe(){
+	        header('Content-type: application/json');
+		    if(!Yii::app()->request->isPostRequest){   
+		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+		   		 return ;
+		   	}
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}
+			$prod_id= Yii::app()->request->getParam("prod_id");
+			
+			if( (!isset($prod_id)) || is_null($prod_id)  ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}
+           			
+            if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
+			
+		 try{
+		 	
+		    $userid=Yii::app()->user->id;		    		    
+			
+			$subscribe = Subscribe::model()->getSubscribeByProd($userid,$prod_id);
+			if($subscribe === null){
+			     $subscribe = new Subscribe();
+			     $subscribe->author_id=$userid;
+				 $subscribe->prod_id=$prod_id;
+				 $subscribe->create_date=new CDbExpression('NOW()');
+				 $subscribe->save();
+			}	
+			
+			
+		    IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
+		  } catch (Exception $e) {
+			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+		  }
+		}
+		
+       function actionUnSubscribe(){
+       	
+	        header('Content-type: application/json');
+		    if(!Yii::app()->request->isPostRequest){   
+		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+		   		 return ;
+		   	}
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}
+			$prod_id= Yii::app()->request->getParam("prod_id");
+			
+			if( (!isset($prod_id)) || is_null($prod_id)  ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}
+           			
+            if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
+			
+		 try{
+		 	
+		    $userid=Yii::app()->user->id;
+		    		    
+			$subscribe = Subscribe::model()->getSubscribeByProd($userid,$prod_id);
+			if($subscribe !== null){
+			  $subscribe->delete();
+			}
+			IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);		
+		  } catch (Exception $e) {
+			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+		  }
+		}
+		
+       function actionHiddenPlay(){
+	
+	        header('Content-type: application/json');
+		    if(!Yii::app()->request->isPostRequest){   
+		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+		   		 return ;
+		   	}
+		   	
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}
+			
+			$prod_id= Yii::app()->request->getParam("prod_id");
+			
+			if( (!isset($prod_id)) || is_null($prod_id)   ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}
+			
+            if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
+			
+		 try{
+		    $userid=Yii::app()->user->id;
+			
+			$history = PlayHistory::model()->getHisotryByProd($userid, $prod_id);
+			
+			if($history !== null){
+			    $history->status=Constants::OBJECT_DELETE;
+			    $history->save();
+			}		
+			
+		    IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
+		  } catch (Exception $e) {
+			IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
+		  }
+		}
+		
        function actionInvalid(){
        	
 	        header('Content-type: application/json');
@@ -254,14 +429,33 @@ class ProgramController extends Controller
 			}
 			
 			$prod_id= Yii::app()->request->getParam("prod_id");
-			
+			$prod_name= Yii::app()->request->getParam("prod_name");
+			$feedback_memo= Yii::app()->request->getParam("memo");
+			$prod_type= Yii::app()->request->getParam("prod_type");
 			
 			if( (!isset($prod_id)) || is_null($prod_id)   ){
 				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
 				return;
 			}
 			
-          IjoyPlusServiceUtils::exportServiceError(Program::model()->invalid($prod_id));
+			$invalid_type = Yii::app()->request->getParam("invalid_type");
+			IjoyPlusServiceUtils::validateUserID();
+            try{
+			    $userid=Yii::app()->user->id;
+				$HTTP_CLIENT= isset($_SERVER['HTTP_CLIENT'])?$_SERVER['HTTP_CLIENT']:"";
+				$history = new VideoFeedback();		
+				$history->author_id=$userid;
+				$history->client=$HTTP_CLIENT;
+				$history->prod_type=$prod_type;
+				$history->prod_name=$prod_name;
+				$history->feedback_memo=$feedback_memo;
+				$history->prod_id=$prod_id;				
+				$history->feedback_type=$invalid_type;
+				$history->create_date=new CDbExpression('NOW()');
+				$history->save();
+			} catch (Exception $e) {
+			}
+            IjoyPlusServiceUtils::exportServiceError(Program::model()->invalid($prod_id));
           
 		}
 		
@@ -488,6 +682,8 @@ class ProgramController extends Controller
 			}
 		}
 		
+       
+		
        function actionHiddenWatch(){
 	        header('Content-type: application/json');
 		    if(!Yii::app()->request->isPostRequest){   
@@ -703,7 +899,8 @@ class ProgramController extends Controller
 				IjoyPlusServiceUtils::exportServiceError(Constants::OBJECT_NOT_FOUND);
 			}
 		}
-
+        
+		
 		function actionShare(){
 	        header('Content-type: application/json');
 		    if(!Yii::app()->request->isPostRequest){   
@@ -804,6 +1001,36 @@ class ProgramController extends Controller
 				IjoyPlusServiceUtils::exportEntity(array('comments'=>array()));
 			}
 		}
+		
+       public function  actionReviews(){
+	        header('Content-type: application/json');
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}
+			
+			$prod_id= Yii::app()->request->getParam("prod_id");
+			if( (!isset($prod_id)) || is_null($prod_id)  ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}
+			$page_size=Yii::app()->request->getParam("page_size");
+			$page_num=Yii::app()->request->getParam("page_num");
+			if(!(isset($page_size) && is_numeric($page_size))){
+				$page_size=10;
+				$page_num=1;
+			}else if(!(isset($page_num) && is_numeric($page_num))){
+				$page_num=1;
+			}
+			
+			$comments= Comment::model()->getReviewsByProgram($prod_id,$page_size,$page_size*($page_num-1));
+			if(isset($comments) && is_array($comments)){				
+				IjoyPlusServiceUtils::exportEntity(array('reviews'=>$comments));
+			}else {
+				IjoyPlusServiceUtils::exportEntity(array('reviews'=>array()));
+			}
+		}
+		
 		/**
 		 * Creates a new model.
 		 * If creation is successful, the browser will be redirected to the 'view' page.
@@ -864,14 +1091,19 @@ class ProgramController extends Controller
 			}
 
 			$program= CacheManager::getProgramCache($prod_id);
-
+            //var_dump($program->can_play_device);
 			if($program === null){
 		      IjoyPlusServiceUtils::exportServiceError(Constants::OBJECT_NOT_FOUND);
 		      return;
 			}
 
 			$prod =ProgramUtil::exportProgramEntity($program);
-
+			
+            if(isset($program->can_play_device) && $program->can_play_device !== '0'){
+              $prod['can_play_device']=$program->can_play_device;
+            } else {
+              $prod['can_play_device']='';
+            }
 			$comments = Comment::model()->getCommentsByProgram($prod_id,10,0);
 			$commentTemps = array();
 			if(isset($comments) && is_array($comments)){
@@ -887,6 +1119,69 @@ class ProgramController extends Controller
 		    	$prod['topics']=array();
 		    }
 			IjoyPlusServiceUtils::exportEntity($prod);
+		}
+		
+        public function actionRelatedVideos(){
+            header('Content-type: application/json');
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}
+			$prod_id= Yii::app()->request->getParam("prod_id");
+			if( (!isset($prod_id)) || is_null($prod_id)  ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}  
+			      
+	        $key ='PROGRAM_RELEATE_VEDIO_LIST_PROD_ID'.$prod_id;
+	        $lists = CacheManager::getValueFromCache($key);
+		    if($lists){
+		    	IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
+		    }
+		    
+			$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
+			$sql="SELECT topic_id FROM mac_vod_topic_items,mac_vod_topic WHERE flag=1 and  topic_id=t_id and t_bdtype=1 and vod_id =".$prod_id;
+			$lists= Yii::app()->db->createCommand($sql)->queryAll();
+			$movie=array();
+			if(isset($lists) && !is_null($lists)){
+				foreach ($lists as $list){
+				  $movie[]=$list['topic_id'];
+				}
+			}
+						
+	       if(count($movie) ===0){
+		    	$sql='SELECT  d_type_name  FROM mac_vod WHERE d_id ='.$prod_id;
+				$d_type_name = Yii::app()->db->createCommand($sql)->queryRow();
+				$d_type_name=$d_type_name['d_type_name'];
+				$d_type_name=explode(" ", $d_type_name);
+				$where=" ";
+				foreach ($d_type_name as $typename){
+				  $where=$where.' and d_type_name like \'%'.$typename.'%\' ';
+				}
+				$sql='SELECT  d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration   FROM mac_vod WHERE d_hide =0 '.$where.' AND  d_id !='.$prod_id.' ORDER BY   d_play_num DESC  ';
+				$lists= Yii::app()->db->createCommand($sql)->queryAll();
+			    if(count($lists)>0){
+			  	    CacheManager::setValueToCache($key, $lists,$prodExpired);
+			  	}
+				IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
+		    }else {
+			   	$topicid=implode(",", $movie);			   	
+			    $sql='SELECT  count(DISTINCT d_id) as num FROM mac_vod, mac_vod_topic_items WHERE   flag=1 and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id;
+				$nums = Yii::app()->db->createCommand($sql)->queryRow();
+				$nums=$nums['num'];
+				if($nums<6){
+				  $sql='SELECT  DISTINCT d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration  FROM mac_vod, mac_vod_topic_items WHERE   flag=1 and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id.' ORDER BY disp_order DESC , d_level DESC , d_play_num DESC , d_type ASC , d_good DESC , d_time DESC ';
+				}else {
+					 $random = rand(0, $nums-6);
+					 $sql='SELECT  DISTINCT d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration  FROM mac_vod, mac_vod_topic_items WHERE   flag=1 and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id.' ORDER BY disp_order DESC , d_level DESC , d_play_num DESC , d_type ASC , d_good DESC , d_time DESC  limit '.$random." , 6";
+				}
+				$lists= Yii::app()->db->createCommand($sql)->queryAll();
+				if(count($lists)>0){
+			  	    CacheManager::setValueToCache($key, $lists,$prodExpired);
+			  	}
+				IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
+		    }
+			
 		}
 
 		public function actionViewRecommend(){
