@@ -47,9 +47,9 @@ redisClient.on("error", function (err) {
     console.log("Error " + err);
 });
  
-redisClient.on("connect", runSample);
+redisClient.on("connect", testRedis);
  
-function runSample() {
+function testRedis() {
     // Set a value
     redisClient.set("string key", "Redis Successfully Connected", function (err, reply) {
         console.log(reply.toString());
@@ -101,11 +101,10 @@ bayeux.bind('disconnect', function(clientId) {
 app.get('/api', function(req, res){
  var tv_channel = req.param('tv_channel');
  var user_id = req.param('user_id');
- console.log('Response API: ' + tv_channel);
 
  var app_key = req.get('app_key');
  
-//  if ('ijoyplus_android_0001bj' == app_key) {
+ if ('ijoyplus_android_0001bj' == app_key) {
  	redisClient.get(tv_channel + '_' + user_id, function (err, reply) {
  	
  	    	console.log('[Status2] ' + reply.toString());
@@ -118,14 +117,12 @@ app.get('/api', function(req, res){
     	    }
     	} else {
     	    res.json({"res_code":"30001","res_desc":"Redis Server return error."})
-    	    console.log('[Status2] ' + reply.toString());
-        	console.log('[Status3] ' + err.toString());
     	}
 
  	});
-//  } else {
-//  	res.json({"res_code":"10006","res_desc":"Source paramter (appkey) is missing or invalid"})
-//  }
+ } else {
+ 	res.json({"res_code":"10006","res_desc":"Source paramter (appkey) is missing or invalid"})
+ }
  
 
 
