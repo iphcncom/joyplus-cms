@@ -98,7 +98,7 @@ bayeux.bind('disconnect', function(clientId) {
 });
 
 
-app.get('/api', function(req, res){
+app.get('/api/check_binding', function(req, res){
  var tv_channel = req.param('tv_channel');
  var user_id = req.param('user_id');
 
@@ -106,9 +106,7 @@ app.get('/api', function(req, res){
  
  if ('ijoyplus_android_0001bj' == app_key) {
  	redisClient.get(tv_channel + '_' + user_id, function (err, reply) {
- 	
- 	    	console.log('[Status2] ' + reply.toString());
-        	console.log('[Status3] ' + err.toString());
+
     	if (!err) {
     	    if (reply != null) {
     	        res.json({ status: reply.toString() });
