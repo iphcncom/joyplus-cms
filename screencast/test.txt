@@ -1,0 +1,1 @@
+http://localhost:8000/api/check_binding?tv_channel=qwerty&user_id=user_id
