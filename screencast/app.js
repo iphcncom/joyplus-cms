@@ -18,7 +18,7 @@ var app = express();
 var bayeux     = new faye.NodeAdapter({mount: '/bindtv', timeout: 20});
 
 // all environments
-app.set('port', 8000);
+app.set('port', 8080);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
