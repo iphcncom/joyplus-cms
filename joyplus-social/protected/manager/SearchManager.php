@@ -56,6 +56,14 @@ union
 SELECT vod.t_name AS prod_name, vod.t_id AS prod_id, a.ipad_pic_url AS ipad_pic, a.iphone_pic_url AS iphone_pic, a.info_desc AS memo, NULL AS prod_type, a.type AS
 type,a.disp_order as disp_order FROM mac_vod_popular a, mac_vod_topic vod
 WHERE a.type =1 AND a.vod_id = vod.t_id
+
+union 
+
+SELECT "" AS prod_name, "" AS prod_id, a.ipad_pic_url AS ipad_pic, a.iphone_pic_url AS iphone_pic, a.info_desc AS memo, NULL AS prod_type, a.type AS
+type,a.disp_order as disp_order FROM mac_vod_popular a
+WHERE a.type !=1 and a.type !=0   
+
+
 ) as d 
 ORDER BY d.disp_order asc ';
   
@@ -586,7 +594,7 @@ ORDER BY d.disp_order asc ';
 	    	return $items;
 	    }
 	    $items= Yii::app()->db->createCommand()
-			->select('items.id as id, vod.d_id as prod_id,vod.d_name as prod_name, vod.d_level as definition,vod.d_content as prod_summary, vod.d_type as prod_type,  substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as prod_pic_url,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode , vod.duraning as duration ')
+			->select('items.id as id, vod.d_id as prod_id,vod.d_name as prod_name, vod.d_downurl as play_urls,vod.d_level as definition,vod.d_content as prod_summary, vod.d_type as prod_type,  substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as prod_pic_url,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode , vod.duraning as duration ')
 			->from('mac_vod_topic_items as items')
 			->join("mac_vod as vod","items.vod_id=vod.d_id")
 			->where('items.flag=:t_flag and items.topic_id=:topic_id and vod.d_hide=0 '.$where, array(
@@ -599,6 +607,11 @@ ORDER BY d.disp_order asc ';
 	    if(isset($items) && !is_null($items) && is_array($items)){
 	    	foreach ($items as $item){
 	    	  $item['definition']='4';
+	    	  if($item['prod_type'] ==='1'){
+	    	  	$item['play_urls'] = ProgramUtil::parseMovidePlayurl($item['play_urls']);
+	    	  }else {
+	    	  	$item['play_urls']=array();
+	    	  }
 	    	  $tempList[]=$item;
 	      }
 	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);

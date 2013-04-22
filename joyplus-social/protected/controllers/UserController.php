@@ -486,9 +486,9 @@ class UserController extends Controller
 			$transaction = Yii::app()->db->beginTransaction();			
 			try{
 			    if($vodType === null || $vodType === ''){   
-			         Yii::app()->db->createCommand('update tbl_my_dynamic set status='.Constants::OBJECT_DELETE.' where type='.Constants::DYNAMIC_TYPE_FAVORITY.' and author_id='.$userid .' and content_id in ('.$contentIds.') ')->execute();
+			         Yii::app()->db->createCommand('update tbl_my_dynamic set status='.Constants::OBJECT_DELETE.' where dynamic_type='.Constants::DYNAMIC_TYPE_FAVORITY.' and author_id='.$userid .' and content_id in ('.$contentIds.') ')->execute();
 			    }else {
-				     Yii::app()->db->createCommand('update tbl_my_dynamic set status='.Constants::OBJECT_DELETE.' where type='.Constants::DYNAMIC_TYPE_FAVORITY.' and author_id='.$userid .' and content_id in ('.$contentIds.') and content_type='.$vodType )->execute();
+				     Yii::app()->db->createCommand('update tbl_my_dynamic set status='.Constants::OBJECT_DELETE.' where dynamic_type='.Constants::DYNAMIC_TYPE_FAVORITY.' and author_id='.$userid .' and content_id in ('.$contentIds.') and content_type='.$vodType )->execute();
 			    }
 				User::model()->updateFavorityCount($userid, 0-$count);
 	   		    Yii::app()->db->createCommand('update mac_vod set favority_user_count= case when favority_user_count>=1 then favority_user_count-1 else 0 end where d_id in ('.$contentIds.')')->execute();		    
@@ -496,6 +496,7 @@ class UserController extends Controller
 	   			$transaction->commit();
 				IjoyPlusServiceUtils::exportServiceError(Constants::SUCC);
 			} catch (Exception $e) {
+				Yii::log( CJSON::encode($e), "error");
 				$transaction->rollback();
 				IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);
 		    }

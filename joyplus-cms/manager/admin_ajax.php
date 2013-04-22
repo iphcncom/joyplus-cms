@@ -372,9 +372,12 @@ function getinfo()
 	if($tab ==='{pre}vod_popular'){
 		$type = be("all","type");
 		if($type ==='0'){
-		  $row = $db->queryArray("SELECT a.id as id,a.iphone_pic_url as iphone_pic_url,a.vod_id as vod_id,a.ipad_pic_url as ipad_pic_url,a.disp_order as disp_order,a.status as status,a.info_desc ,b.d_name as vod_name from ".$tab." a ,{pre}vod as b  WHERE a.vod_id=b.d_id and ".$col."=".$val,false);
-		}else {
-			 $row = $db->queryArray("SELECT a.id as id,a.iphone_pic_url as iphone_pic_url,a.vod_id as vod_id,a.ipad_pic_url as ipad_pic_url,a.disp_order as disp_order,a.status as status,a.info_desc ,b.t_name as vod_name from ".$tab." a ,{pre}vod_topic as b  WHERE a.vod_id=b.t_id and ".$col."=".$val,false);
+		  $row = $db->queryArray("SELECT a.id as id,a.iphone_pic_url as iphone_pic_url,a.vod_id as vod_id,a.ipad_pic_url as ipad_pic_url,a.disp_order as disp_order,a.status as status,a.info_desc ,b.d_name as vod_name,a.type as type from ".$tab." a ,{pre}vod as b  WHERE a.vod_id=b.d_id and ".$col."=".$val,false);
+		}else if($type ==='1'){
+			 $row = $db->queryArray("SELECT a.id as id,a.iphone_pic_url as iphone_pic_url,a.vod_id as vod_id,a.ipad_pic_url as ipad_pic_url,a.disp_order as disp_order,a.status as status,a.info_desc ,b.t_name as vod_name ,a.type as type from ".$tab." a ,{pre}vod_topic as b  WHERE a.vod_id=b.t_id and ".$col."=".$val,false);
+		
+		}else{
+			 $row = $db->queryArray("SELECT a.id as id,a.iphone_pic_url as iphone_pic_url,a.vod_id as vod_id,a.ipad_pic_url as ipad_pic_url,a.disp_order as disp_order,a.status as status,a.info_desc ,'' as vod_name ,a.type as type from ".$tab." a where a.type=".$type." and ".$col."=".$val,false);
 		
 		}
 	}else {
@@ -475,11 +478,12 @@ function save()
 			$iphone_pic_url = be("post","iphone_pic_url");
 			$ipad_pic_url = be("post","ipad_pic_url");
 			$status = be("post","status");
+			$type = be("post","type");
 			$disp_order = be("post","disp_order");
 			$info_desc=be("post","info_desc");
 //			if (!isNum($disp_order)) { $disp_order= $db->getOne("select max(disp_order) from {pre}vod_popular")+1; }
-			$colarr = array("iphone_pic_url","ipad_pic_url","info_desc","disp_order");
-			$valarr = array($iphone_pic_url,$ipad_pic_url,$info_desc,$disp_order);
+			$colarr = array("iphone_pic_url","ipad_pic_url","info_desc","disp_order","type");
+			$valarr = array($iphone_pic_url,$ipad_pic_url,$info_desc,$disp_order,$type);
 			$where = "id=".$t_id;
 //			var
 			$upcache=true;
@@ -521,9 +525,49 @@ function save()
 			$status = be("post","status");
 			$tv_code = be("post","tv_code");
 			$tv_type = be("post","tv_type");
+			$country = be("post","country");
+			$area = be("post","area");
+			$tv_type = be("post","tv_type");
 			$tv_playurl = be("post","tv_playurl");
-			$colarr = array("tv_name","tv_code","tv_type","tv_playurl","create_date",'status');
-			$valarr = array($tv_name,$tv_code,$tv_type,$tv_playurl,date('Y-m-d H:i:s',time()),$status);
+			$colarr = array("tv_name","tv_code","tv_type","tv_playurl","create_date",'status',"country",'area');
+			$valarr = array($tv_name,$tv_code,$tv_type,$tv_playurl,date('Y-m-d H:i:s',time()),$status,$country,$area);
+			$where = "id=".$id;
+			$upcache=true;
+			break;
+			
+		case "{pre}tv_program_item" :
+			$id = be("all","id");
+			$play_time = be("post","play_time");
+			$video_name = be("post","video_name");
+			$tv_id = be("all","tv_id");
+			$day = be("all","day");
+			$program_type = be("all","program_type");
+			$colarr = array("play_time","video_name","tv_id","day","program_type");
+			$valarr = array($play_time,$video_name,$tv_id,$day,$program_type);
+			$where = "id=".$id;
+		     //update config tabel
+			if(!isN($program_type)){
+				$row = $db->getRow("select * from  mac_tv_program_type_item where program_type ='".$program_type."' and program_name='".$video_name."'");
+				// var_dump("select * from  mac_tv_program_type_item where program_type ='".$program_type."' and program_name='".$video_name."'");
+				// var_dump($row);
+				if(!$row){
+					 $db->query("insert into mac_tv_program_type_item(program_type,program_name) values('".$program_type."','".$video_name."')");
+					 var_dump("insert into mac_tv_program_type_item(program_type,program_name) values('".$program_type."','".$video_name."')");
+				}			
+				$db->query("update mac_tv_program_item set program_type='".$program_type ."' where video_name='".$video_name."'");
+				//var_dump("update mac_tv_program_item set program_type='".$program_type ."' where video_name='".$video_name."'");
+			}
+			$upcache=true;
+			break;
+	    case "{pre}tv_play" :
+			$id = be("all","id");
+			$tv_playfrom = be("post","tv_playfrom");
+			$status = be("post","status");
+			$tv_id = be("all","tv_id");
+			$tv_playurl = be("all","tv_playurl");
+			$tv_definition = be("all","tv_definition");
+			$colarr = array("tv_playfrom","status","tv_id","tv_playurl","tv_definition");
+			$valarr = array($tv_playfrom,$status,$tv_id,$tv_playurl,$tv_definition);
 			$where = "id=".$id;
 			$upcache=true;
 			break;
@@ -731,6 +775,13 @@ function del()
 			$ids = be("get","c_id");
 			if(isN($ids)){
 				$ids= be("arr","c_id");
+			}
+			break;
+		case "{pre}tv_play":
+			$col="id";
+			$ids = be("get","t_id");
+			if(isN($ids)){
+				$ids= be("arr","t_id");
 			}
 			break;
 		case "{pre}vod_topic_items":
