@@ -78,6 +78,13 @@ STATUS , a.disp_order AS disp_order, vod.t_name AS vod_name, vod.t_id AS vod_id,
 FROM mac_vod_popular a, mac_vod_topic vod
 WHERE a.type =1
 AND a.vod_id = vod.t_id
+
+UNION
+SELECT a.type as type, a.id AS id, a.status AS
+STATUS , a.disp_order AS disp_order, "" AS vod_name, "" AS vod_id, a.ipad_pic_url AS ipad_pic_url, a.iphone_pic_url AS iphone_pic_url, a.info_desc AS info_desc
+FROM mac_vod_popular a
+WHERE a.type != 1 and a.type != 0
+
 ) AS b
 ORDER BY b.disp_order ASC , b.id DESC ';
 //	var_dum/p($sql);
@@ -229,7 +236,7 @@ function edit(id,type)
       <td><?php echo $t_id?></td>
       <td>
     <a href="admin_vod.php?action=edit&id=<?php echo $row["vod_id"];?>">
-      <?php echo $row["vod_name"]?></a> <?php if($row['type'] ==='0') { echo '[视频]';} else {echo '[榜单]';}?> </td>
+      <?php echo $row["vod_name"]?></a> <?php if($row['type'] ==='0') { echo '[视频]';} else if($row['type'] ==='1') {echo '[榜单]';} else if($row['type'] ==='3') {echo '[二维码图片]';}?> </td>
 	  <td>
 	 <?php echo $row["iphone_pic_url"]?></td>
 	 
@@ -263,7 +270,7 @@ function edit(id,type)
 	<tr>
 	<td  colspan="8">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'t_id[]')" />
 	<input type="button" value="批量删除" id="btnDel" class="input"  />
-<!--	&nbsp;<input type="button" value="批量修改" id="btnEdit" class="input" />-->
+	&nbsp;<input type="button" value="添加" id="btnAdd" class="input" />
 	&nbsp;<input type="button" value="添加视频" class="input" onclick="javascript:window.location.href='admin_vod.php?action=addVodPopular'" />
 	&nbsp;<input type="button" value="添加榜单" class="input" onclick="javascript:window.location.href='admin_vod_topic.php?keyword=&t_userid=0&t_flag=1&t_bdtype=-1'" />
 	</td></tr>
@@ -297,14 +304,15 @@ function edit(id,type)
 	  </td>
     </tr>
     
-<!--    <tr>-->
-<!--     <td>显示到App：</td>-->
-<!--      <td><select id="status" name="status">-->
-<!--	   <option value="0" selected>不显示</option>-->
-<!--	   <option value="1" >显示</option>-->
-<!--	</select>-->
-<!--	  </td>-->
-<!--    </tr>-->
+    <tr>
+     <td>类别</td>
+      <td><select id="type" name="type">
+	   <option value="3" >二维码图片</option>
+	   <option value="0" selected>视频</option>
+	   <option value="1" >榜单</option>
+	</select>
+	  </td>
+    </tr>
     
   
     
