@@ -452,6 +452,17 @@ $('#form2').form({
 $("#btnEdit").click(function(){
 	if(confirm('确定要推送消息吗')){
 		$("#form2").attr("action","?action=notifyMsg");
+		var weibotxt= document.getElementById( "weiboText").value;
+		alert(weibotxt);
+		if(weibotxt ==''){
+          alert("发送内容不能为空。");
+          return;
+		}
+
+		if(weibotxt.length>=110){
+	          alert("你发送的内容太长，不能超过110个字符。");
+	          return;
+		}
 		$("#form2").submit();
 		$("#btnEdit").attr("disabled",true); 
 	}

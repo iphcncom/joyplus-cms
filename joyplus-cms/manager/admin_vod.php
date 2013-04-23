@@ -579,11 +579,11 @@ global $db,$action,$template,$cache;
     if(!isNum($douban_comment)) { $douban_comment=0;} else { $douban_comment = intval($douban_comment  );}
     
      if($douban_comment==1){
-     	$where.=" and d_id in (SELECT DISTINCT content_id FROM tbl_comments WHERE author_id IS NULL AND thread_id IS NULL) ";
+     	$where.=" and d_id in (SELECT DISTINCT content_id FROM tbl_comments WHERE author_id IS NULL AND thread_id IS NULL and comment_type=1 ) ";
      }
      
 	if($douban_comment==2){
-     	$where.=" and d_id not in (SELECT DISTINCT content_id FROM tbl_comments WHERE author_id IS NULL AND thread_id IS NULL) ";
+     	$where.=" and d_id not in (SELECT DISTINCT content_id FROM tbl_comments WHERE author_id IS NULL AND thread_id IS NULL and comment_type=1) ";
      }
     
     $select_weburl=be("all", "select_weburl");
@@ -1371,10 +1371,7 @@ function sendWeiboText(){
 	 <?php }?> 
 		
 	<a href="admin_vod.php?action=doubanPic&id=<?php echo $d_id?>">豆瓣图片</a> | <a href="admin_vod.php?action=doubanThumb&id=<?php echo $d_id?>">豆瓣缩略图</a> 
-	
-	<?php if($row["d_type"] !=='1' ){ ?>
-	  |<a href="#" onClick="ajaxsubmit('<?php echo $d_id;?>','subscribe_msg_list','vod');">添加到追剧列表</a>
-	<?php }?>
+	|<a href="#" onClick="if(confirm('确定要添加到追剧列表吗')){ajaxsubmit('<?php echo $d_id;?>','subscribe_msg_list','vod');}">添加到追剧列表</a>
 	 <?php if($loginname ==='dale' || $loginname ==='admin'  || $loginname ==='lulu' || $loginname ==='scottliyq' || $loginname ==='zhouyinlong'  ){?>
 <!--	|-->
 <!--	 <a class="thickbox" href="#TB_inline?height=200&width=400&inlineId=myOnPageContent" onclick="javascript:{prepareWeiboText('<?php echo $row["d_type"]?>','<?php echo $d_id?>','<?php echo substring($row["d_name"],20)?>');}" > 消息推送</a>	  -->
@@ -2095,7 +2092,7 @@ $(document).ready(function(){
     <?php
     	$playnum=0;
     	if ($action=="edit"){
-	        if (isN($d_weburl)) { $d_weburl="";}
+	        if (isN($d_weburl)) { $d_weburl="";} 
 	        if (isN($d_playfrom)) { $d_playfrom="";}
 	        $playurlarr1 = explode("$$$",$d_weburl);
 	        $playfromarr = explode("$$$",$d_playfrom);

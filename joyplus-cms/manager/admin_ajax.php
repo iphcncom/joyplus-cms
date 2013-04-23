@@ -879,7 +879,7 @@ function mtuijian()
 {
 	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thit,$ttopic;
 	if ($show==1){
-		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"\">请选择推荐</option><option value=\"1\">推荐1</option><option value=\"2\">推荐2</option><option value=\"3\">推荐3</option><option value=\"4\">推荐4</option><option value=\"5\">推荐5</option><option value=\"0\">取消推荐</option></select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut><input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
+		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"\">请选择推荐</option><option value=\"1\">推荐1</option><option value=\"2\">推荐2</option><option value=\"3\">推荐3</option><option value=\"4\">推荐4</option><option value=\"5\">推荐5</option><option value=\"6\">推荐6</option><option value=\"7\">推荐7</option><option value=\"8\">推荐8</option><option value=\"0\">取消推荐</option></select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut><input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
 		echo $str;
 	}
 	else{
@@ -889,6 +889,9 @@ function mtuijian()
 			case "3" : $tjText ="3";break;
 			case "4" : $tjText ="4";break;
 			case "5" : $tjText ="5";break;
+			case "6" : $tjText ="6";break;
+			case "7" : $tjText ="7";break;
+			case "8" : $tjText ="8";break;
 			case "0" : $tjText ="0";break;
 		}
 		$db->Update ("{pre}vod" ,array("d_level"),array($ajaxcontent) ,"d_id = ".$id );
@@ -900,7 +903,7 @@ function mpltuijian()
 {
 	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thit,$ttopic;
 	if ($show==1){
-		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"\">请选择推荐</option><option value=\"1\">推荐1</option><option value=\"2\">推荐2</option><option value=\"3\">推荐3</option><option value=\"4\">推荐4</option><option value=\"5\">推荐5</option><option value=\"0\">取消推荐</option></select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut> <input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
+		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"\">请选择推荐</option><option value=\"1\">推荐1</option><option value=\"2\">推荐2</option><option value=\"3\">推荐3</option><option value=\"4\">推荐4</option><option value=\"5\">推荐5</option><option value=\"6\">推荐6</option><option value=\"7\">推荐7</option><option value=\"8\">推荐8</option><option value=\"0\">取消推荐</option></select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut> <input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
 		echo $str;
 	}
 	else if ($show == 2){
@@ -910,6 +913,9 @@ function mpltuijian()
 			case "3" : $tjText ="3";break;
 			case "4" : $tjText ="4";break;
 			case "5" : $tjText ="5";break;
+			case "6" : $tjText ="6";break;
+			case "7" : $tjText ="7";break;
+			case "8" : $tjText ="8";break;
 		}
 		$db->query("UPDATE {pre}vod set d_level=".$ajaxcontent." WHERE d_id IN(".$id.")");
 		$idarr = explode(",",$id);
