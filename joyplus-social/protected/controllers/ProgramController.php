@@ -454,6 +454,7 @@ class ProgramController extends Controller
 				$history->create_date=new CDbExpression('NOW()');
 				$history->save();
 			} catch (Exception $e) {
+				Yii::log( CJSON::encode($e), "error");
 			}
             IjoyPlusServiceUtils::exportServiceError(Program::model()->invalid($prod_id));
           
@@ -527,7 +528,34 @@ class ProgramController extends Controller
 				IjoyPlusServiceUtils::exportServiceError(Constants::OBJECT_NOT_FOUND);
 			}
 		}
-
+		
+        function actionIs_favority(){
+	        header('Content-type: application/json');
+		    if(!Yii::app()->request->isPostRequest){   
+		   		 IjoyPlusServiceUtils::exportServiceError(Constants::METHOD_NOT_SUPPORT);
+		   		 return ;
+		   	}
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}
+	        if(IjoyPlusServiceUtils::validateUserID()){
+				IjoyPlusServiceUtils::exportServiceError(Constants::USER_ID_INVALID);	
+				return ;
+			}
+			$prod_id= Yii::app()->request->getParam("prod_id");
+			if( (!isset($prod_id)) || is_null($prod_id)  ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}
+			$owner_id=Yii::app()->user->id;
+            $favority = Dynamic::model()->getDynamicByProd($owner_id, $prod_id,Constants::DYNAMIC_TYPE_FAVORITY);
+            if(isset($favority) && !is_null($favority) && $favority->status ==Constants::OBJECT_APPROVAL){
+               IjoyPlusServiceUtils::exportEntity(array('flag'=>true));
+            }else {
+				IjoyPlusServiceUtils::exportEntity(array('flag'=>false));
+			}
+		}
 		function actionFavority(){
 	        header('Content-type: application/json');
 		    if(!Yii::app()->request->isPostRequest){   
@@ -1138,7 +1166,7 @@ class ProgramController extends Controller
 		    if($lists){
 		    	IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
 		    }
-		    
+		    		
 			$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
 			$sql="SELECT topic_id FROM mac_vod_topic_items,mac_vod_topic WHERE flag=1 and  topic_id=t_id and t_bdtype=1 and vod_id =".$prod_id;
 			$lists= Yii::app()->db->createCommand($sql)->queryAll();
@@ -1148,38 +1176,51 @@ class ProgramController extends Controller
 				  $movie[]=$list['topic_id'];
 				}
 			}
-						
+			
+	        $device=IjoyPlusServiceUtils::getDevice();	   	    
+	   	    if($device ===false){
+	            $where=' ';
+	   	    }else {
+	   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+	   	    	
+	   	    }	
+	   	    
 	       if(count($movie) ===0){
 		    	$sql='SELECT  d_type_name  FROM mac_vod WHERE d_id ='.$prod_id;
 				$d_type_name = Yii::app()->db->createCommand($sql)->queryRow();
 				$d_type_name=$d_type_name['d_type_name'];
+				$d_type_name =str_replace(",", " ", $d_type_name);
 				$d_type_name=explode(" ", $d_type_name);
-				$where=" ";
 				foreach ($d_type_name as $typename){
 				  $where=$where.' and d_type_name like \'%'.$typename.'%\' ';
+				  break;
 				}
-				$sql='SELECT  d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration   FROM mac_vod WHERE d_hide =0 '.$where.' AND  d_id !='.$prod_id.' ORDER BY   d_play_num DESC  ';
-				$lists= Yii::app()->db->createCommand($sql)->queryAll();
-			    if(count($lists)>0){
-			  	    CacheManager::setValueToCache($key, $lists,$prodExpired);
-			  	}
-				IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
-		    }else {
-			   	$topicid=implode(",", $movie);			   	
-			    $sql='SELECT  count(DISTINCT d_id) as num FROM mac_vod, mac_vod_topic_items WHERE   flag=1 and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id;
-				$nums = Yii::app()->db->createCommand($sql)->queryRow();
-				$nums=$nums['num'];
-				if($nums<6){
-				  $sql='SELECT  DISTINCT d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration  FROM mac_vod, mac_vod_topic_items WHERE   flag=1 and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id.' ORDER BY disp_order DESC , d_level DESC , d_play_num DESC , d_type ASC , d_good DESC , d_time DESC ';
-				}else {
-					 $random = rand(0, $nums-6);
-					 $sql='SELECT  DISTINCT d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration  FROM mac_vod, mac_vod_topic_items WHERE   flag=1 and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id.' ORDER BY disp_order DESC , d_level DESC , d_play_num DESC , d_type ASC , d_good DESC , d_time DESC  limit '.$random." , 6";
-				}
+				$sql='SELECT  d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration   FROM mac_vod WHERE d_hide =0 '.$where.' AND  d_id !='.$prod_id.' ORDER BY   d_play_num DESC  limit 0 , 6 ';
 				$lists= Yii::app()->db->createCommand($sql)->queryAll();
 				if(count($lists)>0){
 			  	    CacheManager::setValueToCache($key, $lists,$prodExpired);
 			  	}
 				IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
+				
+		    }else {
+			   	$topicid=implode(",", $movie);			   	
+//			    $sql='SELECT  count(DISTINCT d_id) as num FROM mac_vod, mac_vod_topic_items WHERE   flag=1 and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id;
+//				$nums = Yii::app()->db->createCommand($sql)->queryRow();
+//				$nums=$nums['num'];
+				if(true){
+				  $sql='SELECT  DISTINCT d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration  FROM mac_vod, mac_vod_topic_items WHERE   flag=1 '.$where.' and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id.' ORDER BY disp_order DESC , d_level DESC , d_play_num DESC , d_type ASC , d_good DESC , d_time DESC limit 0,6 ';
+				}else {
+					 $random = rand(0, $nums-6);
+					 $sql='SELECT  DISTINCT d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration  FROM mac_vod, mac_vod_topic_items WHERE   flag=1 and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id.' ORDER BY disp_order DESC , d_level DESC , d_play_num DESC , d_type ASC , d_good DESC , d_time DESC  limit '.$random." , 6";
+				}
+				
+				$lists= Yii::app()->db->createCommand($sql)->queryAll();
+				
+				if(count($lists)>0){
+			  	    CacheManager::setValueToCache($key, $lists,$prodExpired);
+			  	}
+				IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
+				
 		    }
 			
 		}
