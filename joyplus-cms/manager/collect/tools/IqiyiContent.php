@@ -16,6 +16,9 @@ class IqiyiContent {
 
     public function parseAndroidVideoUrlByContent($content, $p_coding, $p_script) {
         $aid = getBody($content, '"tvId":"', '",');
+        if(isN($aid)){
+        	$aid = getBody($content, 'tvid="', '"');
+        }
         $api = $url = replaceStr(IqiyiContent::API,"{aid}",$aid);
         $json = getPageWindow($api, $p_coding);
         return $this->getAndroidVideoUrl(json_decode($json), $p_coding, $p_script);
