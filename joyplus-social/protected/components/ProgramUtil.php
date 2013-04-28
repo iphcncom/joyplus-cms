@@ -7,7 +7,7 @@ class ProgramUtil{
 				$prod['tv']=ProgramUtil::genTV($program,true);
 				break;
 				
-			case 131:
+			case Constants::PROGRAM_ANIMATION:
 				$prod['tv']=ProgramUtil::genTV($program,true);
 				break;
 					
@@ -63,6 +63,8 @@ private static function genTV($program,$flag){
           'summary'=>$program->d_content,
           'poster'=>$program->d_pic,
           'episodes_count'=>$program->d_state,
+          'cur_episode'=>$program->d_state,
+          'max_episode'=>$program->d_remarks,
           'sources'=>$program->d_playfrom,
           'like_num'=>$program->love_user_count,
           'watch_num'=>$program->watch_user_count,
@@ -73,9 +75,11 @@ private static function genTV($program,$flag){
 	      'publish_date'=>$program->d_year, 	        
 	      'directors'=>$program->d_directed,  	        
 	      'stars'=>$program->d_starring, 
-	      'id'=>$program->d_id,   
+	      'id'=>$program->d_id,  
+	      'definition'=>$program->d_level,  
 	      'area'=>$program->d_area,  
 	      'total_comment_number'=>$program->total_comment_number,
+	      'douban_id'=>$program->d_douban_id,
 //	      'typeName'=>$program->d_type_name  ,
 		);
 	try{
@@ -128,6 +132,11 @@ private static function genTV($program,$flag){
 		
 		for ($k=0;$k<count($playfromArray);$k++){
 			$tmpplayfrom=$playfromArray[$k];
+			
+			if(is_null($tmpplayfrom) || $tmpplayfrom=='' || strpos("wasu,kankan,tudou,cntv", $tmpplayfrom) !==false){
+				continue;
+			}	
+					
 			$platformWebUrl= $webArrays[$k];
 		    if (is_null($platformWebUrl) || $platformWebUrl=='') { $platformWebUrl="";}
 		    $webUrls=explode("{Array}",$platformWebUrl);
@@ -171,8 +180,8 @@ private static function genTV($program,$flag){
 		return $sp;
    }
    
-   private static function getContentType($url){
-   	 if(strpos($url, 'm3u8') !==false || strpos($url, 'm3u') !==false  ){
+   private static function getContentType($url,$tmpplayfrom){
+   	 if(strpos($url, 'm3u8') !==false || strpos($url, 'm3u') !==false  ||( $tmpplayfrom ==='letv' && strpos($url, 'tss=ios') !==false ) ){
    	 	return "m3u8";
    	 }else {
    	 	return "mp4";
@@ -190,6 +199,10 @@ private static function genTV($program,$flag){
 		for ($k=0;$k<count($webArrays);$k++){
 			$weburlarr2=explode("$$",$webArrays[$k]);
 			$tmpplayfrom=$weburlarr2[0];
+			
+			if(is_null($tmpplayfrom) || $tmpplayfrom=='' || strpos("wasu,kankan,tudou,cntv", $tmpplayfrom) !==false){
+				continue;
+			}			
 			if(count($weburlarr2)>=2 && isset($tmpplayfrom) && !is_null($tmpplayfrom) && strlen(trim($tmpplayfrom))>0 && strpos($playfroms, $tmpplayfrom) ===false ){
 				$playfroms=$playfroms.'.'.$tmpplayfrom;
 				$platformWebUrl= $weburlarr2[1];
@@ -220,7 +233,7 @@ private static function genTV($program,$flag){
 			    	
 			    	$temp[]=array(
 			    	  'source'=>$tmpplayfrom,
-	                  'urls'=>ProgramUtil::parseDownVideoUrls($url),
+	                  'urls'=>ProgramUtil::parseDownVideoUrls($url,$tmpplayfrom),
 			    	);
 			    	$numPlatformUrl[$name]=$temp;
 			    }
@@ -233,7 +246,7 @@ private static function genTV($program,$flag){
    	 return $urlValid->validateValue($url);
    }
   
-   private static function parseDownVideoUrls($url){
+   public static function parseDownVideoUrls($url,$tmpplayfrom){
    	 if(ProgramUtil::isN($url)){
    	 	return array();
    	 }
@@ -246,7 +259,7 @@ private static function genTV($program,$flag){
 	   	 		$temp[]= array(
 	   	 		    "type"=>$videoTypeNameUrl[0],
 	   	 		    "url"=>$videoTypeNameUrl[1],
-				    'file'=>ProgramUtil::getContentType($videoTypeNameUrl[1]),
+				    'file'=>ProgramUtil::getContentType($videoTypeNameUrl[1],$tmpplayfrom),
 	   	 		);
    	 		}
    	 	}
@@ -255,7 +268,7 @@ private static function genTV($program,$flag){
 	   	 		$temp[]= array(
 	   	 		    "type"=>MovieType::HIGH_CLEAR,
 	   	 		    "url"=>$videoTypeNameUrl[0],
-				    'file'=>ProgramUtil::getContentType($videoTypeNameUrl[0]),
+				    'file'=>ProgramUtil::getContentType($videoTypeNameUrl[0],$tmpplayfrom),
 	   	 		);
    	 		}
    	 	}
@@ -291,6 +304,7 @@ private static function genTV($program,$flag){
 		$video_urls = array();		
 		for ($k=0;$k<count($playfromArray);$k++){
 			$tmpplayfrom=$playfromArray[$k];
+						
 			$platformWebUrl= $webArrays[$k];
 		    $tempUrl = explode("$", $platformWebUrl);
 		    if(count($tempUrl)==2){
@@ -315,7 +329,9 @@ private static function genTV($program,$flag){
 //			var_dump($webArrays[$k]);
 			$weburlarr2=explode("$$",$webArrays[$k]);
 //			var_dump($weburlarr2);
-			$tmpplayfrom=$weburlarr2[0];
+			$tmpplayfrom=$weburlarr2[0];	
+					
+			
 			if(isset($tmpplayfrom) && !is_null($tmpplayfrom) && strlen(trim($tmpplayfrom))>0 && strpos($playfroms, $tmpplayfrom) ===false ){
 				if(count($weburlarr2)<2){
 					continue;
@@ -329,13 +345,46 @@ private static function genTV($program,$flag){
 			    }
 				$video_urls[]=array(
 				  'source'=>$tmpplayfrom,
-	                  'urls'=>ProgramUtil::parseDownVideoUrls($platformWebUrl),
+	                  'urls'=>ProgramUtil::parseDownVideoUrls($platformWebUrl,$tmpplayfrom),
 				);
 			}
 		}		
 	    $prod['down_urls']=$video_urls;
       }
 	  return $prod;
+    }
+    
+    public static function parseMovidePlayurl($tmpdownurl){
+    	$playfroms="";$video_urls = array();
+     if (!(is_null($tmpdownurl) || $tmpdownurl=='' )) {         	
+        $webArrays = explode("$$$",$tmpdownurl);
+				
+		for ($k=0;$k<count($webArrays);$k++){
+//			var_dump($webArrays[$k]);
+			$weburlarr2=explode("$$",$webArrays[$k]);
+//			var_dump($weburlarr2);
+			$tmpplayfrom=$weburlarr2[0];	
+					
+			
+			if(isset($tmpplayfrom) && !is_null($tmpplayfrom) && strlen(trim($tmpplayfrom))>0 && strpos($playfroms, $tmpplayfrom) ===false ){
+				if(count($weburlarr2)<2){
+					continue;
+				}
+				$playfroms=$playfroms.','.$tmpplayfrom;
+				$platformWebUrl= $weburlarr2[1];
+			    if (is_null($platformWebUrl) || $platformWebUrl=='') { $platformWebUrl="";}
+			    $tempUrl = explode("$", $platformWebUrl);
+			    if(count($tempUrl)==2){
+			    	$platformWebUrl=$tempUrl[1];
+			    }
+				$video_urls[]=array(
+				  'source'=>$tmpplayfrom,
+	                  'urls'=>ProgramUtil::parseDownVideoUrls($platformWebUrl,$tmpplayfrom),
+				);
+			}
+		}
+     }	
+     return $video_urls;
     }
 
 }
