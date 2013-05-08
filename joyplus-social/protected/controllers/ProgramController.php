@@ -1168,7 +1168,7 @@ class ProgramController extends Controller
 		    }
 		    		
 			$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
-			$sql="SELECT topic_id FROM mac_vod_topic_items,mac_vod_topic WHERE flag=1 and  topic_id=t_id and t_bdtype=1 and vod_id =".$prod_id;
+			$sql="SELECT topic_id FROM mac_vod_topic_items,mac_vod_topic WHERE flag=1  and topic_id=t_id and t_bdtype=1 and vod_id =".$prod_id;
 			$lists= Yii::app()->db->createCommand($sql)->queryAll();
 			$movie=array();
 			if(isset($lists) && !is_null($lists)){
@@ -1186,11 +1186,13 @@ class ProgramController extends Controller
 	   	    }	
 	   	    
 	       if(count($movie) ===0){
-		    	$sql='SELECT  d_type_name  FROM mac_vod WHERE d_id ='.$prod_id;
-				$d_type_name = Yii::app()->db->createCommand($sql)->queryRow();
-				$d_type_name=$d_type_name['d_type_name'];
+		    	$sql='SELECT  d_type_name,d_type  FROM mac_vod WHERE d_id ='.$prod_id;
+				$d_type_names = Yii::app()->db->createCommand($sql)->queryRow();
+				$d_type_name=$d_type_names['d_type_name'];
+				$d_type=$d_type_names['d_type'];
 				$d_type_name =str_replace(",", " ", $d_type_name);
 				$d_type_name=explode(" ", $d_type_name);
+				$where=$where.' and d_type='.$d_type;
 				foreach ($d_type_name as $typename){
 				  $where=$where.' and d_type_name like \'%'.$typename.'%\' ';
 				  break;
@@ -1203,12 +1205,15 @@ class ProgramController extends Controller
 				IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
 				
 		    }else {
-			   	$topicid=implode(",", $movie);			   	
+			   	$topicid=implode(",", $movie);	
+			   	$sql='SELECT  d_type  FROM mac_vod WHERE d_id ='.$prod_id;
+				$d_type_name = Yii::app()->db->createCommand($sql)->queryRow();
+				$d_type=$d_type_name['d_type'];		   	
 //			    $sql='SELECT  count(DISTINCT d_id) as num FROM mac_vod, mac_vod_topic_items WHERE   flag=1 and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id;
 //				$nums = Yii::app()->db->createCommand($sql)->queryRow();
 //				$nums=$nums['num'];
 				if(true){
-				  $sql='SELECT  DISTINCT d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration  FROM mac_vod, mac_vod_topic_items WHERE   flag=1 '.$where.' and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id.' ORDER BY disp_order DESC , d_level DESC , d_play_num DESC , d_type ASC , d_good DESC , d_time DESC limit 0,6 ';
+				  $sql='SELECT  DISTINCT d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration  FROM mac_vod, mac_vod_topic_items WHERE   flag=1 '.$where.' and d_hide =0 AND d_type ='.$d_type.' and vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id.' ORDER BY disp_order DESC , d_level DESC , d_play_num DESC , d_type ASC , d_good DESC , d_time DESC limit 0,6 ';
 				}else {
 					 $random = rand(0, $nums-6);
 					 $sql='SELECT  DISTINCT d_id as prod_id, d_name as prod_name, d_level as definition, d_type as prod_type,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode, duraning as duration  FROM mac_vod, mac_vod_topic_items WHERE   flag=1 and d_hide =0 AND vod_id = d_id AND topic_id in ('.$topicid.') and d_id !='.$prod_id.' ORDER BY disp_order DESC , d_level DESC , d_play_num DESC , d_type ASC , d_good DESC , d_time DESC  limit '.$random." , 6";
