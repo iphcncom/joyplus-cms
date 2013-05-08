@@ -2,9 +2,11 @@
 class ParseClient {
 	
 	static $myParse = null;
+	
 	//yuebaoceshi
-	private $appid = 'nSTWZrfmpCMkCWVy9batn6klsNk4PxCsxblPLX9c';
-	private $restkey ='tzQapG8XYWJLc7n9Zm7wJakf1hyDLvwLWb5NPHt6';
+	private $appid = '5FNbLx7dnRAx3knxV4rOdaLMRJMByqfKjWQRQakT';
+	private $restkey ='mszLuR856vY4G1ITOr0tu1SKOTA8kjw0ZjKMS7Tn';
+	
 	
 	//allinone
 //	 private $appid = '4pTBrAFZFPXUVnFCkMjRy3nZQDBTdfhj0HfgDme1';
@@ -45,8 +47,8 @@ class ParseClient {
 		curl_setopt ( $c, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt ( $c, CURLOPT_HTTPHEADER, array (
 				'Content-Type: application/json',
-				'X-Parse-Application-Id: ' . $this->appid,
-				'X-Parse-REST-API-Key: ' . $this->restkey 
+				'X-Parse-Application-Id: ' . $args ['appid'],
+				'X-Parse-REST-API-Key: ' .  $args ['restkey'] 
 		) );
 		curl_setopt ( $c, CURLOPT_CUSTOMREQUEST, $args ['method'] );
 		curl_setopt ( $c, CURLOPT_URL, $this->parseUrl . $args ['url'] );
@@ -167,11 +169,13 @@ class ParseClient {
 		return $this->checkResponse ( $return, '200' );
 	}
 	
-   public function push($args) {
+   public function push($args,$appid,$restkey) {
 		$params = array (
 				'url' => '',
 				'method' => 'POST',
-				'payload' => $args , 
+				'payload' => $args ,
+				'appid' => $appid ,
+				'restkey' => $restkey , 
 		);
 		
 		$return = $this->request ( $params ,'Notifications');

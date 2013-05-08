@@ -28,6 +28,11 @@ class NotificationsManager {
 		   }else {
 		   	 // $args['channels']= array(NotificationsManager::CHANNEL_ISO,NotificationsManager::CHANNEL_ANDROID);
 		   }
+		   
+		   if(isset($notifyMsg->channels) && is_array($notifyMsg->channels) && count($notifyMsg->channels)>0){
+		   	 $args['channels']=$notifyMsg->channels;
+		   }
+		   
 //		   $args['channels']= array(NotificationsManager::CHANNEL_ISO,NotificationsManager::CHANNEL_ANDROID);
 //		   var_dump($args);
 		   
@@ -77,15 +82,21 @@ class NotificationsManager {
           if(isset($notifyMsg->prod_type) && !is_null($notifyMsg->prod_type)){
 		   	  $args['data']['prod_type']=$notifyMsg->prod_type;
 		   }
+          if(isset($notifyMsg->push_type) && !is_null($notifyMsg->push_type)){
+		   	  $args['data']['push_type']=$notifyMsg->push_type;
+		   }
 		   		   
        // var_dump(json_encode( var_dump($args)));
-		$result = ParseClient::getInstance ()->push ( $args );
+       
+		$result = ParseClient::getInstance ()->push ( $args,$notifyMsg->appid,$notifyMsg->restkey );
 //		$list = obj2arr ( $result->results );
 //echo ($result['code']);
 //var_dump($result);
+
 	    return $result;
 	}
 }
+
 
 
 class Notification{
@@ -103,6 +114,9 @@ class Notification{
 	public $sound; //is an iOS-specific 
 	public $content_available;// is an iOS-specific number which should be set to 1 to signal a Newsstand app to begin a background download.
 	public $action; 
+	public $push_type;
+	public $appid  ;
+	public $restkey;
 //	is an Android-specific string indicating that an Intent should be fired with the given action type. 
 //  If you specify an "action" and do not specify an "alert" or "title", then no system tray notification will be shown to Android users.
 	public $title;//is an Android-specific string that will be used to set a title on the Android system tray notification. 
