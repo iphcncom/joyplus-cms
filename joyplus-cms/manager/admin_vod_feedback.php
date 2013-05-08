@@ -50,7 +50,7 @@ FROM mac_vod AS vod, (
 SELECT prod_id, feedback_type, COUNT( * ) AS feedback_count
 FROM tbl_video_feedback where 
 ".$where." 
-GROUP BY prod_id, feedback_type
+GROUP BY prod_id
 ) AS feed
 WHERE vod.d_id = feed.prod_id
 ) AS feeds";
@@ -64,7 +64,7 @@ FROM mac_vod AS vod, (
 SELECT prod_id, feedback_type, COUNT( * ) AS feedback_count,status
 FROM tbl_video_feedback where
 ".$where." 
-GROUP BY prod_id, feedback_type
+GROUP BY prod_id
 ) AS feed
 WHERE vod.d_id = feed.prod_id
 ORDER BY feedback_count DESC , d_play_num DESC   limit ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;

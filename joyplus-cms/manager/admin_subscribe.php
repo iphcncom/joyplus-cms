@@ -2,21 +2,71 @@
 require_once ("admin_conn.php");
 require_once ("genTopRecommendItems.php");
 require_once ("./parse/NotificationsManager.php");
+$parse_appid_restkey =require(dirname(__FILE__).'/parse/test_app_config.php');
 chkLogin();
 
 $action = be("all","action");
 switch($action)
-{
-	case "editall" : editall();break;
+{   case "editall" : headAdmin ("视频采集入库管理"); editall();break; 
+	case "parse" : headAdmin ("视频采集入库管理"); parse();break;
 	default : headAdmin ("追剧推送管理");main();break;
 }
 dispseObj();
-
-	function editall()
+function editall()
 	{
+		$t_id = be("all","ids");
 	
-	global $db;
-	$t_id = be("arr","ids");	
+	$t_id=explode(",", $t_id);
+	$tids= array();
+	foreach ($t_id as $tid){
+		if(!isN($tid)){
+			$tids[]=$tid;
+		}
+	}
+	
+	
+	$t_id=implode(",", $tids);
+	?>
+<table class=tb>
+    <tr>
+		<td  colspan="2" align="center"><span id="storagetext">正 在 推 送 信 息...</span></td>
+  	</tr>
+	<tr>
+		<td  colspan="2" align="center">推送信息状态 
+		
+		 <div id="refreshlentext" align="left"></div>
+		</td>
+	</tr>
+	
+  	
+</table>
+<script language="javascript">
+location.href='<?php echo "admin_subscribe.php?action=parse&ids=".$t_id;?>';	
+</script>
+<?php
+	 
+	
+}
+	function parse()
+	{
+	?>
+<table class=tb>
+    <tr>
+		<td  colspan="2" align="center"><span id="storagetext">正 在 推 送 信 息...</span></td>
+  	</tr>
+	<tr>
+		<td  colspan="2" align="center">推送信息状态 
+		
+		 <div id="refreshlentext" align="left"></div>
+		</td>
+	</tr>
+	
+  	
+</table>
+<?php
+	global $db,$parse_appid_restkey;
+	$t_id = be("all","ids");	
+	
 	if(!isN($t_id)){	
 		$sql = "SELECT vod.d_remarks ,vod.d_state, a.id as id, vod.d_type as d_type, vod.d_name as vod_name,vod.d_id as vod_id FROM {pre}vod_pasre_item a,{pre}vod vod where  a.prod_id=vod.d_id  AND  id in (".$t_id.")";
 		$rs = $db->query($sql);	
@@ -32,27 +82,34 @@ dispseObj();
 	        if(!isN($row["d_state"])) {
 	    		$d_state=$row["d_state"];
 	    	}
-	    	if(!isN($d_state) && $d_state !== $d_remarks){
-	    	  $content='亲，你关注的《'.$row["vod_name"].'》更新到'.$d_state.'集了，快来收看吧~';
+	    	if($d_type ==='1'){
+	    		$content='亲，您想看的《'.$row["vod_name"].'》已经上线啦，快来看看哦~';
 	    	}else {
-	    	 $content='亲，你关注的《'.$row["vod_name"].'》更新全，快来收看吧~';	
+		    	if(!isN($d_state) && $d_state !== $d_remarks){
+		    	  $content='亲，你关注的《'.$row["vod_name"].'》更新到第'.$d_state.'集了，快来收看吧~';
+		    	}else {
+		    	 $content='亲，你关注的《'.$row["vod_name"].'》更新全，快来收看吧~';	
+		    	}
 	    	}
 		    $msg->alert=$content;
 		    $msg->prod_id=$vod_id;
 		    $msg->prod_type=$d_type;
 		    $msg->push_type='2';
 		    $msg->channels=array('CHANNEL_PROD_'.$vod_id);
-		    
-		   $result= NotificationsManager::push($msg);
-		  // $result=array('code'=>'','response'=>'');
-		   if($result['code'].'' == '200'){
-		   	// echo "消息推送成功";
-		   	 $list[]=$id;
-	         writetofile("parsemsg.log", $content."====消息推送成功 ");
-		   }else {
-	//	    	echo "消息推送失败:".$result['response'];
-	         writetofile("parsemsg.log", $content."====消息推送失败:".$result['response']);
-		   };
+		    $appKeys= array_keys($parse_appid_restkey);
+		    foreach ($appKeys as $appkey){
+		       $msg->appid=$parse_appid_restkey[$appkey]['appid'];		
+		       $msg->restkey=$parse_appid_restkey[$appkey]['restkey'];
+			   $result= NotificationsManager::push($msg);
+			   if($result['code'].'' == '200'){
+			   	 $list[]=$id;
+			   	 appendMsg($content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 成功 ");
+		         writetofile("parsemsg.log", $content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 成功 ");
+			   }else {
+			   	appendMsg($content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 失败:".$result['response']);
+		         writetofile("parsemsg.log", $content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 失败:".$result['response']);
+			   };
+		    }
 	    }
 	    unset($rs);
 	     
@@ -65,6 +122,12 @@ dispseObj();
 	}else {
 		echo "你至少需要选择一个视频";
 	}
+}
+
+function appendMsg($content){
+	 echo "<script type=\"text/javascript\" language=\"javascript\">";
+			echo "$(\"#refreshlentext\").append(\"".$content."\").append(\"<br/>\");";			
+			echo "</script>";
 }
 
 function main()
@@ -94,10 +157,10 @@ if($flag==1){
 	$pagenum = be("all","page");
 	if (!isNum($pagenum)){ $pagenum = 1;} else { $pagenum = intval($pagenum);}
 	if ($pagenum < 1) { $pagenum = 1; }
-	$sql = "SELECT count(*) FROM {pre}vod_pasre_item as a ";
+	$sql = "SELECT count(a.prod_id) FROM {pre}vod_pasre_item a,{pre}vod vod where  a.prod_id=vod.d_id and vod.favority_user_count >0 ";
 	$nums = $db->getOne($sql);
 	$pagecount=ceil($nums/app_pagenum);
-	$sql = "SELECT vod.d_remarks ,vod.d_state,a.d_status as status,a.id as id, a.create_date as create_date, vod.favority_user_count as favority_user_count, vod.d_name as vod_name,vod.d_id as vod_id FROM {pre}vod_pasre_item a,{pre}vod vod where  a.prod_id=vod.d_id order by a.d_status asc, a.create_date desc limit ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
+	$sql = "SELECT vod.d_remarks ,vod.d_state,a.d_status as status,a.id as id, a.create_date as create_date, vod.favority_user_count as favority_user_count, vod.d_name as vod_name,vod.d_id as vod_id FROM {pre}vod_pasre_item a,{pre}vod vod where  a.prod_id=vod.d_id and vod.favority_user_count >0 order by vod.favority_user_count desc, a.d_status asc, a.create_date desc limit ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
 //var_dump($sql);
 	$rs = $db->query($sql);
 ?>
@@ -131,15 +194,30 @@ $(document).ready(function(){
 	});
 	$("#btnEdit").click(function(){
 		if(confirm('确定要推送消息吗')){
-		$("#form1").attr("action","?action=editall");
-		$("#btnEdit").attr("disabled",true); ;
-		$("#form1").submit();
+			var url='admin_subscribe.php?action=editall&ids=';
+			var channels=document.getElementsByName("ids[]");
+			var channelFlag=true;
+			var ids='';
+			for(var i = 0; i < channels.length; i++){
+				 if (channels[i].checked == true) {
+					  channelFlag=false;
+					  ids=channels[i].value+","+ids;
+			     }
+		    }
+			if(channelFlag){
+				alert("你至少需要选择一个视频");
+		    }else {
+		    	location.href=url+ids;		    	
+		    }
+		    
+//			location.href
+			
 		}
 	});
 //	$("#btnAdd").click(function(){
 //		window.location.href="admin_vod.php?topic_id=<?php echo $topic_id?>";
 //	});
-	$("#btnCancel").click(function(){
+	$("#btnCancel").click(function(){		
 		location.href= location.href;
 	});
 });

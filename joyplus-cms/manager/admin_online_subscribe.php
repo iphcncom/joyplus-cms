@@ -4,7 +4,7 @@ require_once ("../inc/pinyin.php");
 
 require_once ("./score/DouBanParseScore.php");
 require_once ("./parse/NotificationsManager.php");
-
+$parse_appid_restkey =require(dirname(__FILE__).'/parse/test_app_config.php');
 
 
 
@@ -279,19 +279,18 @@ function prepareWeiboText(type,id,name){
 
 function sendWeiboText(){
 
-	var channels= document.getElementById( "channel[]");
-	alert(channels);
+	
 	var weibotxt= document.getElementById( "weiboText").value;
 	var notify_msg_prod_id= document.getElementById( "notify_msg_prod_id").value;
 	var notify_msg_prod_type= document.getElementById( "notify_msg_prod_type").value;
 	var urlT='admin_vod.php?action=notifyMsg&prod_type='+notify_msg_prod_type+'&prod_id='+notify_msg_prod_id+'&content=' +encodeURIComponent(weibotxt) ;
-	
+	var channels= document.getElementById( "channel[]");
+	alert(channels);
 	for(var i = 0; i < channels.length; i++){
 		 if (channels[i].checked == true) {
 			  urlT = urlT +'&channels='+channels[i].value;				 		 
 		  }
 	}
-		//alert(urlT);
 		 $.post(urlT, {Action:"post"}, function (data, textStatus){     
 			  if(textStatus == "success"){   
 	          //alert(data);
@@ -452,19 +451,57 @@ $('#form2').form({
 $("#btnEdit").click(function(){
 	if(confirm('确定要推送消息吗')){
 		$("#form2").attr("action","?action=notifyMsg");
-		var weibotxt= document.getElementById( "weiboText").value;
-		alert(weibotxt);
+		var weibotxt= $("#weiboText").val();
+		$("#btnEdit").attr("disabled",true); 
 		if(weibotxt ==''){
           alert("发送内容不能为空。");
+          $("#btnEdit").attr("disabled",false); 
           return;
 		}
 
 		if(weibotxt.length>=110){
 	          alert("你发送的内容太长，不能超过110个字符。");
+	          $("#btnEdit").attr("disabled",false); 
 	          return;
 		}
-		$("#form2").submit();
-		$("#btnEdit").attr("disabled",true); 
+		var prod_id= $("#notify_msg_prod_id").val();
+		
+		var prod_type= $("#notify_msg_prod_type").val();
+		 $('#SendWeiboMsg').empty().append('正在推送消息.....<br/>');
+		var urlT='admin_online_subscribe.php?action=notifyMsg&notify_msg_prod_type='+prod_type+'&notify_msg_prod_id='+prod_id+'&content=' +encodeURIComponent(weibotxt) ;
+		var channels=document.getElementsByName("channel[]");
+		var channelFlag=true;
+		var index=0;
+		var indexSelect=0;
+		for(var i = 0; i < channels.length; i++){
+			 if (channels[i].checked == true) {
+				  channelFlag=false;
+				  indexSelect++;
+				  urlTs = urlT +'&channel='+channels[i].value;	
+				 // alert(channels[i].value);	
+				  $.post(urlTs, {Action:"post"}, function (data, textStatus){     
+					  if(textStatus == "success"){ 
+						  index++;  
+			          //alert(data);
+						  $('#SendWeiboMsg').append(data).append('<br/>');
+			           }else{
+			        	   index++;  
+			        	   $('#SendWeiboMsg').append('发送失败。').append('<br/>');
+			           }
+					  if( index==indexSelect){			  
+						     $("#btnEdit").attr("disabled",false); 
+						     $('#SendWeiboMsg').append('推送消息完成。').append('<br/>');
+				      }
+			       });	 		 
+			  }
+		}
+		if(channelFlag){
+			alert('你必须要选择一个频道发送');
+	    }
+	   
+	    
+		//$("#form2").submit();
+		
 	}
 });
 </script>
@@ -492,19 +529,21 @@ $("#btnEdit").click(function(){
                         <td colspan="2" align="center"><textarea name="wbText" id="weiboText" rows="10" cols="90" style="border:1;border-color:blue;" ></textarea></td>
                     </tr>
                      <tr>
-                        <td align="left"> <br/>
-	                        &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_ANDROID" checked  />悦视频 Android版<br/>
-						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_TV" checked />悦视频 TV版
+                        <td align="left" valign="top"> <br/>
+	                        &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_ANDROID"   />悦视频 Android版<br/>
+						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_TV"  />悦视频 TV版<br/>
+						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IOS"  />悦视频 IOS版
                         </td>
-                        <td align="left"> 
-						    <input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IOS" checked />悦视频 IOS版<br/>
+                        <td align="left" valign="top">  <br/>
+						    <input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IPHONE"  />今晚剧场iphone版<br/>
+						    <input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IPAD"  />今晚剧场IPAD版<br/>
                         </td>
                     </tr>
                       <tr>
                          <td align="center" colspan="2"><input type="button" value="发送消息" id="btnEdit"  class="input"  /></td>
                       </tr>
                         <tr>
-                        <td align="center" colspan="2">  <font color=red><span id="SendWeiboMsg"></span></font></td>    
+                        <td align="left" colspan="2">  <font color=red><span id="SendWeiboMsg"></span></font></td>    
                        
                     </tr> 
                     
@@ -519,13 +558,14 @@ unset($rs);
 
 
 
+
 function notifyMsg(){
 	
 	$d_id = be("all","notify_msg_prod_id");$prod_type = be("all","notify_msg_prod_type");
-	
-	$can_search_device=be("arr","channel");
+	global $parse_appid_restkey;
+	$can_search_device=be("all","channel");
 	if(!isN($can_search_device)){
-		$content = be("all","wbText");
+		$content = be("all","content");
 		$msg = new Notification();
 		$msg->alert=$content;
 		$msg->prod_id=$d_id;
@@ -538,21 +578,25 @@ function notifyMsg(){
 		if(strpos($can_search_device, 'CHANNEL_ANDROID') !==false || strpos($can_search_device, 'CHANNEL_TV') !==false){
 			$androidFlag=true;
 		}
-	    if(strpos($can_search_device, 'CHANNEL_IOS') !==false ){
+	    if(strpos($can_search_device, 'CHANNEL_IOS') !==false   || strpos($can_search_device, 'CHANNEL_IPAD') !==false  || strpos($can_search_device, 'CHANNEL_IPHONE') !==false){
 			$isoFlag=true;
 		}
+		
 	    if($isoFlag && !$androidFlag){
 			$msg->type=NotificationsManager::DEVICE_ISO;	
 		}
 		if($androidFlag && !$isoFlag){
 			$msg->type=NotificationsManager::DEVICE_ANDROID;	
 		}
+		$msg->appid=$parse_appid_restkey[$can_search_device]['appid'];
 		
+		$msg->restkey=$parse_appid_restkey[$can_search_device]['restkey'];
+//		var_dump($msg);
 		$result= NotificationsManager::push($msg);
 		if($result['code'].'' == '200'){
-			echo "消息推送成功";
+			echo "消息推送到 [".$parse_appid_restkey[$can_search_device]['appname']."] 成功";
 		}else {
-			echo "消息推送失败:".$result['response'];
+			echo "消息推送到 [".$parse_appid_restkey[$can_search_device]['appname']."] 失败:".$result['response'];
 		};
 	}else {
 		echo "你必须要选择一个频道发送";
