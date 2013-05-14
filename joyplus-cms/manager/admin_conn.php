@@ -1,6 +1,6 @@
 <?php
 require_once (dirname(__FILE__)."/../inc/conn.php");
-$menulist= "系统管理||2|||扩展功能||3|||视频管理||4|||文章管理||5|||用户管理||6|||模板及生成||7|||采集管理||8|||消息推送||9|||电视直播||10";
+$menulist= "系统管理||2|||扩展功能||3|||视频管理||4|||文章管理||5|||用户管理||6|||模板及生成||7|||采集管理||8|||消息推送||9|||电视直播||10|||云推推||11";
 
 function chkLogin()
 {
@@ -45,6 +45,8 @@ function getcon($varName)
 		break;
 	}
 }
+
+
 function isfun($funName)
 {
 	return (false !== function_exists($funName))?YES:NO;
@@ -271,4 +273,8 @@ function checkTable($tableName)
 		return false;
 	}
 }
+
+
+
+
 ?>
