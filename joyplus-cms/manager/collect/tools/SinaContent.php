@@ -10,15 +10,15 @@ require_once (dirname(__FILE__) . "/ContentManager.php");
 
 class SinaContent extends Content {
     const BASE_URL="http://v.iask.com/v_play_ipad.php?vid={vid}";
-    private $contentparmStart = "ipad_vid:'"; //
-    private $contentparaend = "',";
+    private $contentparmStart = "'ipad_vid'] = \""; //
+    private $contentparaend = "\";";
     private $p_code='utf-8';
     public function parseAndroidVideoUrl($url,$p_coding,$p_script){
         $content = getPage($url, $this->p_code);
         return $this->parseAndroidVideoUrlByContent($content, $this->p_code, $p_script);
     }
 
-    public function parseAndroidVideoUrlByContent($content, $p_coding,$p_script) {
+    public function parseAndroidVideoUrlByContent($content, $p_coding,$p_script) {writetofile("sd.txt",$content);
         $vid = getBody($content, $this->contentparmStart, $this->contentparaend);
         return $this->getAndroidVideoUrl($vid);
     }

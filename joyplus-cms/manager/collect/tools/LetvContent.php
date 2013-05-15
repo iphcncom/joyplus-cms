@@ -12,13 +12,14 @@ class LetvContent extends Content{
   	private $p_code="UTF-8";
 
     public function parseAndroidVideoUrl($url,$p_coding="UTF-8",$p_script){    	
-  		$content = getPage($url, $this->p_code);
-//  		var_dump($content);
+  		$content = getPageWindow($url, $this->p_code);
+  	//	writetofile('stds.log',$content);var_dump($url);
   		return $this->parseAndroidVideoUrlByContent($content, $p_coding,$p_script);
   	}
   	public function parseAndroidVideoUrlByContent($content, $p_coding,$p_script){
   		$vid = getBody($content,$this->contentparmStart,$this->contentparaend); 
 	    $mmsid = getBody($content,$this->contentparmStart2,$this->contentparaend2); 
+	   // var_dump($mmsid); var_dump($vid);
   		return $this->getAndroidVideoUrl($vid,$mmsid);
   	}
   	
@@ -29,11 +30,12 @@ class LetvContent extends Content{
   		  //check gaoqing
   		  $hdurl = replaceStr($url,"{mmsid}",$mmsid);
 //  		  var_dump($hdurl);
-  		  $location = getLocation($hdurl);
+  		  //$location = getLocation($hdurl);
+  		  
 //  		  writetofile("daa.txt", $hdurl);
-  		  if(!isN($location) && strpos($location, $this->notfound) ===false){
-  		  	$videoAddressUrl=$videoAddressUrl.MovieType::HIGH_CLEAR.MovieType::VIDEO_NAME_URL_SEP.$location;			 
-  		  }  		    		  
+  		 // if(!isN($location) && strpos($location, $this->notfound) ===false){
+  		  	$videoAddressUrl=$videoAddressUrl.MovieType::HIGH_CLEAR.MovieType::VIDEO_NAME_URL_SEP.$hdurl;			 
+  		 // }  		    		  
   		}
   		return $videoAddressUrl;
   	}
@@ -42,7 +44,7 @@ class LetvContent extends Content{
   		return false;
   	}
     public function parseIOSVideoUrl($url,$p_coding,$p_script){
-  		$content = getPage($url, $this->p_code);
+  		$content = getPageWindow($url, $this->p_code);
   		return $this->parseIOSVideoUrlByContent($content, $p_coding,$p_script);
   	}
   	

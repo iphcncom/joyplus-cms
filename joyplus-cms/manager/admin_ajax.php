@@ -451,6 +451,22 @@ function save()
 			$where = "t_id=".$t_id;
 			$upcache=true;
 			break;
+			
+		case "apk_company" :
+			$t_id = be("all","id");
+			$name = be("post","name");
+			$email = be("post","email");
+			$contact = be("post","contact");
+			$zipcode = be("post","zipcode");
+			$adress = be("post","adress");
+			$description = be("post","description");
+			$status = be("post","status");
+			$colarr = array("name","email","contact","zipcode","adress","description","status");
+			$valarr = array($name,$email,$contact,$zipcode,$adress,$description,$status);
+			$where = "id=".$t_id;
+			$upcache=true;
+			break;	
+			
 		case "{pre}vod_topic" :
 			$t_id = be("all","t_id");
 			$t_name = be("post","t_name");
@@ -505,6 +521,21 @@ function save()
 			$where = "t_id=".$t_id;
 			$upcache=true;
 			break;
+			
+		case "apk_category" :
+			$t_id = be("all","t_id");
+			$t_name = be("post","name");
+			$t_pid = be("post","parent_id");
+			$t_sort = be("post","disp_order");
+			$t_key = be("post","type_key");
+			$t_des = be("post","type_desc");
+			if (!isNum($t_sort)) { $t_sort= $db->getOne("SELECT MAX(disp_order) FROM apk_category")+1; }
+			$colarr = array("name","parent_id","disp_order","type_key","type_desc");
+			$valarr = array($t_name,$t_pid,$t_sort,$t_key,$t_des);
+			$where = "id=".$t_id;
+			$upcache=true;
+			break;
+				
 		case "{pre}art_topic" :
 			$t_id = be("all","t_id");
 			$t_name = be("post","t_name");
@@ -519,6 +550,58 @@ function save()
 			$where = "t_id=".$t_id;
 			$upcache=true;
 			break;
+		case "apk_master_base" :
+			$t_id = be("all","id");
+			$app_name = be("post","app_name");
+			$package_name = be("post","package_name");
+			$status = be("post","status");
+			$category_id = be("post","category_id");
+			$company_id = be("post","company_id");
+			$upload_count = be("post","upload_count");
+			
+			
+			
+			$disp_order = be("post","disp_order");
+			$apk_tag = be("post","apk_tag");
+			$description = be("post","description");
+			
+			if (!isNum($disp_order)) { $disp_order= $db->getOne("select max(disp_order) from apk_master_base")+1;}
+			$colarr = array("app_name","package_name","status","category_id","company_id","upload_count","disp_order","apk_tag","description");
+			$valarr = array($app_name,$package_name,$status,$category_id,$company_id,$upload_count,$disp_order,$apk_tag,$description);
+			$where = "id=".$t_id;
+			$upcache=true;
+			break;	
+		case "apk_master_items" :
+			$t_id = be("all","id");
+			$apk_id = be("all","apk_id");
+			$flag2 = be("all","flag2");
+			$flag=$flag2;
+			$package_name = be("all","package_name");
+			$status = be("all","status");
+			$version_code = be("post","version_code");
+			$version_name = be("post","version_name");
+			$upload_count = be("post","upload_count");
+			if (!isNum($upload_count)){
+				$upload_count='0';
+			}
+			$disp_order = be("post","disp_order");
+			
+			$file_url = be("post","file_url");
+			$description = be("post","description");
+			
+			$file_size= be("post","file_size");
+			$md5 = be("post","md5");
+			$file_name = be("post","file_name");
+			$file_type = be("post","file_type");
+			$qiniu_file_key = be("post","qiniu_file_key");
+			
+			if (!isNum($disp_order)) { $disp_order= $db->getOne("select max(disp_order) from apk_master_items")+1;}
+			$colarr = array("apk_id","package_name","status","version_code","version_name","upload_count","disp_order","file_url","description","file_size","md5","file_name","file_type","qiniu_file_key");
+			$valarr = array($apk_id,$package_name,$status,$version_code,$version_name,$upload_count,$disp_order,$file_url,$description,$file_size,$md5,$file_name,$file_type,$qiniu_file_key);
+			$where = "id=".$t_id;
+			$upcache=true;
+			break;	
+	    
 		case "{pre}tv" :
 			$id = be("all","id");
 			$tv_name = be("post","tv_name");
@@ -590,6 +673,7 @@ function save()
 			if( $m_password !=""){
 				$colarr = array("m_name","m_password","m_levels","m_status");
 				$valarr = array($m_name,md5($m_password),$m_levels,$m_status);
+				
 			}
 			else{
 				$colarr = array("m_name","m_levels","m_status");
@@ -672,7 +756,7 @@ function save()
 		
 		$db->Update($tab,$colarr,$valarr,$where);
 	}
-//	var_dump($flag);
+	
 	if ($upcache){ updateCacheFile();}
     echo "保存完毕";
 }
@@ -692,6 +776,15 @@ function del()
 				$ids= be("arr","l_id");
 			}
 			break;
+		case "apk_master_items" :
+			$col="id";
+			$ids = be("get","t_id");
+			if(isN($ids)){
+				$ids= be("arr","t_id");
+			}
+			break;
+			
+			
 		case "{pre}vod_type":
 			$col="t_id";
 			$ids = be("get","t_id");
@@ -700,6 +793,34 @@ function del()
 			}
 			$upcache=true;
 			break;
+			
+		case "apk_company":
+			$col="id";
+			$ids = be("get","t_id");
+			if(isN($ids)){
+				$ids= be("arr","t_id");
+			}
+			$upcache=true;
+			break;
+		case "apk_master_temp":
+			$col="id";
+			$ids = be("get","t_id");
+			if(isN($ids)){
+				$ids= be("arr","t_id");
+			}
+			$upcache=true;
+			break;
+			
+			
+		case "apk_category":
+			$col="id";
+			$ids = be("get","t_id");
+			if(isN($ids)){
+				$ids= be("arr","t_id");
+			}
+			$upcache=true;
+			break;
+			
 		case "{pre}vod_topic" :
 			$col="t_id";
 			$ids = be("get","t_id");
@@ -709,6 +830,16 @@ function del()
 			$upcache=true;
 	        if (!isN($ids)) { $db->Delete("{pre}vod_topic_items", "topic_id"." in (".$ids.")"); }
 			break;
+	    case "apk_master_base" :
+			$col="id";
+			$ids = be("get","t_id");
+			if(isN($ids)){
+				$ids= be("arr","t_id");
+			}
+			$upcache=true;
+	        if (!isN($ids)) { $db->Delete("apk_master_items", "apk_id"." in (".$ids.")"); }
+			break;
+			
 			
 		case "{pre}art":
 			$col="a_id";
