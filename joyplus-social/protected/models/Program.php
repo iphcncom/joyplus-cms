@@ -101,6 +101,16 @@ class Program extends CActiveRecord
 		    return Constants::SYSTEM_ERROR;
 		  }
 	 }
+	 
+	 function updateDuraning($id,$duration){
+	       try{
+		      Yii::app()->db->createCommand("update ".$this->tableName() .' set duraning=\''.$duration .'\' where d_id='.$id)->execute();
+		      return Constants::SUCC;
+		  }catch (Exception $e){
+		    return Constants::SYSTEM_ERROR;
+		  }
+	 }
+	 
      function invalid($id){		
 		  try{
 		      Yii::app()->db->createCommand("update ".$this->tableName() .' set d_play_check=1' .' where d_id='.$id)->execute();
