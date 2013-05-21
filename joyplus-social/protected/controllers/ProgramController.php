@@ -263,10 +263,37 @@ class ProgramController extends Controller
 		    $userid=Yii::app()->user->id;
 		    		    
 			$HTTP_CLIENT= isset($_SERVER['HTTP_CLIENT'])?$_SERVER['HTTP_CLIENT']:"";
-			
-			if($HTTP_CLIENT ===null || $HTTP_CLIENT ===''){
-			  Program::model()->incPlayCount($prod_id);
+			//remove the code, needn't the requirement.
+//			if($HTTP_CLIENT ===null || $HTTP_CLIENT ===''){
+//			  Program::model()->incPlayCount($prod_id);
+//			}
+
+			if($prod_type ==='1'){
+		       if(is_numeric($duration)){       	  
+		       	   $durations= intval($duration);
+		       	   $h=intval($durations/3600);
+		       	   $m=intval($durations%3600/60);
+		       	   $s=intval($durations%3600%60);
+		       	   $durations='';
+		       	   if($h>0){
+		       	   	$durations=$h.':';
+		       	   }else {
+		       	   	$durations='00:';
+		       	   }
+		       	   if($m<10){
+		       	   	 $durations=$durations.'0'.$m.':';
+		       	   }else {
+		       	   	 $durations=$durations.$m.':';
+		       	   }
+		           if($s<10){
+		       	   	 $durations=$durations.'0'.$s;
+		       	   }else {
+		       	   	 $durations=$durations.$s;
+		       	   }
+		       	   Program::model()->incPlayCount($prod_id,$durations);
+		       }	
 			}
+			
 			if($prod_type ==='3'){
 			   $history = PlayHistory::model()->getHisotryByShowProd($userid, $prod_id,$prod_subname);
 			}else {

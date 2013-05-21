@@ -33,6 +33,7 @@ function checkLogin()
 	$m_password = be("post","m_password");
 	$m_password = chkSql($m_password,true);
 	$m_password = md5($m_password);
+	 
 	$m_check = be("post","m_check");
 	if (isN($m_name) || isN($m_password) || isN($m_check)){
 		alertUrl ("请输入您的用户名或密码!","?action=login");
@@ -211,8 +212,11 @@ function main()
 			if (count($valarr)==2) { $icon = "icon-100".$i; $name = $valarr[0]; $url = $valarr[1]; }
 		}
 		$menudiy = $menudiy ."\"diym".$i."\":{\"text\":\"".$name."\",\"url\":\"".$url."\"}";
+		
 		$rc = true;
 	}
+//	echo($menudiy);
+	$menudiy = $menudiy .",\"diym_1\":{\"text\":\"<font color='red'>修改密码</font>\",\"url\":\"admin_forgot_pwd.php\"}";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
