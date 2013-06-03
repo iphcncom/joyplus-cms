@@ -6,6 +6,9 @@ class DouBanParseScore{
 	const BASE_URL="https://api.douban.com/v2/movie/search?count=10000&q=";
 	const COMMENTS_URL="http://movie.douban.com/subject/{ID}/comments?sort=time";//10569156
 	
+	const REVIEW_URL="http://movie.douban.com/subject/{ID}/reviews?score={STAR}";
+	const REVIEW_URL_four="http://movie.douban.com/subject/{ID}/reviews?score=4";
+	
 	const PIC_URL="http://movie.douban.com/subject/{ID}/photos?type=R&start=0&sortby=size";
 	const PIC_URL_NORMAL="http://movie.douban.com/subject/{ID}/photos?type=R&sortby=size&size=a&subtype=o";
 	const PIC_JIZHAO="http://movie.douban.com/subject/{ID}/photos?type=S&start=0&sortby=size&size=a&subtype=a";
@@ -162,6 +165,20 @@ class DouBanParseScore{
 		
 	}
 	
+     function getDoubanReviews($name,$year,$area){
+	    $id = $this->getDoubanIDForWeb($name, $year, $area);
+		if(isN($id)){
+			$id = $this->getDoubanID($name, $year, $area);
+		}
+		
+	    if(isN($id)){
+			return false;
+		}
+	
+		return $this->getReviewsById($id);
+		
+	}
+	
 	function getDouBanPics($name,$year,$area,$rate){
 		$id = $this->getDoubanIDForWeb($name, $year, $area);
 		
@@ -183,9 +200,10 @@ class DouBanParseScore{
 		}
 	    if(isN($id)){
 			return false;
-		}var_dump($id);
+		}
 		writetofile("updateVodThumb.txt", 'check item for vod id{=}'.$id );
 		return $this->getThumb($id);
+	
 	}
 	function getThumb($id){
 		 $url = str_replace("{ID}", $id, DouBanParseScore::PIC_URL_THUMB);	     
@@ -193,7 +211,9 @@ class DouBanParseScore{
  	     $content = getPage($url, "utf-8");
  	     $content=getBody($content, DouBanParseScore::WEB_THUMB_START, DouBanParseScore::WEB_THUMB_END);
 	     $content=getBody($content, DouBanParseScore::WEB_PIC_THUMB_START, DouBanParseScore::WEB_PIC_THUMB_END);
-	     return $content;
+	     return array('pic'=>$content,
+				             'id'=>$id,
+				);;
 	}
     function getComments($name,$year,$area){
 		$comments= $this->getDoubanComments($name, $year, $area);
@@ -330,6 +350,99 @@ public function getDoubanID($name,$year,$area){
 	return $this->getCommentsByUrl($url);
     }
     
+    //http://movie.douban.com/j/review/5684162/fullinfo?show_works=False
+    
+    public function  getReviewsById($id){
+    	$reviewArry=array();
+		$titleArry=array();
+		$idArry=array();
+		
+    	$turl = str_replace("{ID}", $id, DouBanParseScore::REVIEW_URL);
+    	$url = str_replace("{STAR}", '5', $turl);
+    
+    	$flag= $this->getReviewsByStar($url,$reviewArry,$titleArry,$idArry);
+    	if($flag !==false ){
+    		$reviewArry = array_merge($reviewArry,$flag['comments']);
+    		$titleArry = array_merge($titleArry,$flag['title']);
+    		$idArry = array_merge($idArry,$flag['reviewid']);
+    	}
+    	
+    	
+    	if(count($reviewArry)<3){
+    		$url = str_replace("{STAR}", '4', $turl);
+    		$flag= $this->getReviewsByStar($url,$reviewArry,$titleArry,$idArry); 
+	    	 if($flag !==false ){
+	    		$reviewArry = array_merge($reviewArry,$flag['comments']);
+	    		$titleArry = array_merge($titleArry,$flag['title']);
+	    		$idArry = array_merge($idArry,$flag['reviewid']);
+	    	}   		
+    	}
+      
+    	
+       if(count($reviewArry)<3){
+    		$url = str_replace("{STAR}", '3', $turl);
+    		$flag= $this->getReviewsByStar($url,$reviewArry,$titleArry,$idArry);    
+	        if($flag !==false ){
+	    		$reviewArry = array_merge($reviewArry,$flag['comments']);
+	    		$titleArry = array_merge($titleArry,$flag['title']);
+	    		$idArry = array_merge($idArry,$flag['reviewid']);
+	    	}		
+    	}
+    	
+    	if(count($reviewArry)>0){
+    		return array(
+				    'comments'=>$reviewArry,
+				    'title'=>$titleArry,
+			        'reviewid'=>$idArry,
+			        'id'=>$id,
+			);
+    	}
+		return false;
+    }
+    
+public function  getReviewsByStar($url){
+    	writetofile("updateReview.txt", 'getReviewsById for vod url{=}'.$url );
+    	$content =getPage($url, "utf-8");
+        writetofile("updateReviewContent.txt", 'getReviewsById for vod url{=}'.$content );
+		if(isset($content) && !is_null($content)){
+			$reviewArry=array();
+			$titleArry=array();
+			$idArry=array();
+			$titlesID = getArray($content,'<span class="ckd-content"><a href="http://movie.douban.com/review','</span>');
+			$titles = getArray($titlesID,'>','</a>');
+			$reviewids= getArray($content, "/review/", "/\"");
+			$reviewidsArray = split('{Array}', $reviewids);
+			$titlesArray = split('{Array}', $titles);
+			$count=count($reviewidsArray);			
+			for($i=0;$i<$count && $i<3; $i++){
+				$tempUrl= 'http://movie.douban.com/j/review/'.$reviewidsArray[$i].'/fullinfo?show_works=False';	
+			   //var_dump($tempUrl);
+			   writetofile("updateReview.txt", 'getReviewsById for vod url{=}'.$tempUrl );
+			   $tempContent= getPage($tempUrl, "utf-8");
+			   $review=getBody($tempContent, "\"html\":\"", "<div class=");//"html":"
+			    writetofile("updateReviewContent.txt", 'getReviews'.$review );
+			   $review=replaceStr($review, "\\r<br\/>", Chr(13));
+			   if(!isN($review)){
+				   $reviewArry[]=$review;
+				   $titleArry[]=$titlesArray[$i];
+				   $idArry[]=$reviewidsArray[$i];
+			   }
+			}
+			if(count($reviewArry)>0){
+				return array(
+					    'comments'=>$reviewArry,
+					    'title'=>$titleArry,
+				        'reviewid'=>$idArry
+				);
+			}else {
+				return false;
+			}
+		}
+		return false;
+		
+    }
+    
+    
  const PIC_CONTENT_START='<ul class="poster-col4 clearfix">';
  const PIC_CONTENT_END='</ul>';
  const PIC_URL_START='<img src="';
@@ -351,8 +464,10 @@ public function getDoubanID($name,$year,$area){
 	    writetofile("updateVodPic.txt", 'check item for PIC_JIZHAO url{=}'.$url );
       	$pic=$this->getPicByUrl($url, $rate);
       }
-      
-     return $pic;
+      return array('pic'=>$pic,
+				             'id'=>$id,
+				);
+     
     }
     
     private function getPicByUrl($url,$rate){
@@ -442,10 +557,12 @@ public function getDoubanID($name,$year,$area){
    
 	if(isset($content) && !is_null($content)){
 //		 echo $content;
+ 
         $content=getBodys($content,DouBanParseScore::COMMENT_CONTENT_START);
         
 		$dates = getArray($content, DouBanParseScore::DATE_START, DouBanParseScore::DATE_END);
 		$coments= getArray($content, DouBanParseScore::CONTENT_START, DouBanParseScore::CONTENT_END);
+		$coments=replaceStr($coments, "&#34;", "\"");
 		$USERS = getArray($content, DouBanParseScore::USERS_START, DouBanParseScore::USERS_END);
 		$USERS=filterScriptStar($USERS,'8191');
 		$USERS=replaceStr($USERS, ",", "");
@@ -478,7 +595,9 @@ public function getDoubanID($name,$year,$area){
 //$d = nes= $d->getCommentById('10569156');
 //var_dump($coments);
 //$d = new DouBanParseScore();
-//var_dump($d->getDoubanThumb("喜剧王", '2013', ''));
+//var_dump( $d->getReviewsById("4249355"));
+//var_dump( $d->getDouBanPics("大上海", '2012', '',5/7));
+//var_dump( $d->getDoubanThumb("大上海", '2012', ''));
 
 //$s=rand(0, 10)+rand(0, 10)/10;
 //echo $s;

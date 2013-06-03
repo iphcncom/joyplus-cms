@@ -27,6 +27,7 @@ function main()
 {$backurl = getReferer();
 	global $db,$template,$cache;
     $status = be("all", "status");
+     $client = be("all", "client");
     $feedback_type = be("all", "feedback_type");
      $pagenum = be("all", "page");
     if(!isNum($feedback_type)) { $feedback_type = 1;} else { $feedback_type = intval($feedback_type);}
@@ -37,7 +38,12 @@ function main()
 	if ($pagenum < 1) { $pagenum = 1; }
   
     $where = " 1=1 ";
-  
+     
+    if($client ==='1'){
+    	$where .= " AND client !='android' ";
+    }else if($client ==='2'){
+    	$where .= " AND client ='android' ";
+    }
     
     if ($feedback_type > 0) { $where .= " AND feedback_type like '%" . $feedback_type . "%' ";}
     if ($status > 0) { $where .= " AND status =" . $status . " ";}
@@ -119,7 +125,8 @@ $(document).ready(function(){
 function filter(){
 	var feedback_type=$("#feedback_type").val();	
 	var status=$("#status").val();
-	var url = "admin_vod_feedback.php?feedback_type="+feedback_type+"&status="+status;
+	var client=$("#client").val();
+	var url = "admin_vod_feedback.php?feedback_type="+feedback_type+"&status="+status+"&client="+client;
 	window.location.href=url;
 }
 
@@ -155,6 +162,12 @@ function deleteStatus(id){
 	<option value="6" <?php if($feedback_type=="6"){ echo "selected";} ?>>画质不清晰</option>
 	<option value="7" <?php if($feedback_type=="7"){ echo "selected";} ?>>音画不同步</option>
 	<option value="8" <?php if($feedback_type=="8"){ echo "selected";} ?>>其它（用户自己填写，可不填）</option>
+	</select>
+	
+	<select id="client" name="client">
+	<option value="0" >来源</option>
+	<option value="1" <?php if($client=="1"){ echo "selected";} ?>>ios</option>
+	<option value="2" <?php if($client=="2"){ echo "selected";} ?>>android</option>
 	</select>
 	
 	<select id="status" name="status">
@@ -217,7 +230,7 @@ function deleteStatus(id){
 
 	<tr>
 	<td align="center" colspan="12">
-	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod_feedback.php?page={p}&feedback_type=" . $feedback_type.'&status=' . $status )?>   //
+	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod_feedback.php?page={p}&feedback_type=" . $feedback_type.'&status=' . $status.'&client=' . $client )?>   //
 	</td>
 	</tr>
 </table>
