@@ -181,6 +181,9 @@ private static function genTV($program,$flag){
    }
    
    private static function getContentType($url,$tmpplayfrom){
+   	 if('56' === $tmpplayfrom){
+   	 	return "mp4";
+   	 }
    	 if(strpos($url, 'm3u8') !==false || strpos($url, 'm3u') !==false  ||( $tmpplayfrom ==='letv' && strpos($url, 'tss=ios') !==false ) ){
    	 	return "m3u8";
    	 }else {

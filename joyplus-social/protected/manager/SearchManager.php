@@ -606,7 +606,7 @@ ORDER BY d.disp_order asc ';
 	    $tempList= array();
 	    if(isset($items) && !is_null($items) && is_array($items)){
 	    	foreach ($items as $item){
-	    	  $item['definition']='4';
+//	    	  $item['definition']='4';
 	    	  if($item['prod_type'] ==='1'){
 	    	  	$item['play_urls'] = ProgramUtil::parseMovidePlayurl($item['play_urls']);
 	    	  }else {
@@ -681,6 +681,51 @@ ORDER BY d.disp_order asc ';
 	    return $prods;
 	}
 	
+    public static function searchProgramCapitalByType($keyword,$type,$limit,$offset){
+	    $device=IjoyPlusServiceUtils::getDevice();
+   	    $where='';
+   	    
+   	    if(!isset($type) || $type == null || $type ===''){
+   	    	$type='';
+   	    }
+   	    
+   	    if($device ===false){
+            $key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_Capital_'.$keyword.'_type_'.$type.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+   	    }else {
+   	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
+   	    	$key =SearchManager::CACHE_SEARCH_PROD_BY_CONTENT_LIMIT_OFFSET.'_Capital_'.$keyword.'_type_'.$type.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
+	    $prods = CacheManager::getValueFromCache($key);
+	    if($prods){
+	    	return $prods;
+	    }
+	    
+	    $keyword='%'.$keyword.'%';
+//	    $keyword= iconv("iso-8859-1","UTF-8",$keyword);
+	    if( $type ===''){
+		    $prods= Yii::app()->db->createCommand()
+				->select('d_id as prod_id, d_name as prod_name, d_type as prod_type, d_level as definition,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode , duraning as duration ')
+				->from('mac_vod ')
+				->where('d_hide=:d_hide  and ( d_enname like \''.$keyword.'\' or d_capital_name like \''.$keyword.'\'  ) '.$where, array(
+					    ':d_hide'=>0,
+				))->order('d_level desc ,d_play_num desc,d_type asc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
+				->queryAll();
+        }else {
+		    $prods= Yii::app()->db->createCommand()
+				->select('d_id as prod_id, d_name as prod_name, d_type as prod_type, d_level as definition,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode , duraning as duration ')
+				->from('mac_vod ')
+				->where('d_hide=:d_hide and d_type in ('.$type.') and ( d_enname like \''.$keyword.'\' or d_capital_name like \''.$keyword.'\'  ) '.$where, array(
+					    ':d_hide'=>0,
+				))->order('d_level desc ,d_play_num desc,d_type asc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
+				->queryAll();        	
+        }
+	    if(isset($prods) && !is_null($prods)){
+	    	$prodExpired = CacheManager::getExpireByCache(CacheManager::CACHE_PARAM_EXPIRED_POPULAR_PROGRAM);
+	  	    CacheManager::setValueToCache($key, $prods,$prodExpired);
+	    }
+	    return $prods;
+	}
+	
    public static function filterPrograms($type,$sub_type,$area,$year,$limit,$offset){
    	    $device=IjoyPlusServiceUtils::getDevice();
    	    $whereDevice='';
@@ -698,7 +743,7 @@ ORDER BY d.disp_order asc ';
 	    
 	    if (!(is_null($year) || $year==='')){
 	    	if($year==='其他'){
-	    		$where=$where." and d_year < '2004' or d_year like '%".$year."%'";
+	    		$where=$where." and ( d_year < '2004' or d_year like '%".$year."%' )";
 	    	}else {
 	        	$where=$where." and d_year like '%".$year."%' ";
 	    	}
@@ -710,18 +755,25 @@ ORDER BY d.disp_order asc ';
 	    
         if (!(is_null($area) || $area==='')){
         	$areaGroup="";
-        	if (!(is_null($type) || $type=='')){
-        		if(array_key_exists('area_group', Yii::app()->params) && array_key_exists($type, Yii::app()->params['area_group']) && array_key_exists($area, Yii::app()->params['area_group'][$type]) ){
-        		  $areaGroup = Yii::app()->params['area_group'][$type][$area];
+        	if (!(is_null($type) || $type=='') && ($type ==='1' || $type ==='2'  || $type ==='3'  || $type ==='131' )){
+        		try{
+        			if(array_key_exists($area, Yii::app()->params['area_group'][$type])){
+        			  $areaGroup = Yii::app()->params['area_group'][$type][$area];
+        			}
+        		}catch (Exception $e){
+        			
         		}
-        	}        	
+//        		
+        	}  
+        	//var_dump($areaGroup);
+        	     	
 	        if (!(is_null($areaGroup) || $areaGroup=='')){
 		    	$where=$where." and ( d_area like '%".$area."%'  or substring_index( d_area, ' ', 1 ) in (".$areaGroup.") ) ";
 		    }else {
 		    	$where=$where." and d_area like '%".$area."%' ";
 		    }	    
 	    } 
-	    
+//	    var_dump($where);
 	    if (!(is_null($type) || $type=='')){
 	    	$where=$where." and d_type=".$type." ";
 	    }

@@ -56,8 +56,9 @@ class TopController extends Controller
 		}
 		try{
 		  $lists = SearchManager::listItems($top_id,$page_size,$page_size*($page_num-1));
-		  if(isset($lists) && is_array($lists)){				
-		    IjoyPlusServiceUtils::exportEntity(array('items'=>$lists));
+		  if(isset($lists) && is_array($lists)){
+		  	$topContent=Topic::model()->findByPk($top_id);
+		    IjoyPlusServiceUtils::exportEntity(array('content'=>$topContent->t_des,'items'=>$lists));
 		    }else {
 			  IjoyPlusServiceUtils::exportEntity(array('items'=>array()));
 			}

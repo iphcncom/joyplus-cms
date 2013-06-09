@@ -1,9 +1,10 @@
 <?php
 require_once ("../admin_conn.php");
+require_once (dirname(__FILE__)."/../tools/MailUtils.php");
 require_once ("collect_fun.php");
 require_once ("MovieType.php");
-chkLogin();
-$action = be("get","action");
+//chkLogin();
+$action = be("all","action");
 headAdminCollect ("视频采集入库管理");
 
 switch($action)
@@ -15,6 +16,8 @@ switch($action)
 	case "delall" : delall();break;
 	case "delurl" : delurl();break;
 	case "IDInflow" : IDInflow();break;
+	case "IDInflowZhuiJu" : IDInflowZhuiJu();break;
+	
 	case "AllInflow" : AllInflow();break;
 	case "noInflow" : noInflow();break;
 	case "editype" : editype();break;
@@ -22,7 +25,7 @@ switch($action)
 	case "noInflowProject" : noInflowProject();break;
 	
 	case "AllInflowProject" : AllInflowProject();break;
-	default : main();
+	case "main"  : main();
 }
 
 function editype()
@@ -42,19 +45,42 @@ function IDInflow()
 	if (!isN($ids)){
 		$count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_id in (".$ids.") and m_typeid>0 and m_name IS NOT NULL AND m_name != ''  and m_playfrom not in ('tudou','kankan','cntv','wasu')");
 		$sql="select * from {pre}cj_vod where m_id in (".$ids.") and m_typeid>0 and m_name IS NOT NULL AND m_name != ''  and m_playfrom not in ('tudou','kankan','cntv','wasu')";
-		MovieInflow($sql,$count);
+		MovieInflow($sql,$count,false);
 	}
 	else{
 		showmsg ("请选择入库数据！",$backurl);
 	}
 }
 
+function IDInflowZhuiJu()
+{
+	global $db;
+	$ids = be("arr","m_id");
+	if (!isN($ids)){
+		$sql="select * from {pre}cj_vod where m_id in (".$ids.") and m_typeid>0 and m_name IS NOT NULL AND m_name != ''  and m_playfrom not in ('tudou','kankan','cntv','wasu')";
+	    $rs=$db->query($sql);
+		while ($row = $db ->fetch_array($rs))
+	  	{   $typeid = $row["m_typeid"];
+	  	    if($typeid ==='2' || $typeid ==='3' || $typeid ==='131'){
+		  		$db->Add('mac_cj_zhuiju', array("m_id", "m_pid", "m_name", "m_typeid", "m_playfrom", "m_urltest"), 
+			     array($row["m_id"], $row["m_pid"], $row["m_name"], $typeid, $row["m_playfrom"], $row["m_urltest"]));
+	  	    }
+	  	}
+		showmsg ("添加成功！",$backurl);
+	}
+	else{
+		showmsg ("请选择入库数据！",$backurl);
+	}
+}
+
+
+
 function AllInflow()
 {
 	global $db;
     $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != ''  and m_playfrom not in ('tudou','kankan','cntv','wasu')");
 	$sql="select * from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != '' and m_playfrom not in ('tudou','kankan','cntv','wasu')";
-	MovieInflow($sql,$count);
+	MovieInflow($sql,$count,false);
 }
 
 function noInflow()
@@ -62,7 +88,7 @@ function noInflow()
 	global $db;
     $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_zt=0 and m_name IS NOT NULL AND m_name != '' and m_typeid>0  and m_playfrom not in ('tudou','kankan','cntv','wasu')");
 	$sql="select * from {pre}cj_vod where m_zt=0 and m_name IS NOT NULL AND m_name != '' and m_typeid>0  and m_playfrom not in ('tudou','kankan','cntv','wasu')";
-	MovieInflow($sql,$count);
+	MovieInflow($sql,$count,false);
 }
 
 
@@ -89,7 +115,7 @@ function AllInflowProject()
 	//var_dump($where);
 	$count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != '' ".$where);
 	$sql="select * from {pre}cj_vod where m_typeid>0 and m_name IS NOT NULL AND m_name != ''  ".$where;
-	MovieInflow($sql,$count);
+	MovieInflow($sql,$count,false);
 }
 
 function noInflowProject()
@@ -114,7 +140,7 @@ function noInflowProject()
     $count = $db->getOne("Select count(m_id) as cc from {pre}cj_vod where m_zt=0 and m_typeid>0 and m_name IS NOT NULL AND m_name != ''   ".$where);
     $sql="select * from {pre}cj_vod where m_zt=0 and m_typeid>0  and m_name IS NOT NULL AND m_name != ''  ".$where;
    //var_dump($count); var_dump($sql);
-    MovieInflow($sql,$count);
+    MovieInflow($sql,$count,false);
 	
 }
 
@@ -432,6 +458,14 @@ $(document).ready(function(){
 			$("#form1").submit();
 		}
 	});
+
+	$("#btnSelinZhuiju").click(function(){
+		if(confirm('确定添加您所选择的数据到自动采集/自动入库吗')){
+			$("#form1").attr("action","?action=IDInflowZhuiJu");
+			$("#form1").submit();
+		}
+	});
+	
 	$("#btnAllin").click(function(){
 		if(confirm('全部入库你所采集的数据吗')){
 			$("#form1").attr("action","?action=AllInflow");
@@ -481,6 +515,7 @@ $(document).ready(function(){
 		<td>
 		<form action="collect_vod.php" method="get" > 
 			<strong>搜索影片：</strong>
+			<input type="hidden" name="action" value="main">
 			<input id=keyword size=40 name=keyword value="<?php echo $keyword;?>">
 			
 			<select id="playfrom" name=playfrom>
@@ -559,10 +594,11 @@ $(document).ready(function(){
 	<td colspan="9">
     全选<input name="chkall" type="checkbox" id="chkall" value="1" onClick="checkAll(this.checked,'m_id[]');"/>&nbsp;
     &nbsp;<input type="button" id="btnDel" value="批量删除" class="btn"  />
-	&nbsp;<input type="button" id="btnDelall" value="删除所有" class="btn"  />
+<!--	&nbsp;<input type="button" id="btnDelall" value="删除所有" class="btn"  />-->
 	&nbsp;<input type="button" id="btnSelin" class="btn" name="Submit" value="入库所选" >
-	&nbsp;<input type="button" id="btnAllin" class="btn" name="Submit" value="全部入库" >
-    &nbsp;<input type="button" id="btnNoin" class="btn" name="Submit" value="入库未入库" >
+	&nbsp;<input type="button" id="btnSelinZhuiju" class="btn" name="Submit" value="添加到自动采集入库" >
+<!--	&nbsp;<input type="button" id="btnAllin" class="btn" name="Submit" value="全部入库" >-->
+<!--    &nbsp;<input type="button" id="btnNoin" class="btn" name="Submit" value="入库未入库" >-->
 	&nbsp;<input type="button" id="AllInflowProject" class="btn" name="Submit" value="所搜视频全部入库" >
     &nbsp;<input type="button" id="noInflowProject" class="btn" name="Submit" value="所搜视频入库未入库" >
 	&nbsp; <select name="m_typeid" id="m_typeid">
@@ -595,15 +631,14 @@ $(document).ready(function(){
 	</tr>
     <tr align="center" bgcolor="#f8fbfb">
 	<td colspan="9">
-	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"collect_vod.php?page={p}&cj_vod_projects=".$project."&keyword=".$keyword."&playfrom=".$from) ?></td>
+	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"collect_vod.php?action=main&page={p}&cj_vod_projects=".$project."&keyword=".$keyword."&playfrom=".$from) ?></td>
     </tr>
 </table>
 </form>
 <?php
 }
 
-function MovieInflow($sql_collect,$MovieNumW)
-{  
+function MovieInflow($sql_collect,$MovieNumW,$isMandCollect){  
 	global $db;
 ?>
 <table class=tb>
@@ -620,7 +655,7 @@ function MovieInflow($sql_collect,$MovieNumW)
 	$iscover= be("iscover","get");
 	$rs = $db->query($sql_collect);
 	$rscount = $MovieNumW;
-//	var_dump($rscount);
+	
 	if($rscount==0){
 		echo "<script>alert('没有可入库的数据!'); location.href='collect_vod.php';</script>";
 		exit;
@@ -649,24 +684,58 @@ function MovieInflow($sql_collect,$MovieNumW)
 	     }
 		$flag=false;
 		$title = $row["m_name"];
+		
 		$d_type = $row["m_typeid"];
 		$title= replaceStr($title, "&lt;", "<<");
 		$title= replaceStr($title, "&gt;", ">>");
+		$title =trim(replaceStr($title, "&nbsp;", ' '));
+		$title= replaceStr($title, " 国语", "");
 		$testUrl = $row["m_urltest"];
 		$year=$row['m_year'];
 		$title = replaceStr($title,"'","''");
+		$titlenolang=$title;
+		$d_language = $row["m_language"];
+		$flag_lang=false;
+		
+		if(!isN($d_language)){ 
+			$titlenolang =trim(replaceStr($titlenolang, $d_language, ''));
+			
+			$titlenolang =trim($titlenolang);
+			
+			if (strpos($title, $d_language) !==false){
+			  $flag_lang=true;
+			}
+		}
+		
 		$strSet="";
-		$sql = "SELECT * FROM {pre}vod WHERE d_name = '".$title."' and d_type = '".$d_type."' ";
+		$sql = "SELECT * FROM {pre}vod WHERE d_name = '".$titlenolang."' and d_type = '".$d_type."' ";
+//		var_dump($sql);
 	    $rowvod = $db->getRow($sql);
+//	     var_dump($rowvod["d_id"]);
 	    if(!isN($rowvod["d_status"]) && ( $rowvod["d_status"]===1 || $rowvod["d_status"] ==='1') ){
-	    	var_dump($title." is locked");
-	    	continue;
+	    	var_dump($titlenolang." is locked");
+	       if(!$isMandCollect){
+	    	  continue;
+	       }
 	    }
+	    
+	    if ($flag_lang && ( isN($rowvod["d_id"]) || be("post","CCTV")=="1") ) {
+		    $sql = "SELECT * FROM {pre}vod WHERE d_name = '".$title."' and d_type = '".$d_type."' ";
+		    $rowvod = $db->getRow($sql);
+		    if(!isN($rowvod["d_status"]) && ( $rowvod["d_status"]===1 || $rowvod["d_status"] ==='1') ){
+		    	var_dump($title." is locked");
+			    if(!$isMandCollect){
+		    	  continue;
+		        }
+		    }
+	    }
+	  
 	    
 	    //插入新数据开始
 		if ( isN($rowvod["d_id"]) || be("post","CCTV")=="1") {
 			$flag=true;
 			$d_pic= replaceStr($row["m_pic"],"'","''");
+			$d_pic_ipad= replaceStr($row["d_pic_ipad"],"'","''");
 			$d_addtime= date('Y-m-d H:i:s',time());
 			$d_year=$row["m_year"]; 				
 			if(isN($d_year) || $d_year==='未知'){
@@ -677,8 +746,7 @@ function MovieInflow($sql_collect,$MovieNumW)
 			$d_area = $row["m_area"];		
 			if(isN($d_area) || $d_area==='未知'){
 				$d_area='其他';
-			}
-			$d_language = $row["m_language"];
+			}			
 			$d_remarks = $row["m_remarks"];
 			$d_state = $row["m_state"];
 			$d_starring = $row["m_starring"];
@@ -690,6 +758,7 @@ function MovieInflow($sql_collect,$MovieNumW)
 				$typeName='其他';
 			}
 			$d_enname = hanzi2pinyin($d_name);
+			$d_capital_name=Hanzi2PinYin_Captial($d_name);
 			if (isN($d_letter)) { $d_letter = strtoupper(substring($d_enname,1)); }
 			if ($row["m_typeid"] > 0) {
 				$d_type = $row["m_typeid"];
@@ -702,11 +771,18 @@ function MovieInflow($sql_collect,$MovieNumW)
 					unset($rowtype);
 				}
 			}
+			if(!($d_type ==='1' || $d_type ===1)){
+				$duraning='';
+			}
 			//writetofile("gaoca.txt", $duraning);
-			$sql="insert {pre}vod (duraning,d_type_name,d_type,d_pic,d_addtime,d_time,d_year,d_content,d_hits,d_area,d_language,d_name,d_enname,d_starring,d_directed,d_state,d_remarks) values('".$duraning."' , '".$typeName."','".$d_type."','".$d_pic."','".$d_addtime."','".$d_addtime."','".$d_year."','".$d_content."','".$d_hits."','".$d_area."','".$d_language."','".$d_name."','".$d_enname."','".$d_starring."','".$d_directed."','".$d_state."','".$d_remarks."') ";
+			$sql="insert {pre}vod (d_pic_ipad,duraning,d_type_name,d_type,d_pic,d_addtime,d_time,d_year,d_content,d_hits,d_area,d_language,d_name,d_enname,d_starring,d_directed,d_state,d_remarks,d_capital_name) values('".$d_pi."' ,'".$duraning."' , '".$typeName."','".$d_type."','".$d_pic."','".$d_addtime."','".$d_addtime."','".$d_year."','".$d_content."','".$d_hits."','".$d_area."','".$d_language."','".$d_name."','".$d_enname."','".$d_starring."','".$d_directed."','".$d_state."','".$d_remarks."','".$d_capital_name."') ";
 			writetofile("gaoca.txt", $sql);
 			$db->query($sql);
 			$did = $db->insert_id();
+//			if($d_type === '2' || $d_type === '131' ){
+//				$d_addtime= date('Y-m-d H:i:s',time());
+//			  	$db->query("INSERT INTO mac_vod_pasre_item (prod_id,create_date) VALUES('".$did."','".$d_addtime."')");
+//			}
 		}
 		//插入新数据结束
 		else{  //同名不处理， 如果是电影也不更新
@@ -733,6 +809,15 @@ function MovieInflow($sql_collect,$MovieNumW)
 			
 			$strSet .=" d_type_name='".$typeName."', ";
 			
+			$strSet .=" d_name='".$title."', ";
+			
+			$d_enname = hanzi2pinyin($title);
+			$strSet .=" d_enname='".d_enname."', ";
+			
+			$d_capital_name=Hanzi2PinYin_Captial($title);
+			
+			$strSet .=" d_capital_name='".$d_capital_name."', ";
+			
 			if (be("post","CCTV2")=="2") {
 				$d_area = $row["m_area"];
 				if(isN($d_area) || $d_area==='未知'){
@@ -753,7 +838,10 @@ function MovieInflow($sql_collect,$MovieNumW)
 				$strSet .="d_directed='".$d_directed."',";
 			}
 			
-		    if (be("post","CCTV9")=="9" && !isN($duraning)) { 				
+		    if (be("post","CCTV9")=="9" && !isN($duraning)) { 
+			    if(!($d_type ==='1' || $d_type ===1)){
+					$duraning='';
+				}	 			
 				$strSet .=" duraning='".$duraning."', ";
 			}
 			
@@ -777,9 +865,10 @@ function MovieInflow($sql_collect,$MovieNumW)
 				$strSet .="d_content='".$d_content."',";
 			}
 			$d_state = $row["m_state"];
-			$strSet .="d_state='".$d_state."',";
-			$d_remarks = $row["m_remarks"];			
-			$strSet .="d_remarks='".$d_remarks."',";
+			if(!isN($d_state) && $d_state !=='0'){
+			  $strSet .="d_state='".$d_state."',";
+			}
+			
 			$strSet .="d_name='".$title."',";
 			$d_enname = hanzi2pinyin($title);
 			$strSet .="d_enname='".$d_enname."',";
@@ -787,6 +876,18 @@ function MovieInflow($sql_collect,$MovieNumW)
 			$strSet .="d_letter='".$d_letter."',";
 			$d_addtime= date('Y-m-d H:i:s',time());
 			$strSet .="d_time='".$d_addtime."',";
+			
+			if($d_type === '2' || $d_type === '131'  ){
+		    	 if(!($d_state  === $rowvod["d_state"]) && $rowvod["favority_user_count"]>0) {
+		    	 	  $t_id=$rowvod["d_id"];
+			    	  $info=$db->getRow('select prod_id from mac_vod_pasre_item where prod_id='.$t_id);
+					  if($info ===false ){
+					  	$d_addtime= date('Y-m-d H:i:s',time());
+					  	$db->query("INSERT INTO mac_vod_pasre_item (prod_id,create_date) VALUES('".$t_id."','".$d_addtime."')");
+					  }
+		    	 } 
+		    }
+			
 		}
 		//更新数据结束
 		
@@ -794,8 +895,17 @@ function MovieInflow($sql_collect,$MovieNumW)
 			$did= $rowvod["d_id"];
 		}
 		
+	    
+		
 		//获取影片URL
 		$playAndWebArray= getVodPlanAndWebUrl($row["m_id"],$testUrl,$row["m_playfrom"],$d_type);
+		
+		if($playAndWebArray['noVideoUrlFlag'] && $isMandCollect){
+			
+			sendMail(array('darkdotter.zhou@joyplus.tv','dale.wu@joyplus.tv'),'<CMS>:影片《'.$title.'》 视频地址为空,不能入库','<CMS>:影片《'.$title.'》 视频地址为空，播放器：'.$row["m_playfrom"]);
+			
+			continue ;
+		}
 		
 //		$urls = getVodUrl($row["m_id"]);
      //   var_dump($playAndWebArray);
@@ -1024,11 +1134,16 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
 	$playUrl="";
 	$webUrl="";
 	$videoUrl="";
-	$sql2="select * from {pre}cj_vod_url where u_movieid=".$id ." order by u_id asc";
+	if($d_type ==='3'){
+		$sql2="select * from {pre}cj_vod_url where u_movieid=".$id ." order by name desc ";
+	}else {
+	   $sql2="select * from {pre}cj_vod_url where u_movieid=".$id ."  ORDER BY cast( name AS unsigned int ) ASC,u_id asc";
+	}
 	$rs_collect2= $db->query($sql2);
 	$rscount =$db->getOne("Select count(m_id) as cc from {pre}cj_vod_url where u_movieid=".$id );
 	$num=1;
 	$playNum=1;
+	$noVideoUrlFlag=false;
 	while ($row = $db ->fetch_array($rs_collect2))
 	{   
 	    if ($num ==1) {
@@ -1055,6 +1170,10 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
 //			var_dump($m_playfrom);var_dump($d_type);var_dump($urstee);
 		}
 	    
+		if(strpos($urstee, 'video.baidu.com') !==false){
+			$urstee='';
+		}
+		
 		if ($num ==1) {
 			$webUrl .= $playNum.$urstee;
 		}
@@ -1074,7 +1193,11 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
 			$videourstee=$android_vedio_url;
 		}
 		
+		
 		if((isset($videourstee) && !is_null($videourstee))){
+			if(strpos($videourstee, 'http') ===false){
+				$noVideoUrlFlag=true;
+			}
 //			if($rscount==1 ){
 //				$videoUrl=$videourstee;
 //			}else {
@@ -1098,6 +1221,8 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
 		        }
 //				if(!isN($android_vedio_url))
 //			}
+		}else {
+			$noVideoUrlFlag=true;
 		}
 		
 		$num=$num+1;
@@ -1108,6 +1233,7 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
 	   'playUrl'=>$playUrl,
 	   'webUrl'=>$webUrl,	
 	   'videoUrl'=>$videoUrl,
+	   'noVideoUrlFlag'=>$noVideoUrlFlag
 	);
 }
 ?>

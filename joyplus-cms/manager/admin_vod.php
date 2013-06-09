@@ -75,7 +75,7 @@ function save()
     $d_type_name= be("arr", "d_type_name");
     $d_pic_ipad= be("post", "d_pic_ipad");
     $can_play_device= be("post", "can_play_device"); 
-    
+    $d_capital_name= be("post", "d_capital_name");
     $can_search_device=be("arr","can_search_device");
     
     $d_status= be("post", "d_status");
@@ -148,6 +148,8 @@ function save()
     if(!isNum($d_bad)) { $d_bad = 0;}
     if(!isNum($d_usergroup)) { $d_usergroup = 0;}
     if (isN($d_enname)) { $d_enname = Hanzi2PinYin($d_name); }
+    if (isN($d_capital_name)) { $d_capital_name = Hanzi2PinYin_Captial($d_name); }
+    //var_dump($d_capital_name);
     if (isN($d_letter)) { $d_letter = strtoupper(substring($d_enname,1)); }
     //$d_play_check	
     if (strpos($d_enname, "*")>0 || strpos($d_enname, ":")>0 || strpos($d_enname, "?")>0 || strpos($d_enname, "\"")>0 || strpos($d_enname, "<")>0 || strpos($d_enname, ">")>0 || strpos($d_enname, "|")>0 || strpos($d_enname, "\\")>0){
@@ -155,11 +157,11 @@ function save()
     }
 	
     if ($flag == "edit") { 
-        $db->Update ("{pre}vod", array("duraning","d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_play_check","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type","d_letter", "d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks","d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_hide", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($duraning,$d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_play_check,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type, $d_letter, $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits ,$d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_hide, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver), "d_id=" . $d_id);
+        $db->Update ("{pre}vod", array("d_capital_name","duraning","d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_play_check","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type","d_letter", "d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks","d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_hide", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_capital_name,$duraning,$d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_play_check,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type, $d_letter, $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits ,$d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_hide, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver), "d_id=" . $d_id);
     }
     else{
         $backurl = "admin_vod.php?action=add";
-        $db->Add ("{pre}vod", array("duraning","d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type", "d_letter","d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks", "d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_addtime", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($duraning,$d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type,$d_letter,  $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits , $d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_addtime, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver));
+        $db->Add ("{pre}vod", array("d_capital_name","duraning","d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type", "d_letter","d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks", "d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_addtime", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_capital_name,$duraning,$d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type,$d_letter,  $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits , $d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_addtime, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver));
     }
     
     echo "保存完毕";
@@ -653,7 +655,7 @@ global $db,$action,$template,$cache;
 			     	}
 			     }
 			//var_dump($comments);
-			 
+			 $review_flag=false;
 			if(is_array($comments)&& !isN( $comments['comments'])){			 
 			 	$commentsArray = $comments['comments'];
 			 	$titlesArray =$comments['title'];		 	
@@ -676,11 +678,15 @@ global $db,$action,$template,$cache;
 			 		  
 			 		  $db->Add("mac_comment", array("c_audit","c_type","c_vid","c_time","c_content","c_name"),
 			 		  array('1',$type,$d_id,date("Y-m-d H:i:s"),$com,$author));
-			 		  
+			 		  $review_flag=true;
 			 		}
 			 	}
 				 	//showMsg();
+				 	if($review_flag){
 				 	echo "<tr><td colspan=\"2\"></TD>采集完'".$name. "'的评论</TR></br>";	
+				 	}else {
+				 		echo "<tr><td colspan=\"2\"></TD>找不到资源 ：'".$name."'</TR></br>";	
+				 	}
 				 }else {			 	
 				 	echo "<tr><td colspan=\"2\"></TD>找不到资源 ：'".$name."'</TR></br>";			
 				 }
@@ -1090,6 +1096,12 @@ function sendWeiboText(){
 	 
 }
 
+function send(e){
+	if(e.keyCode==13){
+		  filter();
+    }
+}
+ 
 </script>
 <table class="tb">
 	<tr>
@@ -1097,7 +1109,7 @@ function sendWeiboText(){
 	<table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
 	<tr>
 	<td colspan="2">
-	过滤条件：<select id="stype" name="stype" onchange="javascript:{var typeid= this.options[this.selectedIndex].value; if(typeid=='1' ||  typeid=='2'){document.getElementById('btnsearchs').style.display='block';  document.getElementById('btnsearchsThumbs').style.display='block';document.getElementById('btnsearchsComment').style.display='block';}else {document.getElementById('btnsearchs').style.display='none'; document.getElementById('btnsearchsThumbs').style.display='none';document.getElementById('btnsearchsComment').style.display='none';}}">
+	过滤条件：<select id="stype" name="stype" onchange="javascript:{var typeid= this.options[this.selectedIndex].value; if(typeid=='1' ||  typeid=='2' ||  typeid=='131'){document.getElementById('btnsearchs').style.display='block';  document.getElementById('btnsearchsThumbs').style.display='block';document.getElementById('btnsearchsComment').style.display='block';}else {document.getElementById('btnsearchs').style.display='none'; document.getElementById('btnsearchsThumbs').style.display='none';document.getElementById('btnsearchsComment').style.display='none';}}">
 	<option value="0">视频栏目</option>
 	<option value="-1" <?php if($stype==-1){ echo "selected";} ?>>没有栏目</option>
 	<?php echo makeSelectAll("{pre}vod_type","t_id","t_name","t_pid","t_sort",0,"","&nbsp;|&nbsp;&nbsp;",$stype)?>
@@ -1115,6 +1127,7 @@ function sendWeiboText(){
 	<option value="d_name" <?php if($order=="d_name"){ echo "selected";} ?>>视频名称</option>
 	<option value="d_play_num" <?php if($order=="d_play_num"){ echo "selected";} ?>>播放次数</option>
 	<option value="d_year" <?php if($order=="d_year"){ echo "selected";} ?>>上映日期</option>
+	<option value="d_level" <?php if($order=="d_level"){ echo "selected";} ?>>推荐度</option>
 	</select>
 	&nbsp;<select id="sort" name="sort">
 	<option value="desc" <?php if($sort=="desc"){ echo "selected";} ?>>视频排序 降序序</option>
@@ -1128,6 +1141,9 @@ function sendWeiboText(){
 	<option value="3" <?php if($level==3) { echo "selected";} ?>>推荐3</option>
 	<option value="4" <?php if($level==4) { echo "selected";} ?>>推荐4</option>
 	<option value="5" <?php if($level==5) { echo "selected";} ?>>推荐5</option>
+	<option value="6" <?php if($level==6) { echo "selected";} ?>>推荐6</option>
+	<option value="7" <?php if($level==7) { echo "selected";} ?>>推荐7</option>
+	<option value="8" <?php if($level==8) { echo "selected";} ?>>推荐8</option>
 	</select>
 	&nbsp;
 	<select id="topic" name="topic">
@@ -1220,7 +1236,7 @@ function sendWeiboText(){
 	</tr>
 	<tr>
 	<td colspan="4">
-	关键字：<input id="keyword" size="40" name="keyword" value="<?php echo $keyword?>">&nbsp;
+	关键字：<input id="keyword" size="40" name="keyword" value="<?php echo $keyword?>" onkeypress="send(event);">&nbsp;
 	<select id="keyword_col" name="keyword_col">
 	<option value="">关键字的匹配列</option>
 	<option value="d_name" <?php if($keyword_col=="d_name"){ echo "selected";} ?>>视频名称</option>
@@ -1248,6 +1264,7 @@ function sendWeiboText(){
 	</td>
 	</tr>
 </table>
+
 
 <form id="form1" name="form1" method="post">
 <table class="tb">
@@ -1366,7 +1383,7 @@ function sendWeiboText(){
 	?>
 	 </td>
 	--><td><?php echo isToday($row["d_time"])?></td>
-	<td><a href="admin_vod_topic.php?action=info&id=<?php echo $d_id?>">所在榜单</a> |<a href="admin_vod.php?action=edit&id=<?php echo $d_id?>">修改</a> | <?php if($row["d_type"] ==1 || $row["d_type"] ==2){ ?><a href="admin_vod.php?action=douban&id=<?php echo $d_id?>">豆瓣积分</a> | 
+	<td><a href="admin_vod_topic.php?action=info&id=<?php echo $d_id?>">所在榜单</a> |<a href="admin_vod.php?action=edit&id=<?php echo $d_id?>">修改</a> | <?php if($row["d_type"] ==1 || $row["d_type"] ==2 || $row["d_type"] ==131){ ?><a href="admin_vod.php?action=douban&id=<?php echo $d_id?>">豆瓣积分</a> | 
 	<a href="admin_vod.php?action=doubanComment&id=<?php echo $d_id?>">豆瓣影评</a> |
 	 <?php }?> 
 		
@@ -1597,7 +1614,7 @@ global $db,$action;
 		     	}
 		     }
 		     
-			
+			$review_flag=false;
 			//var_dump($comments);
 			 if(is_array($comments)&& !isN( $comments['comments'])){			 
 			 	$commentsArray = $comments['comments'];
@@ -1611,22 +1628,27 @@ global $db,$action;
 			 	
 			 	for ($i=0;$i<$total;$i++) {
 			 		$com=$commentsArray[$i];
-			 		
 			 		$title=$titlesArray[$i];
 			 		$reviewid=$reviewidsArray[$i];
 			 		if(!isN($com)){
 			 		  $com=filterScript($com,8191);
+			 		  $title=replaceStr($title, "'", "\"");
+			 		  $com=replaceStr($com, "'", "\"");
 			 		  $db->Add("tbl_comments", array("status","content_type","content_name","content_id","create_date","comments","comment_type","douban_comment_id","comment_title"),
 			 		  array('1',$type,$name,$d_id,date("Y-m-d H:i:s"),$com,'1',$reviewid,$title));
 			 		  
 			 		  $db->Add("mac_comment", array("c_audit","c_type","c_vid","c_time","c_content","c_name"),
 			 		  array('1',$type,$d_id,date("Y-m-d H:i:s"),$com,$author));
-			 		  
+			 		  $review_flag=true;
 			 		}
 			 	}
 //			 	$db->Updatiss ("{pre}vod", array("d_score"), array($score), "d_id=" . $d_id);	
 //			 	showMsg('采集成功',$backurl);
-	         	echo '<script language="javascript">alert("采集评论成功");location.href ="'.$backurl.'";</script>';		 	
+              if($review_flag){
+	         	echo '<script language="javascript">alert("采集评论成功");location.href ="'.$backurl.'";</script>';	
+              }else {
+              	echo '<script language="javascript">alert("在豆瓣上找不到评论 ");location.href ="'.$backurl.'";</script>';
+              }	 	
 			 }else {			 	
 			 	echo '<script language="javascript">alert("在豆瓣上找不到评论 ");location.href ="'.$backurl.'";</script>';	
 			 }
@@ -1703,6 +1725,7 @@ function info()
 			$d_status=$row["d_status"];
 			$can_search_device=$row["can_search_device"];
 			$d_douban_id=$row["d_douban_id"];
+			$d_capital_name=$row["d_capital_name"];
 			if (isN($d_playurl)) { $d_playurl = "";}
 			if (isN($d_video_desc_url)) { $d_video_desc_url = "";}
 		if (isN($d_downurl)) { $d_downurl = "";}
@@ -1962,8 +1985,10 @@ $(document).ready(function(){
     <td>名称：</td>
     <td>
 	&nbsp;<input id="d_name" name="d_name" type="text" size="40" value="<?php echo $d_name?>" onBlur="if(this.value){ajaxckname(this.value);}"><span id="d_name_ok"></span>
+	&nbsp;名称首字母：<input id="d_capital_name" name="d_capital_name" type="text" size="40" value="<?php echo $d_capital_name?>">
+	
 	&nbsp;副标：<input id="d_subname" name="d_subname" type="text" size="40" value="<?php echo $d_subname?>">
-	&nbsp;&nbsp;&nbsp;首字母：<input id="d_letter" name="d_letter" type="text" size="4" value="<?php echo $d_letter?>">
+	&nbsp;&nbsp;&nbsp;<br/>首字母：<input id="d_letter" name="d_letter" type="text" size="4" value="<?php echo $d_letter?>">
 	&nbsp;&nbsp;&nbsp;视频是否有问题:
 	<select id="d_play_check" name="d_play_check">
 	<option value="0" <?php if ($d_play_check==0){ echo "selected";} ?>>没有问题</option>
