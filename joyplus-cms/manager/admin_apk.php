@@ -20,15 +20,16 @@ function editall()
 		$package_name = be("post","package_name" .$id);
 		$category_id= be("post","category_id" .$id);//var_dump($t_type);
 		$status= be("post","status" .$id);
+		$apk_icon= be("post","apk_icon" .$id);
 //		$upload_count = be("post","upload_count" .$id);
 		
 		$disp_order = be("post","disp_order" .$id);
 		$app_name = be("post","app_name" .$id);
 		if (isN($app_name)) { echo "信息填写不完整!";exit;}
-		if (isN($disp_order)) { $t_sort= $db->getOne("SELECT MAX(disp_order) FROM apk_master_base ")+1; }
+		if (isN($disp_order)) { $disp_order= $db->getOne("SELECT MAX(disp_order) FROM apk_master_base ")+1; }
 		if (!isNum($disp_order)) { echo "信息填写不完整!";exit;}
-		$db->Update ("apk_master_base",array("package_name", "category_id","status","disp_order","app_name"),
-		array($package_name,$category_id,$status,$disp_order,$app_name),"id=".$id);
+		$db->Update ("apk_master_base",array("package_name", "category_id","status","disp_order","app_name","apk_icon"),
+		array($package_name,$category_id,$status,$disp_order,$app_name,$apk_icon),"id=".$id);
 	}
 	updateCacheFile();
 	echo "修改完毕";
@@ -222,6 +223,7 @@ function edit(id)
 	<td width="5%">编号</td>
 	<td>名称</td>
 	<td>包名</td>
+	<td>图标</td>
 	<td width="3%">是否正常</td>
 	<td width="15%">应用栏目</td>
 	<td width="8%">下载次数</td>
@@ -247,6 +249,8 @@ function edit(id)
       <input type="text" name="app_name<?php echo $t_id?>" value="<?php echo $row["app_name"]?>" size="20"/></td>
        <td>
       <input type="text" name="package_name<?php echo $t_id?>" value="<?php echo $row["package_name"]?>" size="20"/></td>
+       <td>
+      <input type="text" name="apk_icon<?php echo $t_id?>" value="<?php echo $row["apk_icon"]?>" size="20"/></td>
       <td>
       <select id="status<?php echo $t_id?>" name="status<?php echo $t_id?>">
 	<option value="0">应用是否正常</option>
@@ -308,6 +312,12 @@ function edit(id)
 	<tr>
 	<td width="30%">应用包名：</td>
 	<td><input id="package_name" size=40 value="" name="package_name">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="30%">图标：</td>
+	<td><input id="apk_icon" size=40 value="" name="apk_icon">
 	</td>
 	</tr>
 	

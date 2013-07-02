@@ -9,7 +9,7 @@ $webUrls=replaceStr(trim($webUrls), Chr(10), "{Array}");
 $contentM=ContentProviderFactory::getContentProvider($playerfrom);
 //$contentM=null;
 if($contentM ==null){
-	echo "不支持此播放器,烦请选择正确的播放器，目前支持乐视，土豆，pptv，优酷。"; //，56（我乐），风行
+	echo "不支持此播放器,烦请选择正确的播放器，目前支持乐视，56（我乐），风行，优酷，新浪,奇艺。"; //，56（我乐），风行
 }else {
 if(!isN($webUrls)){
    $webUrlsArray= explode("{Array}", $webUrls);  
@@ -26,7 +26,7 @@ if(!isN($webUrls)){
    	 	$url=$nameUrl[1];
    	 	$name=$nameUrl[0].'$';
    	 }
-   	 
+   	 $name=replaceStr($name, '\"', '"');
    	 $videoUrl = $contentM->parseIOSVideoUrl($url, "utf-8", null);
 	 $androidUrl = $contentM->parseAndroidVideoUrl($url, "utf-8", null);
 	 $url="";

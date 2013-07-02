@@ -558,7 +558,7 @@ function save()
 			$category_id = be("post","category_id");
 			$company_id = be("post","company_id");
 			$upload_count = be("post","upload_count");
-			
+			$apk_icon = be("post","apk_icon");
 			
 			
 			$disp_order = be("post","disp_order");
@@ -566,8 +566,8 @@ function save()
 			$description = be("post","description");
 			
 			if (!isNum($disp_order)) { $disp_order= $db->getOne("select max(disp_order) from apk_master_base")+1;}
-			$colarr = array("app_name","package_name","status","category_id","company_id","upload_count","disp_order","apk_tag","description");
-			$valarr = array($app_name,$package_name,$status,$category_id,$company_id,$upload_count,$disp_order,$apk_tag,$description);
+			$colarr = array("apk_icon","app_name","package_name","status","category_id","company_id","upload_count","disp_order","apk_tag","description");
+			$valarr = array($apk_icon,$app_name,$package_name,$status,$category_id,$company_id,$upload_count,$disp_order,$apk_tag,$description);
 			$where = "id=".$t_id;
 			$upcache=true;
 			break;	

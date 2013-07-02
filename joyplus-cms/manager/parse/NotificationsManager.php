@@ -2,13 +2,15 @@
 
 require_once('Utils.php');
 require_once('ParseClient.php');
+require_once ( dirname( __FILE__)."/baidu/Channel.class.php" ) ;
 
+
+   
 class NotificationsManager {
  const CHANNEL_ISO='channel_joyplus_ios'; 
  const CHANNEL_ANDROID='channel_joyplus_android';
  const DEVICE_ISO='ios';
  const DEVICE_ANDROID='android';
- 
   static function push($notifyMsg){		   
 		   $args = array (
 				'data' =>array(
@@ -95,9 +97,129 @@ class NotificationsManager {
 
 	    return $result;
 	}
+	 
+	
+	
+	static function initBaiduCertIOS($notifyMsg){
+		global $channels;
+		$channel= ChannlesMap::getChannel($notifyMsg->appid.'_'.$notifyMsg->restkey); 
+		if($channel !==false &&  $channel !=null){ 
+			return $channel;
+		}
+       
+		$channel = new Channel ( $notifyMsg->appid,$notifyMsg->restkey ) ; // 请正确设置apiKey和secretKey，在开发者中心应用基本信息中查看
+		$channel->setHost('https://channel.iospush.api.duapp.com');
+        $fd = fopen(dirname( __FILE__)."/baidu/cert/".$notifyMsg->iosCertPath, 'r');
+
+        $dev_cert = fread($fd, filesize(dirname( __FILE__)."/baidu/cert/".$notifyMsg->iosCertPath)); // 开发版APNs pem证书
+        
+        // var_dump($fd);
+         $fd_release = fopen(dirname( __FILE__)."/baidu/cert/".$notifyMsg->iosCertPathRel, 'r');
+
+        $release_cert = fread($fd_release, filesize(dirname( __FILE__)."/baidu/cert/".$notifyMsg->iosCertPathRel)); // 开发版APNs pem证书
+       // var_dump(dirname( __FILE__)."/baidu/cert/".$notifyMsg->iosCertPathRel);
+       //  var_dump(dirname( __FILE__)."/baidu/cert/".$notifyMsg->iosCertPath);
+        $ret = $channel->initAppIoscert('yongqing li (95XW9X94ZC)', 'ios certification', $release_cert, $dev_cert); // cert_name和cert_des您自定义字符串即可
+        if (false === $ret) {
+         	var_dump('initBaiduCertIOS fail.');
+         	var_dump( $channel->errmsg ( ));
+         }else {
+         	var_dump('initBaiduCertIOS succ.');
+            ChannlesMap::setChannel($notifyMsg->appid.'_'.$notifyMsg->restkey,$channel);
+            
+         }
+        return $channel;
+		
+	}
+	
+	static function pushBaidu($notifyMsg){
+		if($notifyMsg->type===NotificationsManager::DEVICE_ISO){
+			$channel= NotificationsManager::initBaiduCertIOS($notifyMsg);
+		}else {		
+		  $channel = new Channel ( $notifyMsg->appid,$notifyMsg->restkey ) ;
+		}
+	     $message_key = md5(date('Y-m-d-H-M-S',time()));
+	     $optional[Channel::MESSAGE_TYPE] = 1;
+//	     if(isset($notifyMsg->channels) && is_array($notifyMsg->channels) && count($notifyMsg->channels)>0){		   	
+//		   	 $push_type = 2;
+//		 }else {
+//		 	$push_type = 3; //推送广播消息
+//		 }
+		 $push_type = 3;
+		 $message=array();	   
+		   if($notifyMsg->type===NotificationsManager::DEVICE_ISO){
+		   	   $optional[Channel::DEVICE_TYPE] = 4;
+		   	   $apps =array();
+		   	   
+		        if(isset($notifyMsg->title) && !is_null($notifyMsg->title)){
+		   	      $message['title']=$notifyMsg->title;
+		        }
+		   
+		   	   $optional[Channel::DEVICE_TYPE] = 4;
+	           if(isset($notifyMsg->prod_id) && !is_null($notifyMsg->prod_id)){
+			   	  $message['prod_id']=$notifyMsg->prod_id;
+			   }
+	          if(isset($notifyMsg->prod_type) && !is_null($notifyMsg->prod_type)){
+			   	  $message['prod_type']=$notifyMsg->prod_type;
+			   }
+	          if(isset($notifyMsg->push_type) && !is_null($notifyMsg->push_type)){
+			   	  $message['push_type']=$notifyMsg->push_type;
+			   }
+		       if(isset($notifyMsg->alert) && !is_null($notifyMsg->alert)){
+			   	  $apps['alert']=$notifyMsg->alert;
+			   }
+			    $apps['Sound']='';
+			    $apps['Badge']=0;
+			    $message['aps']=$apps;
+		       
+		   }else if ($notifyMsg->type===NotificationsManager::DEVICE_ANDROID){
+		   	   $custom_content =array();
+		   	    if(isset($notifyMsg->title) && !is_null($notifyMsg->title)){
+		   	      $message['title']=$notifyMsg->title;
+		        }
+		   
+		   	   $optional[Channel::DEVICE_TYPE] = 3;
+	           if(isset($notifyMsg->prod_id) && !is_null($notifyMsg->prod_id)){
+			   	  $custom_content['prod_id']=$notifyMsg->prod_id;
+			   }
+	          if(isset($notifyMsg->prod_type) && !is_null($notifyMsg->prod_type)){
+			   	  $custom_content['prod_type']=$notifyMsg->prod_type;
+			   }
+	          if(isset($notifyMsg->push_type) && !is_null($notifyMsg->push_type)){
+			   	  $custom_content['push_type']=$notifyMsg->push_type;
+			   }
+		       if(isset($notifyMsg->alert) && !is_null($notifyMsg->alert)){
+			   	  $message['description']=$notifyMsg->alert;
+			   }
+			   $message['custom_content']=$custom_content;
+		   }
+		   
+		  
+//		   var_dump($message); var_dump($optional);
+		 $ret = $channel->pushMessage ( $push_type,$message, $message_key, $optional ) ;
+		
+	    if ( false === $ret ){ 
+	    	return array('code'=>'201','response'=>$channel->errmsg());
+	    }else{  
+	    	return array('code'=>'200','response'=>$ret);
+	    }
+	}
+	
 }
 
-
+//$msg = new Notification();
+//		$msg->alert='This is test';
+//		$msg->prod_id='11111';
+//		$msg->prod_type='11111';
+//		$msg->push_type='1';
+//		$msg->channels=array('iso');
+//		$msg->appid='38hyK1inq207SeCMogRvbtix';//bxh3Gv5eapTM1KcauwgWCCPQAPI 
+//		
+//		$msg->restkey='aikV4AURtqbCcqfk6mSc6Ek6twwpLP7H';
+////		var_dump($msg);
+//		$result= NotificationsManager::pushBaidu($msg);
+//		var_dump($result);
+		
 
 class Notification{
 	public $prod_id;
@@ -117,9 +239,49 @@ class Notification{
 	public $push_type;
 	public $appid  ;
 	public $restkey;
+	public $iosCertPath;
+	public $iosCertPathRel;
 //	is an Android-specific string indicating that an Intent should be fired with the given action type. 
 //  If you specify an "action" and do not specify an "alert" or "title", then no system tray notification will be shown to Android users.
 	public $title;//is an Android-specific string that will be used to set a title on the Android system tray notification. 
+}
+
+class ChannlesMaps {
+	 
+	 static $myParse = null;
+   	 private $channels = array();
+     static function getInstance() {
+		if (is_null ( self::$myParse )) {
+			self::$myParse = new ChannlesMap ();
+		}
+		return self::$myParse;
+	}
+	
+   	 public function setChannel($key,$value){
+   	 	$this->channels[$key]=$value;
+   	 }
+   	 
+     public function getChannel($key){
+        if(array_key_exists($key, $this->channels)){ 
+			return $this->channels[$key];
+		}
+		return false;
+   	 }
+}
+
+class ChannlesMap{
+	function &setInit(){
+		static $static = array();
+		return $static;
+	}
+	function setChannel($key,$value){
+		$var = &ChannlesMap::setInit();
+		$var[$key] = $value;
+	}
+	function &getChannel($key){
+		$var = &ChannlesMap::setInit();
+		return $var[$key];
+	}
 }
 
 ?>

@@ -12,7 +12,7 @@ switch($action)
 	case "del" : del();break;
 	case "tj" : headAdmin ("统计代码管理"); tj();break;
 	case "tjsave" : tjsave();break;
-	default : headAdmin ("广告管理"); main();break;  
+	default : headAdmin ("广告管理"); main();break;
 }
 dispseObj();
 

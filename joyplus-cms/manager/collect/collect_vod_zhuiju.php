@@ -23,7 +23,8 @@ function editall()
 	$ids = explode(",",$t_id);
 	
 	foreach( $ids as $id){
-		$tv_playfrom = be("post","crontab_desc" .$id);
+		$tv_playfrom = be("arr","crontab_desc" .$id);
+
 		$db->Update ("{pre}cj_zhuiju",array("crontab_desc"),array($tv_playfrom),"m_id=".$id);
 	}
 	echo  "更新成功";
@@ -43,7 +44,7 @@ function delpl()
 	global $db;
 	$ids = be("arr","m_id");
 	if (!isN($ids)){
-		$db->query("delete from {pre}cj_zhuiju WHERE m_id in(".$ids.")");
+		$db->query("delete from {pre}cj_zhuiju WHERE m_id in (".$ids.")");
 		echo  "删除成功";
 	 }
 	 else{
@@ -136,8 +137,8 @@ $(document).ready(function(){
 	</select>
 			
 			<select id="cj_vod_projects" name="cj_vod_projects">
-			<option value="">全部采集项目</option>
-			<?php echo makeSelect("{pre}cj_vod_projects","p_id","p_name","","","&nbsp;|&nbsp;&nbsp;",$project)?>
+				<option value="">全部采集项目</option>
+				<?php echo makeSelect("{pre}cj_vod_projects","p_id","p_name","","","&nbsp;|&nbsp;&nbsp;",$project)?>
 			</select>	
 			<INPUT class=inputbut type=submit value=搜索 name=submit>
 			    
@@ -156,7 +157,7 @@ $(document).ready(function(){
       <td>栏目分类</td>
       <td width="15%">所属采集项目</td> 
        <td width="7%">播放器</td>
-      <td>采集地址</td> 
+     
        <td width="8%">操作</td>
     </tr>
 	<?php
@@ -177,15 +178,15 @@ $(document).ready(function(){
 	<td><?php echo $row["m_name"]?>  (连载:<?php echo $row["m_state"]?>)</td>
 	
 	<td>
-	 <select id="crontab_desc<?php echo $t_id?>" name="crontab_desc<?php echo $t_id?>">	 
-	 <option value="1" <?php if($row["crontab_desc"]==='1'){ echo "selected";} ?>>星期一</option> 
-	 <option value="2" <?php if($row["crontab_desc"]==='2'){ echo "selected";} ?>>星期二</option> 
-	 <option value="3" <?php if($row["crontab_desc"]==='3'){ echo "selected";} ?>>星期三</option> 
-	 <option value="4" <?php if($row["crontab_desc"]==='4'){ echo "selected";} ?>>星期四</option>	   
-	 <option value="5" <?php if($row["crontab_desc"]==='5'){ echo "selected";} ?>>星期五</option>
-	 <option value="6" <?php if($row["crontab_desc"]==='6'){ echo "selected";} ?>>星期六</option>
-	 <option value="0" <?php if($row["crontab_desc"]==='0'){ echo "selected";} ?>>星期天</option>
-	</select>
+		
+		<input type="checkbox" name="crontab_desc<?php echo $t_id?>[]" value="1" <?php if(strpos($row["crontab_desc"], "1") !==false){echo "checked";}?> />星期一
+	    <input type="checkbox" name="crontab_desc<?php echo $t_id?>[]" value="2" <?php if(strpos($row["crontab_desc"], "2") !==false){echo "checked";}?> />星期二
+	    <input type="checkbox" name="crontab_desc<?php echo $t_id?>[]" value="3" <?php if(strpos($row["crontab_desc"], "3") !==false){echo "checked";}?>/>星期三
+	    <input type="checkbox" name="crontab_desc<?php echo $t_id?>[]" value="4" <?php if(strpos($row["crontab_desc"], "4") !==false){echo "checked";}?> />星期四
+	    <input type="checkbox" name="crontab_desc<?php echo $t_id?>[]" value="5" <?php if(strpos($row["crontab_desc"], "5") !==false){echo "checked";}?>/>星期五
+	    <input type="checkbox" name="crontab_desc<?php echo $t_id?>[]" value="6" <?php if(strpos($row["crontab_desc"], "6") !==false){echo "checked";}?>/>星期六
+	    <input type="checkbox" name="crontab_desc<?php echo $t_id?>[]" value="0" <?php if(strpos($row["crontab_desc"], "0") !==false){echo "checked";}?>/>星期天
+	
      </td>
 	
 	<td>
@@ -200,10 +201,10 @@ $(document).ready(function(){
 		echo $typearr["t_name"];
 	}
 	?>
-	</td><td><?php echo $row["p_name"]?></td>
+	</td><td><a href="<?php echo $row["m_urltest"]?>" target='_blank'><?php echo $row["p_name"]?></a></td>
 	<td><?php echo $row["m_playfrom"]?></td>
 	
-     <td><a href="<?php echo $row["m_urltest"]?>" target='_blank'>百度网页地址</a></td>
+   
       <td><A href="?action=del&m_id=<?php echo $row["m_id"]?>">删除</A></td>
     </tr>
 	<?php

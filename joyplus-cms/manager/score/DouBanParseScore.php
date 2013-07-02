@@ -6,7 +6,7 @@ class DouBanParseScore{
 	const BASE_URL="https://api.douban.com/v2/movie/search?count=10000&q=";
 	const COMMENTS_URL="http://movie.douban.com/subject/{ID}/comments?sort=time";//10569156
 	
-	const REVIEW_URL="http://movie.douban.com/subject/{ID}/reviews?score={STAR}";
+	const REVIEW_URL="http://movie.douban.com/subject/{ID}/reviews?score={STAR}";//10569156
 	const REVIEW_URL_four="http://movie.douban.com/subject/{ID}/reviews?score=4";
 	
 	const PIC_URL="http://movie.douban.com/subject/{ID}/photos?type=R&start=0&sortby=size";
@@ -352,7 +352,7 @@ public function getDoubanID($name,$year,$area){
     
     //http://movie.douban.com/j/review/5684162/fullinfo?show_works=False
     
-    public function  getReviewsById($id){
+public function  getReviewsById($id){
     	$reviewArry=array();
 		$titleArry=array();
 		$idArry=array();
@@ -402,15 +402,17 @@ public function getDoubanID($name,$year,$area){
     
 public function  getReviewsByStar($url){
     	writetofile("updateReview.txt", 'getReviewsById for vod url{=}'.$url );
-    	$content =getPage($url, "utf-8");
+    	$content =getPageWindow($url, "utf-8");
+//    	$content=getBodys($content, '<div id="content">');var_dump($content);
+        writetofile("updateReviewContent.txt", 'getReviewsById for vod url{=}'.$url );
         writetofile("updateReviewContent.txt", 'getReviewsById for vod url{=}'.$content );
 		if(isset($content) && !is_null($content)){
 			$reviewArry=array();
 			$titleArry=array();
 			$idArry=array();
-			$titlesID = getArray($content,'<span class="ckd-content"><a href="http://movie.douban.com/review','</span>');
-			$titles = getArray($titlesID,'>','</a>');
-			$reviewids= getArray($content, "/review/", "/\"");
+			$titlesID = getArray($content,'<a target="_blank" title','onclick="moreurl(this');
+			$titles = getArray($titlesID,'="','"href="http://movie.douban.com/review');
+			$reviewids= getArray($titlesID, "/review/", "/\"");
 			$reviewidsArray = split('{Array}', $reviewids);
 			$titlesArray = split('{Array}', $titles);
 			$count=count($reviewidsArray);			
@@ -583,7 +585,8 @@ public function  getReviewsByStar($url){
 
 
 
-
+//$d = new DouBanParseScore();
+//var_dump( $d->getReviewsById('6844868'));
 
 
 // $videoUrls="\$ss\$s";

@@ -230,7 +230,7 @@ function edit2(id)
 	</td>
 		
 	<td width="10%">下载次数：</td>
-	<td> <?php echo $rowapk['upload_count']?>
+	<td> <?php echo $rowapk['upload_count']?>  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 排序：<?php echo $rowapk['disp_order']?>
 	</td>
 	</tr>
 	
@@ -239,8 +239,8 @@ function edit2(id)
 	<td> <?php echo $rowapk['apk_tag']?>
 	</td>
 	
-	<td width="10%">排序：</td>
-	<td> <?php echo $rowapk['disp_order']?>
+	<td width="10%">图标：</td>
+	<td> <?php echo $rowapk['apk_icon']?>
 	</td>
 	</tr>
 	
@@ -365,7 +365,11 @@ function edit2(id)
 	<td><input id="package_name" size=40 value="" name="package_name">
 	</td>
 	</tr>
-	
+	<tr>
+	<td width="30%">图标：</td>
+	<td><input id="apk_icon" size=40 value="" name="apk_icon">
+	</td>
+	</tr>
 	<tr>
 	<td>应用是否正常：</td>
 	<td>  <select id="status" name="status">

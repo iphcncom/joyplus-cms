@@ -4,6 +4,7 @@ require_once ("collect_fun.php");
 require_once ("MovieType.php");
 require_once ("collect_vod_cjVideoUrl.php");
 require_once ("tools/ContentManager.php");
+require_once ("BaiduParse.php");
 chkLogin();
 $action = be("get","action");
 headAdminCollect ("视频自定义采集项目管理");
@@ -702,25 +703,39 @@ function editstep2()
 	if (isN($p_titletype)) { $p_titletype = 0;}
 	if (isN($p_pictype)) { $p_pictype = 0;}
 	
-	if (isN($p_pagetype)){
+	if (isN($p_pagetype)){		
+	    if($p_playtype ==='baidu'){
+//	    	$strListCodeCut = getBody($strListCode,$p_listcodestart,$p_listcodeend);
+		    $_SESSION["strListCodeCut"]=$strListCodeCut;
+			$baiduList = BaiduParse::parseMovieListByContent($strListCode, $p_code, '');
+			$linkarrcode = $baiduList['linkarr'];
+	         $linkarrcode=implode('{Array}', $linkarrcode);
+	//		var_dump($strListCodeCut);
+			if ($p_starringtype == 1){
+				$starringarrcode = $baiduList['starringarr'];
+	//			var_dump($starringarrcode);
+			}
+			if ($p_titletype == 1){
+				$titlearrcode = $baiduList['titlearr'];
+			}
+			if ($p_pictype == 1){
+				$picarrcode =$baiduList['picarr'];
+			}
+		}else {
 		$strListCodeCut = getBody($strListCode,$p_listcodestart,$p_listcodeend);
-		
-		$linkarrcode = getArray($strListCodeCut,$p_listlinkstart,$p_listlinkend);
-		
-		
-		
-		
 		$_SESSION["strListCodeCut"]=$strListCodeCut;
-//		var_dump($strListCodeCut);
-		if ($p_starringtype == 1){
-			$starringarrcode = getArray($strListCodeCut,$p_starringstart,$p_starringend);
-//			var_dump($starringarrcode);
-		}
-		if ($p_titletype == 1){
-			$titlearrcode = getArray($strListCodeCut,$p_titlestart,$p_titleend);
-		}
-		if ($p_pictype == 1){
-			$picarrcode = getArray($strListCodeCut,$p_picstart,$p_picend);
+		   $linkarrcode = getArray($strListCodeCut,$p_listlinkstart,$p_listlinkend);
+	//		var_dump($strListCodeCut);
+			if ($p_starringtype == 1){
+				$starringarrcode = getArray($strListCodeCut,$p_starringstart,$p_starringend);
+	//			var_dump($starringarrcode);
+			}
+			if ($p_titletype == 1){
+				$titlearrcode = getArray($strListCodeCut,$p_titlestart,$p_titleend);
+			}
+			if ($p_pictype == 1){
+				$picarrcode = getArray($strListCodeCut,$p_picstart,$p_picend);
+			}
 		}
 		
 		switch ($linkarrcode)
@@ -1042,12 +1057,12 @@ if ($showcode=="1"){
  <tr>
  <td>语言开始代码：</td>
  <td>&nbsp;&nbsp;输入区域： <span onClick="if(document.Form.p_languagestart.rows>2)document.Form.p_languagestart.rows-=1" style='cursor:hand'><b>缩小</b></span> <span onClick="document.Form.p_languagestart.rows+=1" style='cursor:hand'><b>扩大</b></span><br>
- <textarea name="p_languagestart" id="p_languagestart" cols="70" rows="3"><?echo $p_languagestart?></textarea></td>
+ <textarea name="p_languagestart" id="p_languagestart" cols="70" rows="3"><?php echo $p_languagestart?></textarea></td>
  </tr>
  <tr>
  <td>语言结束代码：</td>
  <td>&nbsp;&nbsp;输入区域： <span onClick="if(document.Form.p_languageend.rows>2)document.Form.p_languageend.rows-=1" style='cursor:hand'><b>缩小</b></span> <span onClick="document.Form.p_languageend.rows+=1" style='cursor:hand'><b>扩大</b></span><br>
- <textarea name="p_languageend" id="p_languageend" cols="70" rows="3"><?echo $p_languageend?></textarea></td>
+ <textarea name="p_languageend" id="p_languageend" cols="70" rows="3"><?php echo $p_languageend?></textarea></td>
  </tr>
  <tr>
  <td>介绍开始代码：</td>
@@ -1488,15 +1503,15 @@ function lastsave()
 		}
 	}
 	else{
-		$titlecode = getBodytt($linkcode,$p_titlestart,$p_titleend);
-		
-		var_dump($titlecode);
+		$titlecode = getBody($linkcode,$p_titlestart,$p_titleend);
+		writetofile("tte.log", $linkcode);
+		var_dump(ascii_decode($titlecode));
 		
 	}
 	
 
-	$titlecode=chr($titlecode);
-	var_dump($titlecode);
+	
+	
 	if ($p_starringtype ==1) {
 		switch($starringarrcode)
 		{

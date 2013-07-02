@@ -3,24 +3,29 @@ ob_implicit_flush(true);
 ini_set('max_execution_time', '0');
 require_once ("../admin_conn.php");
 require_once ("collect_fun.php");
-chkLogin();
+//chkLogin();
 $action = be("get","action");
 headAdminCollect ("文章自定义采集");
-global $db;
 
 $p_ids = be("get","p_id");
+var_dump($p_ids);
 $num = be("get","num");
 $listnum = be("get","listnum");
 $viewnum = be("get","viewnum");
 $sb = be("get","sb");
 $cg = be("get","cg");
-
+$users=getUsers();
+	$maxPostid=getMax('discuzforum_post_tableid','pid');
+	   $maxThreadid=getMax('discuzforum_thread','tid');
+	   $maxarticleid= getMax( "discuzportal_article_title", "aid");
+	 $sql = "SELECT count(*) FROM discuzcommon_member where uid !=1" ;
+	 $maxUser = $db->getOne($sql);
 if (isn($num)){ $num =0;} else {$num = intval($num);}
 if (isN($listnum)) { $listnum=0;} else {$listnum = intval($listnum);}
 if (isN($viewnum)) { $viewnum=0;} else {$viewnum = intval($viewnum);}
 
-if ((isN($action) && strpos(";".$p_ids,",")) || $action=="pl") {
-	$action = "pl";
+if ($action=="pl" || strpos($p_ids,",")>0 ){
+	if(isN($p_ids)) { $p_ids = be("arr","p_id"); }
 	$arrid = explode(",",$p_ids);
 	$arrcount = count($arrid) + 1;
 	if ($num >= $arrcount) {
@@ -79,9 +84,16 @@ $p_contentstart = $row["p_contentstart"];
 $p_contentend = $row["p_contentend"];
 $p_hitsstart = $row["p_hitsstart"];
 $p_hitsend = $row["p_hitsend"];
+$p_cpagecodestart = $row["p_cpagecodestart"];
+$p_cpagecodeend = $row["p_cpagecodeend"];
+$p_cpagetype = $row["p_cpagetype"];
+$p_cpagestart = $row["p_cpagestart"];
+$p_cpageend = $row["p_cpageend"];
+
 $starringarr=array();
 $titlearr=array();
- 
+
+
 switch($p_pagetype)
 {
 	case 0 :
@@ -141,10 +153,23 @@ switch($ListEnd)
 	cjList();
 	
 }
-
+function getUsers(){
+	global $db;
+	$rs=  $db->query("select uid,username from discuzcommon_member where uid !=1");
+	$users = array();
+	while ($row = $db ->fetch_array($rs))
+		  	{
+		  		$users[]=array(
+		  		  'uid'=>$row["uid"],
+		  		  'username'=>$row["username"]
+		  		);
+		  	}
+		  	return $users;
+}
 function cjList()
 {
-	global $listnum,$strListUrl,$p_pagetype,$p_collecorder,$p_listcodestart,$p_listcodeend,$p_listlinkstart,$p_listlinkend,$p_authorstart,$p_authorend,$p_titlestart,$p_titleend,$p_authortype,$p_titletype,$p_pictype,$p_coding,$p_showtype,$viewnum,$p_ids,$sb,$cg,$action;
+	global $maxarticleid,$maxPostid,$maxThreadid,$maxUser,$users,$p_hitsend,$db,$listnum,$strListUrl,$p_pagetype,$p_collecorder,$p_listcodestart,$p_listcodeend,$p_listlinkstart,$p_listlinkend,$p_authorstart,$p_authorend,$p_titlestart,$p_titleend,$p_authortype,$p_titletype,$p_pictype,$p_coding,$p_showtype,$viewnum,$p_ids,$sb,$cg,$action,$starringarr,$titlearr;
+	
 	
 	if (isN($_SESSION["strListCodeart"])) {
 		$strListCode = getPage($strListUrl,$p_coding);
@@ -178,6 +203,7 @@ function cjList()
 			{
 				$UrlTest = replaceStr($p_pagebatchurl,"{ID}",$i);
 				echo "<tr><td vAlign=center colspan=\"2\"></td>正在采集列表：".$UrlTest."的数据 </tr>";
+				
 				cjView($UrlTest,$j);
 				$j = $j + 1;
 			}
@@ -186,7 +212,6 @@ function cjList()
 		default:
 			if( isN($_SESSION["strListCodeCutart"] )){
 				$strListCodeCut = getBody($strListCode,$p_listcodestart,$p_listcodeend);
-				
 				$_SESSION["strListCodeCutart"] = $strListCodeCut;
 			}
 			else{
@@ -207,6 +232,7 @@ function cjList()
 				$titlearrcode = getArray($strListCodeCut,$p_titlestart,$p_titleend);
 			}
 			
+			
 			if ($linkarrcode ==False) {
 				echo "<tr><td vAlign=center class=\"tdxingmu\" colspan=\"2\"></td>在获取链接列表时出错！</tr>";
 				$sb = $sb+1;
@@ -222,7 +248,9 @@ function cjList()
 			if ($p_titletype ==1) {
 				$titlearr = explode("{Array}",$titlearrcode);
 			}
+			
 			$viewcount = count($linkarr);
+			
 			if ($p_showtype==1) {
 				if ($viewnum >= $viewcount){
 					clearSessionart();
@@ -231,7 +259,7 @@ function cjList()
 				else{
 					if ($p_savefiles==1){ $strdstate = "false"; }else{ $strdstate = "true"; }
 					wtablehead();
-					cjView($linkarr[$viewnum],$viewnum);
+		cjView($linkarr[$viewnum],$viewnum);
 					wtablefoot();
 					echo "数据采集完毕 --- 稍后继续采集<script language=\"javascript\">var dstate=".$strdstate.";setInterval(\"makeNextPage();\",500);function makeNextPage(){if(dstate){dstate=false;location.href='collect_art_cj.php?p_id=".$p_ids."&listnum=".($listnum-1)."&sb=".$sb."&cg=".$cg."&num=".$num."&viewnum=".($viewnum+1)."&action=".$action."';}}</script>";
 					exit;
@@ -245,6 +273,7 @@ function cjList()
 					if ($i==0){
 						echo "<tr><td vAlign=center class=\"tdxingmu\" colspan=\"2\"></td>正在采集列表：".$strListUrl."的数据 </tr>";
 					}
+					
 					cjView($linkarr[$i],$i);
 					wtablefoot();
 				}
@@ -256,7 +285,8 @@ function cjList()
 
 function cjView($strlink,$num)
 {
-	global $db,$strListUrl,$p_titletype,$starringarr,$titlearr,$p_id,$p_titlestart,$p_titleend,$p_hitsstart,$p_hitsend,$p_authortype,$p_authorstart,$p_authorend,$p_typestart,$p_typeend,$p_classtype,$p_collect_type,$p_timestart,$p_timeend,$p_contentstart,$p_contentend,$p_coding,$p_script,$p_showtype,$sb,$cg,$cache;
+	global  $maxarticleid,$maxPostid,$maxThreadid,$maxUser,$users,$p_hitsend,$db,$strListUrl,$p_titletype,$starringarr,$titlearr,$p_id,$p_titlestart,$p_titleend,$p_hitsstart,$p_hitsend,$p_authortype,$p_authorstart,$p_authorend,$p_typestart,$p_typeend,$p_classtype,$p_collect_type,$p_timestart,$p_timeend,$p_contentstart,$p_contentend,$p_cpagecodestart,$p_cpagecodeend,$p_cpagetype,$p_cpagestart,$p_cpageend,$p_coding,$p_script,$p_showtype,$sb,$cg,$cache;
+	
 	
 	$strlink = definiteUrl($strlink,$strListUrl);
 	$strViewCode = getPage($strlink,$p_coding);
@@ -276,16 +306,14 @@ function cjView($strlink,$num)
 		
 		$titlecode = filterScript($titlecode,$p_script);
 		$titlecode = replaceFilters($titlecode,$p_id,1,0);
-		$titlecode = replaceStr(replaceStr(replaceStr($titlecode,","," "),"'",""),"\"\"","");
-		$titlecode = trim($titlecode);
 		
-		$sql="select count(*) from {pre}cj_art where m_title='".$titlecode."'";
-		$rowcount=$db->getOne($sql);
+//		$sql="select count(*) from {pre}cj_art where m_title='".$titlecode."'";
+//		$rowcount=$db->getOne($sql);
 		
-		if (intval($rowcount>0)){
-			echo "<tr><td vAlign=center class=\"tdxingmu\" colspan=\"2\">遇到重复文章数据跳过采集!</td></tr>";
-			return;
-		}
+//		if (intval($rowcount>0)){
+//			echo "<tr><td vAlign=center class=\"tdxingmu\" colspan=\"2\">遇到重复文章数据跳过采集!</td></tr>";
+//			return;
+//		}
 		
 		if (isN($p_hitsstart) || !isnum($p_hitsstart) ){ $p_hitsstart = 0 ;}
 		if (isN($p_hitsend)  || !isnum($p_hitsend)) { $p_hitsend = 0 ;}
@@ -297,9 +325,8 @@ function cjView($strlink,$num)
 		else{
 			$starringcode = getBody($strViewCode,$p_authorstart,$p_authorend);
 		}
+		$starringcode = replaceStr($starringcode,"false","未知");
 		$starringcode = filterScript($starringcode,$p_script);
-		$starringcode = replaceStr(replaceStr(replaceStr($starringcode,","," "),"'",""),"\"\"","");
-		$starringcode = trim($starringcode);
 		
 		if ($p_classtype ==1) {
 			$typecode = filterScript(getBody($strViewCode,$p_typestart,$p_typeend),$p_script);
@@ -315,36 +342,142 @@ function cjView($strlink,$num)
 		}
 		$typecode = filterScript($typecode,$p_script);
 		
-		$timecode = filterScript(getBody($strViewCode,$p_timestart,$p_timeend),$p_script);
-		$timecode = replaceStr($timecode,"False",date('Y-m-d',time()));
-		$timecode = trim($timecode);
+		$timecode = getBody($strViewCode,$p_timestart,$p_timeend);
+		$timecode = replaceStr($timecode,"false",date('Y-m-d',time()));
+		$timecode = filterScript($timecode,$p_script);
 		
-		$contentcode = filterScript(getBody($strViewCode,$p_contentstart,$p_contentend),$p_script);
-		$contentcode = replaceStr($contentcode,"False","未知");
-		$contentcode = filterScript(replaceFilters($contentcode,$p_id,2,0),$p_script);
-		$contentcode = replaceStr(replaceStr(replaceStr($contentcode,","," "),"'",""),"\"\"","");
-		$contentcode = trim($contentcode);
 		
-	echo "<tr><td colspan=\"2\" align=\"center\">此列表中第".($num+1)."条数据采集结果</td></tr><tr><td vAlign=center width=\"20%\">来源地址：</td><td class=\"tdback\">".$strlink."</td></tr><td>文章标题：</td><td>".$titlecode."</td></tr><td>文章作者：</td><td>".$starringcode."</td></tr><td>发布时间：</td><td>".$timecode."</td></tr><td>分类：</td><td>".$typecode."</td></tr> <td>内容：</td><td>".$contentcode."</td></tr>";
+		$contentcode = getBody($strViewCode,$p_contentstart,$p_contentend);
+		$cpagecode = getBody($strViewCode,$p_cpagecodestart,$p_cpagecodeend);
+		$contentcode = replaceStr($contentcode,$cpagecode,"");
+		
+		if ($p_cpagetype==1){
+			$cpagelinkarrcode= getArray($cpagecode,$p_cpagestart,$p_cpageend);
+			$cpagelinkarr = explode("{Array}",$cpagelinkarrcode);
+			for ($i=0;$i<count($cpagelinkarr);$i++){
+				$cpagelink = $cpagelinkarr[$i];
+				if ($cpagelink != "" && $cpagelink!="#"){
+					$cpagelink = definiteUrl($cpagelink,$strListUrl);
+					$cpagelinkcode = getPage($cpagelink,$p_coding);
+					if ($cpagelinkcode != "false"){
+						$cpagecode = getBody($cpagelinkcode,$p_cpagecodestart,$p_cpagecodeend);
+						$cpagelinkcode = getBody($cpagelinkcode,$p_contentstart,$p_contentend);
+						$cpagelinkcode = replaceStr($cpagelinkcode,$cpagecode,"");
+						$contentcode = $contentcode . $cpagelinkcode;
+					}
+				}
+			}
+		}
+		$contentcode = replaceFilters($contentcode,$p_id,2,0);
+		$contentcode = replaceStr($contentcode, "'", "\"");
+		//var_dump($contentcode);
+		
+	echo "<tr><td colspan=\"2\" align=\"center\">此列表中第".($num+1)."条数据采集结果</td></tr><tr><td vAlign=center width=\"20%\">来源地址：</td><td class=\"tdback\">".$strlink."</td></tr><td>文章标题：</td><td>".$titlecode."</td></tr><td>文章作者：</td><td>".$starringcode."</td></tr><td>发布时间：</td><td>".$timecode."</td></tr><td>分类：</td><td>".$typecode."</td></tr> <td>内容：</td><td>".strlen($contentcode)."</td></tr>";
 
-		$sql="select m_id,m_title,m_type,m_author,m_content,m_addtime,m_urltest,m_zt,m_pid,m_typeid,m_hits from {pre}cj_art where m_urltest='".$strlink."' order by m_id desc";
-		$rowart=$db->getRow($sql);
-	    if ($rowart) {
-			$cg=$cg+1;
-			$movieid=$rowart["m_id"];
-			$sql = "update {pre}cj_art set m_type='".$typecode."',m_urltest='".$strlink."',m_title='".$titlecode."',m_author='".$starringcode."',m_content='".$contentcode."',m_addtime='".date('Y-m-d H:i:s',time())."',m_zt='0',m_pid='".$p_id."',m_typeid='".$m_typeid."' where m_id=".$rowart["m_id"];
-			
-			$db->query($sql);
-		}
-		else{
-			$cg=$cg+1;
-			$sql="insert {pre}cj_art (m_title,m_type,m_author,m_content,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_addtime) values('".$titlecode."','".$typecode."','".$starringcode."','".$contentcode."','".$strlink."','0','".$p_id."','".$m_typeid."','".$m_hits."','".date('Y-m-d H:i:s',time())."')";
-			
- 			$status = $db->query($sql);
-			$movieid=$db->insert_id();
-		}
+//		$sql="select m_id,m_title,m_type,m_author,m_content,m_addtime,m_urltest,m_zt,m_pid,m_typeid,m_hits from {pre}cj_art where m_urltest='".$strlink."' order by m_id desc";
+//		$rowart=$db->getRow($sql);
+//	    if ($rowart) {
+//			$cg=$cg+1;
+//			$movieid=$rowart["m_id"];
+//			$sql = "update {pre}cj_art set m_type='".$typecode."',m_urltest='".$strlink."',m_title='".$titlecode."',m_author='".$starringcode."',m_content='".$contentcode."',m_addtime='".date('Y-m-d H:i:s',time())."',m_zt='0',m_pid='".$p_id."',m_typeid='".$m_typeid."' where m_id=".$rowart["m_id"];
+//			
+//			$db->query($sql);
+//		}
+//		else{
+//			$cg=$cg+1;
+//			$sql="insert {pre}cj_art (m_title,m_type,m_author,m_content,m_urltest,m_zt,m_pid,m_typeid,m_hits,m_addtime) values('".$titlecode."','".$typecode."','".$starringcode."','".$contentcode."','".$strlink."','0','".$p_id."','".$m_typeid."','".$m_hits."','".date('Y-m-d H:i:s',time())."')";
+//			//writetofile("s.txt", $sql);
+// 			$status = $db->query($sql);
+//			$movieid=$db->insert_id();
+//		}
+
+	//$maxaid,$catid,$name,$contents,$summary,$uid,$username
+//	function actionAddArticals($aid,$catid,$name,$content,$summary,$uid,$username){
+	///$name,$content,$maxThreadid,$bbsformid,$maxPostid,$uid,$username
+//	function createThread($name,$content,$tid,$fid,$pid,$uid,$username){	
+     $userIndex=rand(0, $maxUser);
+	 $username=$users[$userIndex]['username'];
+	 $uid=$users[$userIndex]['uid'];
+	 
+     if(isset($contentcode) && !is_null($contentcode) && strlen(trim($contentcode))>0){
+		 if($p_collect_type ==='7'){
+		 	$maxPostid++;$maxThreadid++;
+		 	createThread($titlecode,$contentcode,$maxThreadid,$p_hitsend,$maxPostid,$uid,$username);
+		 	writetofile("collectForm".$p_hitsend.".succ.txt", $titlecode);
+		 }else if($p_collect_type ==='8'){
+		 	try{
+			if(strlen($contentcode)>400){
+			   $summary=substr($contentcode, 0,400);
+			  }else {
+			    $summary=$contentcode;
+			}
+			$summary =filterScript($summary,8191);
+		 	}catch(Exception $e){
+		 		$summary='';
+		 	}
+			 $maxarticleid++;
+			actionAddArticals($maxarticleid,$p_hitsend,$titlecode,$contentcode,$summary,$uid,$username);
+			writetofile("collectArt".$p_hitsend.".succ.txt", $titlecode);
+		 }
+     }else {
+     	writetofile("collectArt".$p_hitsend.".txt", $strlink);
+     }
 	}
+	
 }
+
+function getMax($tablename,$colunname){
+	global $db;
+	  $row= $db->getRow("select max(".$colunname.") as maxid from ".$tablename);
+	 
+	 if(isset($row['maxid']) && !is_null($row['maxid'])){
+	   return $row['maxid']+1;
+	 }else {
+	   return 1;
+	 }
+	}
+	
+	//$maxaid,$catid,$name,$contents,$summary,$uid,$username
+	function actionAddArticals($aid,$catid,$name,$content,$summary,$uid,$username){
+		global $db;	
+		try{
+		$sql ="INSERT INTO discuzportal_article_title(aid ,catid ,bid ,uid ,username ,title ,highlight ,author ,`from` ,fromurl ,url ,summary ,pic ,thumb ,remote ,id ,idtype ,contents ,allowcomment ,owncomment ,click1 ,click2 ,click3 ,click4 ,click5 ,click6 ,click7 ,click8 ,tag ,dateline ,status ,showinnernav) "
+		  ." VALUES (".$aid." , '".$catid."', '0', '".$uid."', '".$username."', '".$name."', '|||', '', '', '', '', '".$summary."', '', '0', '0', '0', '', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '2', '".time()."', '0', '0')";
+	 $db->query($sql); 
+	 // var_dump($sql);
+		$sql2 = "INSERT INTO discuzportal_article_content (cid ,aid ,`id`,idtype ,title ,content ,pageorder ,dateline)" 
+		 ." VALUES (NULL , ".$aid.", '0', '', '', '".$content."', '1', '".time()."')";
+		//  var_dump($sql2);
+		 $db->query($sql2);
+		} catch (Exception $e){
+		  var_dump($e);
+		}
+	} 
+	//$name,$content,$maxThreadid,$bbsformid,$maxPostid,$uid,$username
+	function createThread($name,$content,$tid,$fid,$pid,$uid,$username){	
+		global $db;	
+			   $content=  str_replace("<br />", Chr(10).Chr(13), $content);
+			   $content=  str_replace("(", "<", $content);
+		  	   $content=  str_replace(")", ">", $content);
+		  	   $content=  str_replace("'", "\"", $content);
+	   $sql=" INSERT INTO discuzforum_thread (tid ,fid ,posttableid ,typeid ,sortid ,readperm ,price ,author ,authorid ,subject ,dateline ,lastpost ,lastposter ,views ,replies ,displayorder ,highlight ,digest ,rate ,special ,attachment ,moderated ,closed ,stickreply ,recommends ,recommend_add ,recommend_sub ,heats ,status ,isgroup ,favtimes ,sharetimes ,stamp ,icon ,pushedaid ,cover ,replycredit ,relatebytag ,maxposition) " 
+     ." VALUES(".$tid." , ".$fid.", '0', '0', '0', '0', '0', '".$username."', '".$uid."', '".$name."', ".time().", ".time().", '".$username."', '2', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '32', '0', '0', '0', '-1', '-1', '0', '0', '0', '0', '0')";
+      $sqlpost="INSERT INTO discuzforum_post (pid ,fid ,tid ,first ,author ,authorid ,subject ,dateline ,message ,useip ,invisible ,anonymous ,usesig ,htmlon ,bbcodeoff ,smileyoff ,parseurloff ,attachment ,rate ,ratetimes ,status ,tags ,comment ,replycredit ,position) "
+      . "VALUES ('".$pid."', '".$fid."', '".$tid."', '1', '".$username."', '".$uid."', '".$name."', ".time().", '".$content." ', '127.0.0.1', '0', '0', '1', '0', '-1', '-1', '0', '0', '0', '0', '0', '0   ', '0', '0', NULL)";
+      $sqlposttable="INSERT INTO discuzforum_post_tableid (pid) VALUES ('".$pid."')";
+//var_dump($sqlposttable);
+//        var_dump($sql);
+//        var_dump($sqlpost);
+      try{
+     $db->query($sql); $db->query($sqlpost); $db->query($sqlposttable);
+      }catch(Exception $e){
+        var_dump($sqlposttable);
+        var_dump($sql);
+        var_dump($sqlpost);
+//        throw $e;
+      }
+      
+	}
 
 function wtablehead()
 {

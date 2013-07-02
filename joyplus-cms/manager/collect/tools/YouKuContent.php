@@ -25,7 +25,10 @@ class YouKuContent extends Content{
   		//writetofile("content.txt", $content);
   		$vid = getBody($content,$this->contentparmStart,$this->contentparaend); 
 //  		writetofile("daa.txt", $vid); 	
-//  		var_dump($content)	;
+//  		var_dump($vid)	;
+  		if($vid===false  || $vid==='' ){
+  			return '';
+  		}
   		return $this->getAndroidVideoUrl($vid);
   	}
   	
@@ -36,6 +39,7 @@ class YouKuContent extends Content{
   		  //check gaoqing
   		  $hdurl = replaceStr($url,"{format}","3gphd");
   		  $location = getLocation($hdurl);
+  		  
 //  		  writetofile("daa.txt", $hdurl);
           $flag=false;
   		  if(!isN($location) && strpos($location, $this->notfound) ===false){
@@ -48,7 +52,7 @@ class YouKuContent extends Content{
 //  		  writetofile("daa.txt", $hdurl);
   		  if(!isN($location) && strpos($location, $this->notfound) ===false){
   		  	if($flag){
-  		  		$videoAddressUrl=MovieType::VIDEO_SEP_VERSION.$videoAddressUrl;
+  		  		$videoAddressUrl=$videoAddressUrl.MovieType::VIDEO_SEP_VERSION;
   		  	}
   		  	$videoAddressUrl=$videoAddressUrl.MovieType::NORMAL.MovieType::VIDEO_NAME_URL_SEP.$hdurl;
   		  }
@@ -73,6 +77,10 @@ class YouKuContent extends Content{
   	public function parseIOSVideoUrlByContent($content, $p_coding,$p_script){
   	    $videoUrlParam = getBody($content,$this->p_videourlstart,$this->p_videourlend);
   	    $videoUrlParam=replaceLine($videoUrlParam);
+//  	    var_dump($videoUrlParam);
+  	    if($videoUrlParam===false || $videoUrlParam==='' ){
+  			return '';
+  		}
 		$videoAddressUrl = replaceStr($this->p_videocodeApiUrl,"{PROD_ID}",$videoUrlParam);
 		if(strpos($videoAddressUrl, MovieType::VIDEO_SEP_VERSION) !==false){
 			$videoAddressUrls=MovieType::TOP_CLEAR.MovieType::VIDEO_NAME_URL_SEP.replaceStr($videoAddressUrl,MovieType::VIDEO_SEP_VERSION,MovieType::TOP_CLEAR).MovieType::VIDEO_SEP_VERSION;

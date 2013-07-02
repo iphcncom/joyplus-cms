@@ -2,7 +2,7 @@
 require_once ("admin_conn.php");
 require_once ("genTopRecommendItems.php");
 require_once ("./parse/NotificationsManager.php");
-$parse_appid_restkey =require(dirname(__FILE__).'/parse/test_app_config.php');
+$parse_appid_restkey =require(dirname(__FILE__).'/parse/app_config.php');
 chkLogin();
 
 $action = be("all","action");
@@ -100,14 +100,14 @@ location.href='<?php echo "admin_subscribe.php?action=parse&ids=".$t_id;?>';
 	    				}	    				
 	    			}
 	    			if($flag){
-	    				$content='亲，你关注的《'.$row["vod_name"].'》更新到'.$d_state.'期了，快来收看吧~';
+	    				$content='亲，你关注的《'.$row["vod_name"].'》更新到了'.$d_state.'期，快来收看吧~';
 	    			}
 	    		}
 	    	}else{
 		    	if(!isN($d_state) && $d_state !== $d_remarks){
-		    	  $content='亲，你关注的《'.$row["vod_name"].'》更新到第'.$d_state.'集了，快来收看吧~';
+		    	  $content='亲，你关注的《'.$row["vod_name"].'》更新到了第'.$d_state.'集，快来收看吧~';
 		    	}else {
-		    	 $content='亲，你关注的《'.$row["vod_name"].'》更新全，快来收看吧~';	
+		    	 $content='亲，你关注的《'.$row["vod_name"].'》已更新完结，快来收看吧~';	
 		    	}
 	    	}
 		    $msg->alert=$content;
@@ -124,19 +124,23 @@ location.href='<?php echo "admin_subscribe.php?action=parse&ids=".$t_id;?>';
 		    }
 		    $pushFlag=true;
 		    foreach ($appKeys as $appkey){
-		       $msg->appid=$parse_appid_restkey[$appkey]['appid'];		
-		       $msg->restkey=$parse_appid_restkey[$appkey]['restkey'];
-	           $result= NotificationsManager::push($msg);
-			   if($result['code'].'' == '200'){		
-			   	 $channels=replaceStr($channels,$appkey.',', '');			   	
-			   	 $channels=replaceStr($channels,$appkey, '');	   	 
-			   	 appendMsg($content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 成功 ");
-		         writetofile("parsemsg.log", $content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 成功 ");
-			   }else {
-			   	// $pushFlag=false;
-			   	 appendMsg($content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 失败:".$result['response']);
-		         writetofile("parsemsg.log", $content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 失败:".$result['response']);
-			   };
+		       if($appkey==null || trim($appkey)=='' ){
+		        
+		       }else {
+			       $msg->appid=$parse_appid_restkey[$appkey]['appid'];		
+			       $msg->restkey=$parse_appid_restkey[$appkey]['restkey'];
+		           $result= NotificationsManager::push($msg);
+				   if($result['code'].'' == '200'){		
+				   	 $channels=replaceStr($channels,$appkey.',', '');			   	
+				   	 $channels=replaceStr($channels,$appkey, '');	   	 
+				   	 appendMsg($content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 成功 ");
+			         writetofile("parsemsg.log", $content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 成功 ");
+				   }else {
+				   	 $pushFlag=false;
+				   	 appendMsg($content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 失败:".$result['response']);
+			         writetofile("parsemsg.log", $content."====消息推送 到 [".$parse_appid_restkey[$appkey]['appname']."] 失败:".$result['response']);
+				   };
+		       }
 		    }
 		    
 		    if($pushFlag){

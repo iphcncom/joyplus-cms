@@ -5,6 +5,7 @@ require_once ("../inc/pinyin.php");
 require_once ("./score/DouBanParseScore.php");
 require_once ("./parse/NotificationsManager.php");
 $parse_appid_restkey =require(dirname(__FILE__).'/parse/test_app_config.php');
+$parse_appid_restkey_baidu =require(dirname(__FILE__).'/parse/test_baidu_app_config.php');
 
 
 
@@ -530,13 +531,20 @@ $("#btnEdit").click(function(){
                     </tr>
                      <tr>
                         <td align="left" valign="top"> <br/>
+                            Parse 云推送<br/>
 	                        &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_ANDROID"   />悦视频 Android版<br/>
-						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_TV"  />悦视频 TV版<br/>
-						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IOS"  />悦视频 IOS版
+<!--						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_TV"  />悦视频 TV版<br/>-->
+						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IOS"  />悦视频 IOS版<br/>
+						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IPHONE"  />今晚剧场iphone版<br/>
+						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IPAD"  />今晚剧场IPAD版<br/>
                         </td>
-                        <td align="left" valign="top">  <br/>
-						    <input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IPHONE"  />今晚剧场iphone版<br/>
-						    <input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IPAD"  />今晚剧场IPAD版<br/>
+                         <td align="left" valign="top"> <br/>
+                                                                         百度云推送<br/>
+	                        &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_ANDROID_BAIDU"   />悦视频 Android版<br/>
+<!--						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_TV_BAIDU"  />悦视频 TV版<br/>-->
+						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IOS_BAIDU"  />悦视频 IOS版<br/>
+						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IPHONE_BAIDU"  />今晚剧场iphone版<br/>
+						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IPAD_BAIDU"  />今晚剧场IPAD版<br/>
                         </td>
                     </tr>
                       <tr>
@@ -562,7 +570,7 @@ unset($rs);
 function notifyMsg(){
 	
 	$d_id = be("all","notify_msg_prod_id");$prod_type = be("all","notify_msg_prod_type");
-	global $parse_appid_restkey;
+	global $parse_appid_restkey,$parse_appid_restkey_baidu;
 	$can_search_device=be("all","channel");
 	if(!isN($can_search_device)){
 		$content = be("all","content");
@@ -588,15 +596,30 @@ function notifyMsg(){
 		if($androidFlag && !$isoFlag){
 			$msg->type=NotificationsManager::DEVICE_ANDROID;	
 		}
-		$msg->appid=$parse_appid_restkey[$can_search_device]['appid'];
-		
-		$msg->restkey=$parse_appid_restkey[$can_search_device]['restkey'];
-//		var_dump($msg);
-		$result= NotificationsManager::push($msg);
-		if($result['code'].'' == '200'){
-			echo "消息推送到 [".$parse_appid_restkey[$can_search_device]['appname']."] 成功";
+		if(strpos($can_search_device, '_BAIDU') ===false) {
+			$appname=$parse_appid_restkey[$can_search_device]['appname'];
+			$msg->appid=$parse_appid_restkey[$can_search_device]['appid'];
+			
+			$msg->restkey=$parse_appid_restkey[$can_search_device]['restkey'];
+			$result= NotificationsManager::push($msg);
+			$appname=$parse_appid_restkey[$can_search_device]['appname'];
 		}else {
-			echo "消息推送到 [".$parse_appid_restkey[$can_search_device]['appname']."] 失败:".$result['response'];
+			if($isoFlag && !$androidFlag){
+				$msg->iosCertPath=$parse_appid_restkey_baidu[$can_search_device]['iosCertPath'];
+				$msg->iosCertPathRel=$parse_appid_restkey_baidu[$can_search_device]['iosCertPathRel'];
+			}
+			$appname=$parse_appid_restkey_baidu[$can_search_device]['appname'];
+			
+			$msg->appid=$parse_appid_restkey_baidu[$can_search_device]['appid'];
+			
+			$msg->restkey=$parse_appid_restkey_baidu[$can_search_device]['restkey'];
+//			var_dump($parse_appid_restkey_baidu);
+			$result= NotificationsManager::pushBaidu($msg);
+		}
+		if($result['code'].'' == '200'){
+			echo "消息推送到 [".$appname."] 成功";
+		}else {
+			echo "消息推送到 [".$appname."] 失败:".$result['response'];
 		};
 	}else {
 		echo "你必须要选择一个频道发送";

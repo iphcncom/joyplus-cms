@@ -10,11 +10,6 @@ return array(
 				    'restkey'=>'5VU1OdXcr2qvHCAbhmFIti2IVFnqwz3wahKfGEO4',
 				    'appname'=>'悦视频 Android版',
                 ),
-    	   'CHANNEL_TV'=>array(
-	    	        'appid'=>'UBgv7IjGR8i6AN0nS4diS48oQTk6YErFi3LrjK4P',
-				    'restkey'=>'9NgbQ1QkQiQ5lWinrxyvMlUFnG3aQEy2GhIvuFZU',
-				    'appname'=>'悦视频 TV版',
-                ),
     	   'CHANNEL_IPHONE'=>array(
 	    	        'appid'=>'pKrrBrUzKx4Ag0b0VUaBaQWJhshMh8EwrjdcC10m',
 				    'restkey'=>'QE3hZv4CIdDzFK6qyOsvQxwoURl3pYGA2eLVZhql',

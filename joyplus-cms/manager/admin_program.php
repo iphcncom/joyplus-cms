@@ -6,6 +6,7 @@ $action = be("all","action");
 switch($action)
 {
 	case "editall" : editall();break;
+	case "exportExcel" : exportExcel();break;
 	case "info" :headAdmin ("电视直播管理"); info();break;
 	default : headAdmin ("电视直播管理");main();break;
 }
@@ -22,19 +23,48 @@ function editall()
 		$tv_type= be("post","tv_type" .$id);
 		$tv_playurl = be("post","tv_playurl" .$id);
 		$status = be("post","status" .$id);
-		
+		$country = be("post","country" .$id);
+		$area = be("post","area" .$id);
 		if (isN($tv_name)) { echo "信息填写不完整!";exit;}
-		if (isN($tv_code)) { echo "信息填写不完整!";exit;}
-		$db->Update ("{pre}tv",array("tv_name", "tv_code","tv_type","tv_playurl","create_date","status"),array($tv_name,$tv_code,$tv_type,$tv_playurl,date('Y-m-d H:i:s',time()),$status),"id=".$id);
+		$db->Update ("{pre}tv",array("tv_name", "tv_code","tv_type","tv_playurl","create_date","status","country","area"),array($tv_name,$tv_code,$tv_type,$tv_playurl,date('Y-m-d H:i:s',time()),$status,$country,$area),"id=".$id);
 	}
 	updateCacheFile();
 	echo "修改完毕";
 }
+function exportExcel(){
+	global $db,$cache;
+	$sql = "SELECT * FROM {pre}tv order by country desc , area desc ";
+	header("Content-Type: application/vnd.ms-execl");  
+	header("Content-Disposition: attachment; filename=tv.xls");  
+	header("Pragma: no-cache");  
+	header("Expires: 0");  
+	echo  mb_convert_encoding("国家","gb2312","utf-8")."\t"; 
+	echo  mb_convert_encoding("地区","gb2312","utf-8")."\t";
+	echo  mb_convert_encoding("频道id","gb2312","utf-8")."\t";  
+echo mb_convert_encoding("频道名称","gb2312","utf-8")."\t";  
+echo "\t\n";  
+  
+/*start of second line*/  
 
+	$rs = $db->query($sql);
+	while ($row = $db ->fetch_array($rs)){
+		  		$t_id=$row["id"];
+		  		 
+		  		echo mb_convert_encoding( $row["country"],"gb2312","utf-8")."\t";  
+		  		echo mb_convert_encoding( $row["area"],"gb2312","utf-8")."\t"; 
+		  		echo $t_id."\t";  
+echo mb_convert_encoding( $row["tv_name"],"gb2312","utf-8")."\t";  
+echo "\t\n";   
+    }
+    
+    unset($rs);
+}
 function main(){
 	global $db,$cache;
 	
 	 $keyword = be("all", "keyword"); $tv_type = be("all", "tv_type");
+	 $country = be("all", "country");
+	 $area = be("all", "area");
     
     if(!isNum($tv_type)) { $tv_type = -1; } else { $tv_type = intval($tv_type);}
    
@@ -42,6 +72,14 @@ function main(){
     
     if (!isN($keyword)) {
     	$where .= " AND tv_name LIKE '%" . $keyword . "%' ";
+    }
+    
+    if (!isN($area)) {
+    	$where .= " AND area = '" . $area . "' ";
+    }
+    
+    if (!isN($country)) {
+    	$where .= " AND country = '" . $country . "' ";
     }
     
     if($tv_type !=='-1' && $tv_type !=-1){
@@ -60,8 +98,15 @@ function main(){
 <script language="javascript">
 function filter(){
 	var keyword=$("#keyword").val();
-	var tv_type=$("#tv_type").val();	 
-	var url = "admin_program.php?tv_type="+tv_type+"&keyword="+encodeURI(keyword);
+	var tv_type=$("#tv_type").val();
+	var country=$("#country").val();
+	var area=$("#area").val();		 
+	var url = "admin_program.php?tv_type="+tv_type+"&keyword="+encodeURI(keyword)+"&area="+encodeURI(area)+"&country="+encodeURI(country);
+	window.location.href=url;
+}
+
+function exportExcel(){	
+	var url = "admin_program.php?action=exportExcel";	
 	window.location.href=url;
 }
 
@@ -133,11 +178,11 @@ $(document).ready(function(){
 		$("#form1").attr("action","?action=editall");
 		$("#form1").submit();
 	});
+	
 	$("#btnAdd").click(function(){
 		$('#form2').form('clear');
 		$("#flag").val("add");
-		$('#win1').window('open');
-		
+		$('#win1').window('open');		
 	});
 	$("#btnCancel").click(function(){
 		location.href= location.href;
@@ -168,14 +213,21 @@ function edit(id)
 	<option value="5" <?php if ($tv_type==5){ echo "selected";} ?>>数字</option>
 	</select>
 	
+	 <select id="country" name="country">
+    <option value="">请选择国家</option>
+    <?php echo makeSelectTV_live("country", $country)?>
+	</select>
 	
-	
+	<select id="area" name="area">
+    <option value="">请选择地区</option>
+    <?php echo makeSelectTV_live("area", $area)?>
+	</select>
 	</td>
 	</tr>
 	<tr>
 	<td colspan="6">
 	关键字：<input id="keyword" size="40" name="keyword" value="<?php echo $keyword?>">
-	<input class="input" type="button" value="搜索" id="btnsearch" onClick="filter();">	
+	<input class="input" type="button" value="搜索" id="btnsearch" onClick="filter();">	<a href="admin_program.php?action=exportExcel"><font color="red"><b>导出频道</b></font></a>	
 	</td>
 	<td width="150px">
 		
@@ -192,11 +244,13 @@ function edit(id)
 	<td width="5%">&nbsp;</td>
 	<td width="5%">编号</td>
 	<td>名称</td>
-	<td>编码</td>
+	<td>国家</td>
+	<td>地区</td>
+<!--	<td>编码</td>-->
 	<td>类型</td>
 	<td>显示到app</td>
-	<td width="45%">直播地址</td>
-	<td width="20%">操作</td>
+<!--	<td width="45%">直播地址</td>-->
+	<td width="40%">操作</td>
 	</tr>
 	<?php
 		if($nums==0){
@@ -214,9 +268,20 @@ function edit(id)
 	  <input name="t_id[]" type="checkbox" id="t_id" value="<?php echo $t_id?>" /></td>
       <td><?php echo $t_id?></td>
       <td>
-      <input type="text" name="tv_name<?php echo $t_id?>" value="<?php echo $row["tv_name"]?>" size="20"/></td>
-      <td>
-      <input type="text" name="tv_code<?php echo $t_id?>" value="<?php echo $row["tv_code"]?>" size="20"/></td>
+      <input type="text" name="tv_name<?php echo $t_id?>" value="<?php echo $row["tv_name"]?>" size="40"/></td>
+      
+	<td>
+	 <select id="country<?php echo $t_id?>" name="country<?php echo $t_id?>">
+    <option value="">请选择国家</option>
+    <?php echo makeSelectTV_live("country", $row["country"])?>
+	</select>
+	</td>
+	<td><select id="area<?php echo $t_id?>" name="area<?php echo $t_id?>">
+    <option value="">请选择地区</option>
+    <?php echo makeSelectTV_live("area", $row["area"])?>
+	</select></td>
+<!--      <td>-->
+<!--      <input type="text" name="tv_code<?php echo $t_id?>" value="<?php echo $row["tv_code"]?>" size="20"/></td>-->
 	  <td>
 		  <select id="tv_type" name="tv_type<?php echo $t_id?>">
 			<option value="-1">类型</option>
@@ -236,11 +301,12 @@ function edit(id)
 	</select>
 	  </td>
 	  
+<!--      <td>-->
+<!--      <input type="text" name="tv_playurl<?php echo $t_id?>" value="<?php echo $row["tv_playurl"]?>" size="70"/></td>-->
+<!--	  -->
       <td>
-      <input type="text" name="tv_playurl<?php echo $t_id?>" value="<?php echo $row["tv_playurl"]?>" size="70"/></td>
-	  
-      <td>
-     <a href="admin_program_items.php?tv_id=<?php echo $t_id?>">显示节目单</a> 
+     <a href="admin_program_items.php?tv_id=<?php echo $t_id?>">显示节目单</a>  |
+     <a href="admin_program_play.php?tv_id=<?php echo $t_id?>">显示直播源</a>  |
 	  <a href="javascript:void(0)" onclick="edit('<?php echo $t_id?>');return false;">修改</a> 
 <!--	  | <a href="admin_ajax.php?action=del&tab={pre}vod_topic&t_id=<?php echo $t_id?>" onClick="return confirm('确定要删除吗?');">删除</a> |-->
 	  </td>
@@ -273,11 +339,11 @@ function edit(id)
 	<td><input id="tv_name" size=40 value="" name="tv_name">
 	</td>
 	</tr>
-	<tr>
-	<td>电视编码：</td>
-	<td>  <input id="tv_code" size=40 value="" name="tv_code">
-	</td>
-    </tr>
+<!--	<tr>-->
+<!--	<td>电视编码：</td>-->
+<!--	<td>  <input id="tv_code" size=40 value="" name="tv_code">-->
+<!--	</td>-->
+<!--    </tr>-->
 	<tr>
 	<td>电视节目类别：</td>
 	<td><select id="tv_type" name="tv_type">
@@ -290,6 +356,23 @@ function edit(id)
 	</select>
 	</td>
 	</tr>
+	
+	<tr>
+	<td>国家：</td>
+	<td><select id="country" name="country">
+	<?php echo makeSelectTV_live("country", '')?>
+	</select>
+	</td>
+	</tr>
+	
+	<tr>
+	<td>地区：</td>
+	<td><select id="area" name="area">
+	<?php echo makeSelectTV_live("area", '')?>
+	</select>
+	</td>
+	</tr>
+	
 	 <tr>
      <td>显示到App：</td>
       <td><select id="status" name="status">
@@ -298,12 +381,12 @@ function edit(id)
 	</select>
 	  </td>
     </tr>
-	<tr>
-     <td>直播视频地址：</td>
-      <td>
-      <TEXTAREA id="tv_playurl" NAME="tv_playurl" ROWS="2" style="width:300px;table-layout:fixed; word-wrap:break-word;"></TEXTAREA>
-	  </td>
-    </tr>
+<!--	<tr>-->
+<!--     <td>直播视频地址：</td>-->
+<!--      <td>-->
+<!--      <TEXTAREA id="tv_playurl" NAME="tv_playurl" ROWS="2" style="width:300px;table-layout:fixed; word-wrap:break-word;"></TEXTAREA>-->
+<!--	  </td>-->
+<!--    </tr>-->
     <tr align="center" >
       <td colspan="2"><input class="input" type="submit" value="保存" id="btnSave"> <input class="input" type="button" value="返回" id="btnCancel"></td>
     </tr>

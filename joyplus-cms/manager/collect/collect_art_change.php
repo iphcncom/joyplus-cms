@@ -111,7 +111,7 @@ $(document).ready(function(){
 <table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
 	<tr>
 	<td>
-		菜单：<a href="collect_art_manage.php?action=">采集规则列表</a> | <a href="collect_art_manage.php?action=upexp">导入采集规则</a> | <a href="collect_art_change.php">分类转换</a> | <a href="collect_art_filters.php">信息过滤</a>  
+		菜单：<a href="collect_art_manage.php?action=">采集规则列表</a> | <a href="collect_art_change.php">分类转换</a> | <a href="collect_art_filters.php">信息过滤</a>  
 	&nbsp; 按项目查看：<select onchange=javascript:window.location.href=this.options[this.selectedIndex].value>
 	<option value="?action=">所有转换</option>
 	<option value="?action=&{pre}cj_art_projects=0" <?php if ($project=="0"){ echo "selected";} ?>>全局转换</option>

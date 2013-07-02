@@ -21,16 +21,18 @@ function  collecProgram()
      	echo '参数非法。'; 
      } else { 
      	  $tv_id = intval($tv_id);
-     	  $tv_code=$db->getOne("select tv_code from mac_tv where id=".$tv_id);
-     	  if($tv_code !==false ){
+     	  $row=$db->getRow("SELECT tv_id, tv_code, tv_playfrom FROM mac_tv_egp_config where tv_id=".$tv_id .' GROUP BY tv_id order by tv_playfrom asc');
+     	  //var_dump($row);
+     	  if($row){
 			    $day = be("all", "day");
 			    if(isN($day)){
 			      parseVodPad(array(
-			        'id'=>$tv_id,
-			        'tv_code'=>$tv_code
+			        'id'=>$row['tv_id'],
+			        'tv_code'=>$row['tv_code'],
+			        'tv_playfrom'=>$row['tv_playfrom'],
 			      ));
 			    }else{
-			    	parseVodPadSimple($tv_id,$tv_code,$day);
+			    	parseVodPadSimple($row['tv_id'],$row['tv_code'],$day,$row['tv_playfrom']);
 			    }
 			    echo '采集完成。';
      	  }else {
@@ -43,25 +45,28 @@ function  collecProgram()
 function editall()
 {
 	global $db;
-	$t_id = be("arr","ids");
+	$t_id = be("arr","t_id");
 	$ids = explode(",",$t_id);
+	//var_dump($ids);
 	foreach( $ids as $id){
-		$t_flag = be("post","t_flag" .$id);
-		$t_sort = be("post","disp_order" .$id);
-		
-		if (isN($t_sort)) { $t_sort= $db->getOne("SELECT MAX(disp_order) FROM {pre}vod_topic_items")+1; }
-		if (!isNum($t_sort)) { echo "信息填写不完整!";exit;}
-		$db->Update ("{pre}vod_topic_items",array("flag", "disp_order"),array($t_flag,$t_sort),"id=".$id);
-	}
-	updateCacheFile();
-	$topic_id= getBody(getReferer(), 'topic_id=', '&');
-	if(isN($topic_id)){
-		$topic_id= getBodys(getReferer(), 'topic_id=');
+		$play_time = be("post","play_time" .$id);
+		$video_name = be("post","video_name" .$id);
+		$program_type = be("post","program_type" .$id);
+		//update config tabel
+		if(!isN($program_type)){
+			$row = $db->getRow("select * from  mac_tv_program_type_item where program_type ='".$program_type."' and program_name='".$video_name."'");
+			// var_dump("select * from  mac_tv_program_type_item where program_type ='".$program_type."' and program_name='".$video_name."'");
+			// var_dump($row);
+			if(!$row){
+				 $db->query("insert into mac_tv_program_type_item(program_type,program_name) values('".$program_type."','".$video_name."')");
+//				 var_dump("insert into mac_tv_program_type_item(program_type,program_name) values('".$program_type."','".$video_name."')");
+			}			
+			$db->query("update mac_tv_program_item set program_type='".$program_type ."' where video_name='".$video_name."'");
+			//var_dump("update mac_tv_program_item set program_type='".$program_type ."' where video_name='".$video_name."'");
+		}
+		$db->Update ("{pre}tv_program_item",array("play_time", "video_name","program_type"),array($play_time,$video_name,$program_type),"id=".$id);
 	}
 	
-	if(!isN($topic_id)){
-	   replaceTopRecommend($topic_id);
-	}
 	echo "修改完毕";
 }
 
@@ -99,7 +104,13 @@ function main()
 function filter(){
 	var tv_id=$("#tv_id").val();
 	var day  =$("#date").val();
-	var url = "admin_program_items.php?tv_id="+tv_id+"&day="+day;
+	if(day ==''){
+		var url = "admin_program_items_day.php?tv_id="+tv_id+"&day="+day;
+	}else {
+		var url = "admin_program_items.php?tv_id="+tv_id+"&day="+day;
+	}
+	
+	
 	window.location.href=url;
 }
 
@@ -137,6 +148,29 @@ $(document).ready(function(){
 		$("#form1").attr("action","?action=editall");
 		$("#form1").submit();
 	});
+	$("#btnAdd").click(function(){
+		$('#form2').form('clear');
+		$("#flag").val("add");
+		$('#win1').window('open');
+		
+	});
+	$("#btnAdd_down").click(function(){
+		$('#form2').form('clear');
+		$("#flag").val("add");
+		$('#win1').window('open');
+		
+	});
+
+	$('#form2').form({
+		onSubmit:function(){
+			if(!$("#form2").valid()) {return false;}
+		},
+	    success:function(data){
+	        $.messager.alert('系统提示', data, 'info');
+	    }
+	});
+	
+	
 //	$("#btnAdd").click(function(){
 //		window.location.href="admin_vod.php?topic_id=<?php echo $topic_id?>";
 //	});
@@ -159,7 +193,7 @@ function edit(id)
 	<table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
 	<tr>
 	<td colspan="2">
-	过滤条件：电视台 <select id="tv_id" name="tv_id" >
+	过滤条件：频道 <select id="tv_id" name="tv_id" >
 	
 	<?php echo makeSelectWhere("{pre}tv","id","tv_name","tv_type","","&nbsp;|&nbsp;&nbsp;",$tv_id," where status=1")?>
 	</select>
@@ -178,7 +212,7 @@ function edit(id)
 <form action="" method="post" id="form1" name="form1">
 	<tr>
 	<td align="left">AM 00:00-12:00节目单</td>
-	<td align=""left"" width="50%">AM 12:00-24:00节目单</td>
+	<td align=""left"" width="50%">AM 12:00-24:00节目单   <input type="button" value="添加" id="btnAdd" class="input" /> </td>
 	</tr>
 	<?php
 		if($nums==0){
@@ -191,11 +225,22 @@ function edit(id)
 		  		
 	?>
     <tr>
-	  <td align="left">
+	  <td align="left" valign="top">
 	  <?php 
-		while ($row1 = $db ->fetch_array($rs1))
+		
+	  while ($row1 = $db ->fetch_array($rs1))
 		  	{
-		  		echo $row1['play_time'].' '.$row1['video_name'].'<br/>';
+		  		$t_id1=$row1["id"];
+	    ?>
+	      <input name="t_id[]" type="checkbox" id="t_id" value="<?php echo $t_id1?>" /> 
+	       <input type="text" name="play_time<?php echo $t_id1?>" value="<?php echo $row1["play_time"]?>" size="5"/>
+	       <input type="text" name="video_name<?php echo $t_id1?>" value="<?php echo $row1["video_name"]?>" size="40"/> 
+	       <select id="program_type<?php echo $t_id1?>" name="program_type<?php echo $t_id1?>" >
+	<option value=''>节目类别</option>
+	<?php echo makeSelectTV_live("prod_type", $row1["program_type"] )?>
+	</select><br/>
+	    <?php 
+		  		
 		  	}
 	  ?>
 	  </td>
@@ -203,7 +248,16 @@ function edit(id)
 	    <?php 
 		while ($row2 = $db ->fetch_array($rs2))
 		  	{
-		  		echo $row2['play_time'].' '.$row2['video_name'].'<br/>';
+		  		$t_id2=$row2["id"];
+	    ?>
+	      <input name="t_id[]" type="checkbox" id="t_id" value="<?php echo $t_id2?>" />
+	       <input type="text" name="play_time<?php echo $t_id2?>" value="<?php echo $row2["play_time"]?>" size="5"/>
+	       <input type="text" name="video_name<?php echo $t_id2?>" value="<?php echo $row2["video_name"]?>" size="40"/> 
+     <select id="program_type<?php echo $t_id2?>" name="program_type<?php echo $t_id2?>" >
+	<option value=''>节目类别</option>
+	<?php echo makeSelectTV_live("prod_type",  $row2["program_type"])?>
+	</select><br/>
+	    <?php 
 		  	}
 	  ?>
 	  </td>
@@ -214,10 +268,46 @@ function edit(id)
 			
 		}
 	?>
-	
+	<tr>
+	<td  colspan="7">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'t_id[]')" />
+<!--	<input type="button" value="批量删除" id="btnDel" class="input"  />-->
+	&nbsp;<input type="button" value="批量修改" id="btnEdit" class="input" />
+	&nbsp;<input type="button" value="添加" id="btnAdd_down" class="input" />
+	</td></tr>
 </table>
 </form>
 
+
+<div id="win1" class="easyui-window" title="窗口" style="padding:5px;width:450px;" closed="true" closable="false" minimizable="false" maximizable="false">
+<form action="admin_ajax.php?action=save&tab={pre}tv_program_item&tv_id=<?php echo $tv_id ;?>&day=<?php echo $day;?>" method="post" name="form2" id="form2">
+<table class="tb">
+	<input id="id" name="id" type="hidden" value="">
+	<input id="flag" name="flag" type="hidden" value="">
+	<tr>
+	<td width="30%">播放时间：</td>
+	<td><input id="play_time" size=5 value="" name="play_time">（格式xx:xx, 比如23:20）
+	</td>
+	</tr>
+	<tr>
+	<td width="30%">播放节目：</td>
+	<td><input id="video_name" size=40 value="" name="video_name">
+	</td>
+	</tr>
+	<tr>
+	<td width="30%">节目类别：</td>
+	<td> <select id="program_type" name="program_type" >
+	<option value=''></option>
+	<?php echo makeSelectTV_live("prod_type",  '')?>
+	</select>
+	</td>
+	</tr>
+	 
+    <tr align="center" >
+      <td colspan="2"><input class="input" type="submit" value="保存" id="btnSave"> <input class="input" type="button" value="返回" id="btnCancel"></td>
+    </tr>
+</table>
+</form>
+</div>
 </body>
 </html>
 <?php

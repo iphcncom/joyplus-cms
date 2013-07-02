@@ -25,7 +25,7 @@ switch($action)
 	case "noInflowProject" : noInflowProject();break;
 	
 	case "AllInflowProject" : AllInflowProject();break;
-	case "main"  : main();
+	case "main"  : main();break;
 }
 
 function editype()
@@ -221,7 +221,7 @@ function editsave()
 		$db->query( $sql );
 		}
 	}
-	showmsg ("修改数据成功!",$backurl);
+	showmsg ("修改数据成功!",'/manager/collect/collect_vod.php?action=edit&m_id='.$m_id);
 }
 
 function edit()
@@ -696,6 +696,16 @@ function MovieInflow($sql_collect,$MovieNumW,$isMandCollect){
 		$titlenolang=$title;
 		$d_language = $row["m_language"];
 		$flag_lang=false;
+		$d_state = $row["m_state"];
+		if($d_type==='131' && strpos($year, ',') !==false){
+			var_dump($title." 是综艺而不是动漫。");
+			continue;
+		}
+		
+	    if($d_type==='3' && !is_null($d_state) && strlen($d_state) != 8){
+			var_dump($title." 是动漫而不是综艺。");
+			continue;
+		}
 		
 		if(!isN($d_language)){ 
 			$titlenolang =trim(replaceStr($titlenolang, $d_language, ''));
@@ -1057,6 +1067,11 @@ function MovieInflow($sql_collect,$MovieNumW,$isMandCollect){
 			}
 		}
 		
+		if(strpos($tmpvideourl, "http") ===false){
+			//iPad,iphone,apad,aphone,web
+			$strSet .=" , can_search_device='iPad,iphone,apad,aphone,web'  ";
+		}
+		
 //	    writetofile("d:\\up.txt", $strSet);
 		$sql= "update {pre}vod set ".$strSet." where d_id=" .$did;
 //		writetofile("d:\\ts.txt", "update {pre}vod set ".$strSet." where d_id=" .$did);
@@ -1090,6 +1105,7 @@ function MovieInflow($sql_collect,$MovieNumW,$isMandCollect){
 			echo "document.getElementById(\"refreshlentext\").innerHTML = \"100%\";";
 			echo "document.getElementById(\"storagetext\").innerHTML = \"入库完毕 <a href='".getReferer()."'>返回</a>\";";
 			echo "alert('入库完毕'); ";
+			echo "current date ".(date('Y-m-d H:i:s',time()));
 			echo "</script>";
 	unset($rs);
 }
@@ -1195,9 +1211,7 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
 		
 		
 		if((isset($videourstee) && !is_null($videourstee))){
-			if(strpos($videourstee, 'http') ===false){
-				$noVideoUrlFlag=true;
-			}
+			
 //			if($rscount==1 ){
 //				$videoUrl=$videourstee;
 //			}else {
@@ -1229,6 +1243,9 @@ function getVodPlanAndWebUrl($id,$testUrl,$m_playfrom,$d_type)
 	}
 //	var_dump($webUrl);
 	unset($rs_collect2);
+    if(strpos($videoUrl, 'http') ===false){
+	  $noVideoUrlFlag=true;
+	}
 	return  array(
 	   'playUrl'=>$playUrl,
 	   'webUrl'=>$webUrl,	

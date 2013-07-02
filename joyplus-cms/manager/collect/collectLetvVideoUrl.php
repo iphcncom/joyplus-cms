@@ -36,7 +36,7 @@ require_once ("Project.php");
 	//	 $pagecount=2;
 		 for($i=$pagenum;$i<=$pagecount&&$i<=$endPage;$i++){
 		 	writetofile("updateLetvVideoUrl.log", 'check item for vod type{=}'.$nums .'{=}Total{=}'.$pagecount.'{=}'.$i);
-		    $sql = "SELECT webUrls,d_downurl, d_playfrom,d_id FROM {pre}vod WHERE webUrls IS not NULL and webUrls != '' and d_hide =0 and d_type in (1,2,3,131)   and d_playfrom like '%letv%' and d_status = 0 order by d_type asc,d_play_num desc limit ".($app_pagenum * ($i-1)) .",".$app_pagenum;
+		    $sql = "SELECT webUrls,d_downurl, d_playfrom,d_id FROM {pre}vod WHERE webUrls IS not NULL and webUrls != '' and d_hide =0 and d_type in (1,2,3,131)   and d_playfrom like '%letv%' and d_status = 0 order by d_play_num desc limit ".($app_pagenum * ($i-1)) .",".$app_pagenum;
 	//	    var_dump($sql);
 		    $rs = $db->query($sql); 
 		    parseVodPad($rs);

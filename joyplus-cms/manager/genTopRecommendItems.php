@@ -128,7 +128,7 @@
     	global $db;    	
 //    	var_dump($rec_topic_id);
     	
-        $rs = $db->query("SELECT vod_id  FROM mac_vod_topic_items WHERE flag=1 and topic_id =".$topic_id." ORDER BY disp_order DESC LIMIT 0 , 10");
+        $rs = $db->query("SELECT vod_id  FROM mac_vod_topic_items,mac_vod WHERE vod_id=d_id AND (can_search_device like '%TV%' or can_search_device is null or can_search_device ='' ) and flag=1 and topic_id =".$topic_id." ORDER BY disp_order DESC LIMIT 0 , 10");
 		$movie=array();
     	while ($row = $db ->fetch_array($rs)){    		
     		$movie[]=$row['vod_id'];

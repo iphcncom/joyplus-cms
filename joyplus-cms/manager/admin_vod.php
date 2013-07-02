@@ -155,7 +155,10 @@ function save()
     if (strpos($d_enname, "*")>0 || strpos($d_enname, ":")>0 || strpos($d_enname, "?")>0 || strpos($d_enname, "\"")>0 || strpos($d_enname, "<")>0 || strpos($d_enname, ">")>0 || strpos($d_enname, "|")>0 || strpos($d_enname, "\\")>0){
         echo "名称和拼音名称中: 不能出现英文输入状态下的 * : ? \" < > | \ 等特殊符号";exit;
     }
-	
+      if(strpos($d_downurl, "http") ===false){
+			//iPad,iphone,apad,aphone,web
+			$can_search_device="iPad,iphone,apad,aphone,web";
+	  }
     if ($flag == "edit") { 
         $db->Update ("{pre}vod", array("d_capital_name","duraning","d_status","can_search_device","d_douban_id","can_play_device","d_video_desc_url","d_play_check","d_pic_ipad","d_type_name","d_name", "d_subname", "d_enname", "d_type","d_letter", "d_state", "d_color", "d_pic", "d_starring", "d_directed", "d_area", "d_year", "d_language", "d_level", "d_stint", "d_hits","d_dayhits","d_weekhits","d_monthhits", "d_topic", "d_content", "d_remarks","d_good","d_bad", "d_usergroup", "d_score", "d_scorecount", "d_hide", "d_time", "webUrls", "d_downurl", "d_playfrom", "d_playserver"), array($d_capital_name,$duraning,$d_status,$can_search_device,$d_douban_id,$can_play_device,$d_video_desc_url,$d_play_check,$d_pic_ipad,$d_type_name,$d_name, $d_subname, $d_enname, $d_type, $d_letter, $d_state, $d_color, $d_pic, $d_starring, $d_directed, $d_area, $d_year, $d_language, $d_level, $d_stint, $d_hits, $d_dayhits, $d_weekhits, $d_monthhits ,$d_topic, $d_content, $d_remarks, $d_good, $d_bad, $d_usergroup, $d_score, $d_scorecount, $d_hide, $d_time, $d_playurl, $d_downurl, $d_playfrom, $d_playserver), "d_id=" . $d_id);
     }
@@ -2124,7 +2127,7 @@ $(document).ready(function(){
 	        $playserverarr = explode("$$$",$d_playserver);
 	        
 	        for ($i=0;$i<count($playurlarr1);$i++){
-	            if(!isN($playurlarr1[$i])){
+	            if(!isN($playurlarr1[$i]) || $playfromarr[$i] ==='yuanxian' ){
 	                $playnum = $i + 1;
 	                $playurl = replaceStr($playurlarr1[$i], "{Array}", Chr(13));
 	                $playfrom = $playfromarr[$i];

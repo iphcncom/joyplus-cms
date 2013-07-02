@@ -7,24 +7,27 @@
  */
 require_once dirname(__FILE__).'/ContentManager.php';
 class IqiyiContent {
-    const API = 'http://cache.m.iqiyi.com/mt/{aid}/';
+    const API = 'http://cache.m.iqiyi.com/mt/{aid}/';//621409
     private $p_code = 'utf-8';
     public function parseAndroidVideoUrl($url, $p_coding, $p_script) {
         $content = getPageWindow($url, $this->p_code);
+        writetofile("iqiyi.log", "page url:".$url);
         return $this->parseAndroidVideoUrlByContent($content, $this->p_code, $p_script);
     }
 
     public function parseAndroidVideoUrlByContent($content, $p_coding, $p_script) {
         $aid = getBody($content, '"tvId":"', '",');
         if(isN($aid)){
-        	$aid = getBody($content, 'tvid="', '"');
+        	$aid = getBody($content, 'data-player-tvid="', '"');
         }
         $api = $url = replaceStr(IqiyiContent::API,"{aid}",$aid);
         $json = getPageWindow($api, $p_coding);
+      //  writetofile("iqiyi.log", $json);
         return $this->getAndroidVideoUrl(json_decode($json), $p_coding, $p_script);
     }
 
     private function getAndroidVideoUrl($obj, $p_coding, $p_script) {
+    	//var_dump($obj);
         $videoAddressUrl="";
         if(!is_object($obj) || !is_object($obj->data))
         {
@@ -74,15 +77,16 @@ class IqiyiContent {
                     case 2:
                         $videoAddressUrl .= MovieType::VIDEO_SEP_VERSION.MovieType::HIGH_CLEAR.MovieType::VIDEO_NAME_URL_SEP.$mtl->m3u;
                         break;
-                    case 96:
+                    case 3:
                         $videoAddressUrl .= MovieType::VIDEO_SEP_VERSION.MovieType::TOP_CLEAR.MovieType::VIDEO_NAME_URL_SEP.$mtl->m3u;
                         break;
                 }
             }
         }
         if(strpos($videoAddressUrl, "{mType}") !==false && strpos($videoAddressUrl, "{mType}")===0){
-           return substr($videoAddressUrl, 7);
+           $videoAddressUrl= substr($videoAddressUrl, 7);
         }
+        writetofile("iqiyi.log", "down url:".$videoAddressUrl);
         return $videoAddressUrl;
     }
 

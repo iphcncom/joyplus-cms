@@ -18,8 +18,8 @@ function IDInflow()
 	global $db;
 	$ids = be("arr","t_id");
 	if (!isN($ids)){
-		$count = $db->getOne("Select count(id) as cc from apk_master_temp where id in (".$ids.") ");
-		$sql="select *   from apk_master_temp where id in (".$ids.")  ";
+		$count = $db->getOne("Select count(id) as cc from apk_master_temp where status=1 and id in (".$ids.") ");
+		$sql="select *   from apk_master_temp where status=1 and  id in (".$ids.")  ";
 		MovieInflow($sql,$count);
 	}
 	else{
@@ -36,7 +36,7 @@ function AllInflowProject()
 //	$from= be("get","playfrom");
 //	$project = be("get","cj_vod_projects");
 	
-	$where =" 1=1 ";
+	$where =" status=1 ";
     if(!isN($keyword)){
     	$keyword=trim($keyword); 
       $where .= " AND (package_name like '%".$keyword."%' or  app_name like '%".$keyword."%') ";

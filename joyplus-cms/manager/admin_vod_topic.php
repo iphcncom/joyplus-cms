@@ -42,6 +42,7 @@ function main()
 	 $keyword = be("all", "keyword"); $t_flag = be("all", "t_flag");
     $t_userid = be("all", "t_userid");   $t_type = be("all", "t_type");
 	 $t_bdtype = be("all", "t_bdtype"); 
+	   $can_search_device = be("all", "can_search_device");
     if(!isNum($t_userid)) { $t_userid = -1; } else { $t_userid = intval($t_userid);}
     
     if(!isNum($t_bdtype)) { $t_bdtype = -1; } else { $t_bdtype = intval($t_bdtype);}
@@ -61,6 +62,13 @@ $where = " t_id>4 ";
     	}
     }
     
+    if(!isN($can_search_device)){
+    	//if($can_search_device ==='TV'){
+    	//	$where .= " AND can_search_device like '%TV%' ";
+    	//}else {
+    		$where .= " AND (can_search_device like '".$can_search_device."' or can_search_device is null or can_search_device ='' ) ";
+    	//}
+    }
     
     if($t_flag==1){
     	$where .= " AND t_flag =1 ";
@@ -99,7 +107,9 @@ function filter(){
 	var t_type=$("#t_type").val();
 	var keyword=$("#keyword").val();
 	var t_bdtype=$("#t_bdtype").val();
-	var url = "admin_vod_topic.php?keyword="+encodeURI(keyword)+"&t_userid="+t_userid+"&t_flag="+t_flag+"&t_type="+t_type+"&t_bdtype="+t_bdtype;
+	 
+	var can_search_device=$("#can_search_device").val();
+	var url = "admin_vod_topic.php?can_search_device="+can_search_device+"&keyword="+encodeURI(keyword)+"&t_userid="+t_userid+"&t_flag="+t_flag+"&t_type="+t_type+"&t_bdtype="+t_bdtype;
 	window.location.href=url;
 }
 
@@ -175,6 +185,7 @@ $(document).ready(function(){
 		$('#form2').form('clear');
 		$("#flag").val("add");
 		$('#win1').window('open');
+		
 	});
 	$("#btnCancel").click(function(){
 		location.href= location.href;
@@ -219,6 +230,16 @@ function edit(id)
 	<option value="1" <?php if ($t_userid>0){ echo "selected";} ?>>用户创建</option>
 	</select>
 	
+	 <select   id="can_search_device" name="can_search_device">
+	    <option value="" >投放设备</option>
+		<option value="TV" <?php if ($can_search_device==='TV'){ echo "selected";} ?>>TV版</option>
+		<option value="iPad" <?php if ($can_search_device==='iPad'){ echo "selected";} ?>>iPad版</option>
+		<option value="iphone" <?php if ($can_search_device==='iphone'){ echo "selected";} ?>>iphone版</option>
+		<option value="apad" <?php if ($can_search_device==='apad'){ echo "selected";} ?>>Android-Pad版</option>
+		<option value="aphone" <?php if ($can_search_device==='aphone'){ echo "selected";} ?>>Android-Phone版</option>
+		<option value="web" <?php if ($can_search_device==='web'){ echo "selected";} ?>>网站版</option>
+	</select>
+	
 	</td>
 	</tr>
 	<tr>
@@ -242,9 +263,10 @@ function edit(id)
 	<td width="5%">编号</td>
 	<td>名称</td>
 	<td>关注度</td>
-	<td width="10%">类别</td>
+	<td width="3%">类别</td>
 	<td width="15%">视频栏目</td>
-	<td width="15%">图片</td>
+	<td width="8%">投放设备</td>
+	<td width="5%">图片</td>
 	<td width="5%">排序</td>
 	<td width="10%">显示到App</td>
 	<td width="30%">操作</td>
@@ -286,6 +308,8 @@ function edit(id)
 	<option value="1" <?php if ($row["t_bdtype"]==1){ echo "selected";} ?>>悦单</option>
 	<option value="2" <?php if ($row["t_bdtype"]==2){ echo "selected";} ?>>悦榜</option>
 	</select></td>
+	<td width="10%"><?php  if(isN($row["can_search_device"])){ echo 'iPad,iphone,web,android-pad,TV,android-phone';} else { echo $row["can_search_device"]; }?>
+	</td>
       <td>
       <input type="text" name="t_pic<?php echo $t_id?>" value="<?php echo $row["t_pic"]?>" size="20"/></td>
 	  <td>
@@ -320,7 +344,7 @@ function edit(id)
 	</td></tr>
     <tr align="center" >
 	<td colspan="8">
-		<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod_topic.php?page={p}&keyword=" . urlencode($keyword) . "&t_type=" . $t_type . "&t_flag=".$t_flag."&t_userid=".$t_userid )?>
+		<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod_topic.php?page={p}&can_search_device=" . $can_search_device . "&keyword=" . urlencode($keyword) . "&t_type=" . $t_type . "&t_flag=".$t_flag."&t_userid=".$t_userid ."&t_bdtype=".$t_bdtype)?>
 	</td>
     </tr>
 </table>
@@ -369,13 +393,39 @@ function edit(id)
     
      <tr>
      <td>榜单类型</td>
-      <td> <select id="t_bdtype" name="t_bdtype">
+      <td> <select  id="t_bdtype" name="t_bdtype">
 	<option value="1" selected>悦单</option>
 	<option value="2">悦榜</option>
 	</select>
 	  </td>
     </tr>
     
+    <tr id="can_search_device">
+     <td>投放设备（可以多选）</td>
+      <td> 
+      <select multiple  id="can_search_device[]" name="can_search_device[]">
+		<option value="TV">TV版</option>
+		<option value="iPad" >iPad版</option>
+		<option value="iphone" >iphone版</option>
+		<option value="apad" >Android-Pad版</option>
+		<option value="aphone" >Android-Phone版</option>
+		<option value="web">网站版</option>
+	</select>不选就默认为全部
+<!--<input type="checkbox" id="can_search_device[]" name="can_search_device[]" value="TV"  />TV版-->
+<!--    <input type="checkbox" id="can_search_device[]" name="can_search_device[]" value="Pad"  />Pad版-->
+<!--    <input type="checkbox"  id="can_search_device[]" name="can_search_device[]" value="Mobile" />Mobile版-->
+<!--    <input type="checkbox"  name="can_search_device[]" value="Web" />网站版-->
+	  </td>
+    </tr>
+    
+    
+    
+    <tr>
+     <td>榜单归档，Tag：</td>
+      <td>
+      <TEXTAREA id="t_tag_name" NAME="t_tag_name" ROWS="1" style="width:300px;table-layout:fixed; word-wrap:break-word;"></TEXTAREA>
+	  </td>
+    </tr>
    
     
 	<tr>
@@ -386,7 +436,7 @@ function edit(id)
 	<tr>
      <td>描述信息：</td>
       <td>
-      <TEXTAREA id="t_des" NAME="t_des" ROWS="8" style="width:300px;table-layout:fixed; word-wrap:break-word;"></TEXTAREA>
+      <TEXTAREA id="t_des" NAME="t_des" ROWS="2" style="width:300px;table-layout:fixed; word-wrap:break-word;"></TEXTAREA>
 	  </td>
     </tr>
     <tr align="center" >

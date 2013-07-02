@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/mc/browser-os/!svn/ver/20305/trunk/bccs/phpsdk/lib
+END
+BaeException.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/mc/browser-os/!svn/ver/20305/trunk/bccs/phpsdk/lib/BaeException.class.php
+END
+ChannelException.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/mc/browser-os/!svn/ver/20305/trunk/bccs/phpsdk/lib/ChannelException.class.php
+END
+RequestCore.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/mc/browser-os/!svn/ver/20305/trunk/bccs/phpsdk/lib/RequestCore.class.php
+END
+BaeBase.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/mc/browser-os/!svn/ver/20305/trunk/bccs/phpsdk/lib/BaeBase.class.php
+END

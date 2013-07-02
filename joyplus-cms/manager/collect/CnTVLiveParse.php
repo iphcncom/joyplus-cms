@@ -18,6 +18,7 @@
   	 	$client = new HttpClient('tv.cntv.cn');  
   	 	$client->get('/epg');
   	 	$client->get($url);
+  	 	writetofile("program_live_item_crawler.log", "url:[http://tv.cntv.cn".$url."]");
   	 	$content = $client->getContent(); 
   	 	
   	 	return CnTVLiveParse::parseMovieInfoByContent($content, $p_code,$type);

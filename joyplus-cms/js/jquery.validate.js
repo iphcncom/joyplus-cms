@@ -16,6 +16,15 @@ jQuery.validator.addMethod("isPhone", function(value,element) {
      var tel = /^[0-9]{6}$/;
      return this.optional(element) || (tel.test(value));
  }, "邮政编码格式不正确");
+ 
+ jQuery.validator.addMethod("CharAndDigst", function(value, element) {
+	 var reg = /[a-zA-Z]+/;var reg2 = /\d+/;
+     return this.optional(element) || ((reg.test(value))&&(reg2.test(value))) ;
+ }, "包含数字和字母");
+ jQuery.validator.addMethod("contain_string", function(value, element) {
+     var tel = /^[0-9]{6}$/;
+     return this.optional(element) || (tel.test(value));
+ }, "邮政编码格式不正确");
 jQuery.extend(jQuery.validator.messages, {
   required: "必填项",
   remote: "重名请更换",

@@ -79,18 +79,17 @@ function checkWebUrls($rs){
 		$id=$row['d_id'];
 		$d_playfrom=$row['d_playfrom'];		
 		$d_playfrom=explode("$$$", $d_playfrom);
-		$d_playfrom=$d_playfrom[0];		
-		$url=getFirstWeburl($url);
-		if(!ContentProviderFactory::checkHtmlCanPlay($d_playfrom, $url)){
-//			writetofileNoAppend("checkVoditem.txt",$id.'{===}'.$row['d_name']);
-			writetofile("checkVod.txt",$id.'{===}'.$row['d_name'].' can\'t play');
-			if($flag){
-			  $ids=','.$ids;
+		$d_playfrom=$d_playfrom[0];	
+		if($d_playfrom !=='letv'){	
+			$url=getFirstWeburl($url);
+			if(!ContentProviderFactory::checkHtmlCanPlay($d_playfrom, $url)){
+				writetofile("checkVod.txt",$id.'{===}'.$row['d_name'].' can\'t play');
+				if($flag){
+				  $ids=','.$ids;
+				}
+				$flag=true;
+				$ids=$id.$ids;
 			}
-			$flag=true;
-			$ids=$id.$ids;
-		}else {
-//			writetofile("checkVod.txt",$id.'{===}'.$row['d_name'].' can play');
 		}
     }
     unset($rs);

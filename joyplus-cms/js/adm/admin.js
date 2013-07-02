@@ -61,7 +61,7 @@ function appenddown(i,downStr){
 	}
 	var obj = $("#downurldiv" + i)[0];
 	if(obj ==undefined){
-	var area="<table width='100%' class='tb2'><tr><td width='11%'><input id='downurlid"+i+"' name='downurlid[]' type='hidden' value='0'/>&nbsp;视频下载"+i+"：</td><td>&nbsp;类型：<select id='downurlfrom"+i+"' name='downurlfrom[]'><option value='no'>暂无数据"+i+"</option>"+downStr+"</select>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"removedown("+i+")\">删除</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveUp('down',"+i+")\">上移</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveDown('down',"+i+")\">下移</a>说明:每行一个地址，不能有空行。（如果是电视剧，剧集数$视频地址)</td></tr><tr><td>&nbsp;视频播放地址"+i+":</td><td><textarea id='downurl"+i+"' name='downurl[]' rows='8' cols='120'></textarea></td></tr></table>"
+	var area="<table width='100%' class='tb2'><tr><td width='11%'><input id='downurlid"+i+"' name='downurlid[]' type='hidden' value='0'/>&nbsp;视频下载"+i+"：</td><td>&nbsp;类型：<select id='downurlfrom"+i+"' name='downurlfrom[]'><option value='no'>暂无数据"+i+"</option>"+downStr+"</select>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"removedown("+i+")\">删除</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveUps('down',"+i+")\">上移</a>&nbsp;&nbsp;<a href=\"javascript:void(0)\" onclick=\"moveDowns('down',"+i+")\">下移</a>说明:每行一个地址，不能有空行。（如果是电视剧，剧集数$视频地址)</td></tr><tr><td>&nbsp;视频播放地址"+i+":</td><td><textarea id='downurl"+i+"' name='downurl[]' rows='8' cols='120'></textarea></td></tr></table>"
 	var urldiv=document.createElement("div");
 	urldiv.id = "downurldiv"+i;
 	urldiv.className="downurldiv";
@@ -104,6 +104,42 @@ function moveDown(div_id){
 	});
 	n_div = $(".playurldiv").eq(e_i);
 	if($(".playurldiv").length != e_i){
+	   $(c_div).slideUp(100).delay(300).slideDown(600);
+	   $(n_div).slideUp(100).delay(300).slideDown(600);
+	}
+	$(n_div).insertBefore($(c_div));
+}
+
+function moveUps(flag,div_id){
+	div_id= flag+"urldiv"+div_id;
+	var l_div,c_div,e_i
+	$("."+flag+"urldiv").each(function(i){
+	   e_i = i;
+	   if(this.id == div_id){
+	    c_div = this;
+	    return false;
+	   }else{
+	    l_div = this;
+	   } 
+	});
+	if(e_i != 0){
+	   $(c_div).slideUp(100).delay(300).slideDown(600);
+	   $(l_div).slideUp(100).delay(300).slideDown(600);
+	}
+	$(c_div).insertBefore($(l_div));
+}
+function moveDowns(flag,div_id){
+	div_id= flag+"urldiv"+div_id;
+	var n_div,c_div,q_i,e_i
+	$("."+flag+"urldiv").each(function(i){
+	   e_i = i+1;
+	   if(this.id == div_id){
+	    c_div = this;
+	    return false;
+	   }
+	});
+	n_div = $("."+flag+"urldiv").eq(e_i);
+	if($("."+flag+"urldiv").length != e_i){
 	   $(c_div).slideUp(100).delay(300).slideDown(600);
 	   $(n_div).slideUp(100).delay(300).slideDown(600);
 	}
@@ -226,8 +262,10 @@ function plsetLuobo()
 		if(this.checked){ ids =  ids + this.value + ","; }
 	});
 	if (ids != ""){
-		ids = ids.substring(0,ids.length-1);
-		ajaxsubmit(ids,'plluobo','vod');
+		if(confirm('确定要添加到轮播图吗')){
+			ids = ids.substring(0,ids.length-1);
+			ajaxsubmit(ids,'plluobo','vod');
+		}
 	}
 	else{
 		alert("请至少选择一个数据!");
@@ -325,7 +363,7 @@ function ajaxckname(moviename)
 function oncomplete(ajaxobj)
 {
 	if(ajaxobj){
-		var fhajax = ajaxobj;
+		var fhajax = ajaxobj.trim();
 		if (fhajax == "reload"){ location=location; }
 		else{
 			var plarr = fhajax.split('|||');

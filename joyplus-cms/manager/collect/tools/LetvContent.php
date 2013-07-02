@@ -12,15 +12,17 @@ class LetvContent extends Content{
   	private $p_code="UTF-8";
 
     public function parseAndroidVideoUrl($url,$p_coding="UTF-8",$p_script){    	
-  		$content = getPageWindow($url, $this->p_code);
+  		//$content = getPageWindow($url, $this->p_code);
+  		return "";
   	//	writetofile('stds.log',$content);var_dump($url);
-  		return $this->parseAndroidVideoUrlByContent($content, $p_coding,$p_script);
+//  		return $this->parseAndroidVideoUrlByContent($content, $p_coding,$p_script);
   	}
   	public function parseAndroidVideoUrlByContent($content, $p_coding,$p_script){
-  		$vid = getBody($content,$this->contentparmStart,$this->contentparaend); 
-	    $mmsid = getBody($content,$this->contentparmStart2,$this->contentparaend2); 
-	   // var_dump($mmsid); var_dump($vid);
-  		return $this->getAndroidVideoUrl($vid,$mmsid);
+  		return "";
+//  		$vid = getBody($content,$this->contentparmStart,$this->contentparaend); 
+//	    $mmsid = getBody($content,$this->contentparmStart2,$this->contentparaend2); 
+//	   // var_dump($mmsid); var_dump($vid);
+//  		return $this->getAndroidVideoUrl($vid,$mmsid);
   	}
   	
   	private function getAndroidVideoUrl($vid,$mmsid){

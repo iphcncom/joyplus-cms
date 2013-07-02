@@ -30,7 +30,7 @@ function main()
      $client = be("all", "client");
     $feedback_type = be("all", "feedback_type");
      $pagenum = be("all", "page");
-    if(!isNum($feedback_type)) { $feedback_type = 1;} else { $feedback_type = intval($feedback_type);}
+    if(!isNum($feedback_type)) { $feedback_type = 9;} else { $feedback_type = intval($feedback_type);}
     
     if(!isNum($status)) { $status = -1;} else { $status = intval($status);}
    
@@ -154,14 +154,15 @@ function deleteStatus(id){
 	过滤条件：
 	反馈意见类别:
 	<select id="feedback_type" name="feedback_type">
-	<option value="1" <?php if($feedback_type=="1"){ echo "selected";} ?>>影片无法播放</option>
-	<option value="2" <?php if($feedback_type=="2"){ echo "selected";} ?>>影片播放不流畅</option>
-	<option value="3" <?php if($feedback_type=="3"){ echo "selected";} ?>>影片加载比较慢</option>
-	<option value="4" <?php if($feedback_type=="4"){ echo "selected";} ?>>影片不能下载</option>
-	<option value="5" <?php if($feedback_type=="5"){ echo "selected";} ?>>观看影片时出现闪退</option>
-	<option value="6" <?php if($feedback_type=="6"){ echo "selected";} ?>>画质不清晰</option>
-	<option value="7" <?php if($feedback_type=="7"){ echo "selected";} ?>>音画不同步</option>
-	<option value="8" <?php if($feedback_type=="8"){ echo "selected";} ?>>其它（用户自己填写，可不填）</option>
+	<option value="9" <?php if($feedback_type=="9"){ echo "selected";} ?>>程序反馈影片无法播放</option>
+	<option value="1" <?php if($feedback_type=="1"){ echo "selected";} ?>>用户反馈影片无法播放</option>
+	<option value="2" <?php if($feedback_type=="2"){ echo "selected";} ?>>用户反馈影片播放不流畅</option>
+	<option value="3" <?php if($feedback_type=="3"){ echo "selected";} ?>>用户反馈影片加载比较慢</option>
+	<option value="4" <?php if($feedback_type=="4"){ echo "selected";} ?>>用户反馈影片不能下载</option>
+	<option value="5" <?php if($feedback_type=="5"){ echo "selected";} ?>>用户反馈观看影片时出现闪退</option>
+	<option value="6" <?php if($feedback_type=="6"){ echo "selected";} ?>>用户反馈画质不清晰</option>
+	<option value="7" <?php if($feedback_type=="7"){ echo "selected";} ?>>用户反馈音画不同步</option>
+	<option value="8" <?php if($feedback_type=="8"){ echo "selected";} ?>>用户反馈其它（用户自己填写，可不填）</option>
 	</select>
 	
 	<select id="client" name="client">
@@ -260,18 +261,22 @@ function View(){
 	</tr>
 	
 <?php 
-   for ($i=1;$i<8;$i++){
+   for ($i=1;$i<10;$i++){
+   	if($i ==8){
+   		continue;
+   	}
  ?>
  <tr><td></td>
 	<td><select id="feedback_types" name="feedback_types" disabled>
-	<option value="1" <?php if($i=="1"){ echo "selected";} ?>>影片无法播放</option>
-	<option value="2" <?php if($i=="2"){ echo "selected";} ?>>影片播放不流畅</option>
-	<option value="3" <?php if($i=="3"){ echo "selected";} ?>>影片加载比较慢</option>
-	<option value="4" <?php if($i=="4"){ echo "selected";} ?>>影片不能下载</option>
-	<option value="5" <?php if($i=="5"){ echo "selected";} ?>>观看影片时出现闪退</option>
-	<option value="6" <?php if($i=="6"){ echo "selected";} ?>>画质不清晰</option>
-	<option value="7" <?php if($i=="7"){ echo "selected";} ?>>音画不同步</option>
-	<option value="8" <?php if($i=="8"){ echo "selected";} ?>>其它（用户自己填写，可不填）</option>
+	<option value="9" <?php if($i=="9"){ echo "selected";} ?>>程序反馈影片无法播放</option>
+	<option value="1" <?php if($i=="1"){ echo "selected";} ?>>用户反馈影片无法播放</option>
+	<option value="2" <?php if($i=="2"){ echo "selected";} ?>>用户反馈影片播放不流畅</option>
+	<option value="3" <?php if($i=="3"){ echo "selected";} ?>>用户反馈影片加载比较慢</option>
+	<option value="4" <?php if($i=="4"){ echo "selected";} ?>>用户反馈影片不能下载</option>
+	<option value="5" <?php if($i=="5"){ echo "selected";} ?>>用户反馈观看影片时出现闪退</option>
+	<option value="6" <?php if($i=="6"){ echo "selected";} ?>>用户反馈画质不清晰</option>
+	<option value="7" <?php if($i=="7"){ echo "selected";} ?>>用户反馈音画不同步</option>
+	<option value="8" <?php if($i=="8"){ echo "selected";} ?>>用户反馈其它（用户自己填写，可不填）</option>
 	</select></td>
 	<td><?php echo   $db->getOne("select count(*) as count from tbl_video_feedback where feedback_type like '%".$i."%' and prod_id=".$d_id);?></td>
 	</tr>
