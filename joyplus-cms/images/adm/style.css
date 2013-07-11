@@ -115,6 +115,9 @@ html,body {
 	float: left;
 	margin-right: 5px;
 }
+#menu span strong {
+	text-transform: uppercase;
+}
 #menu a {
 	color: #f2d03b;
 	text-decoration: none;
@@ -282,16 +285,17 @@ a.link {
 	height: 40px;
 	margin-bottom: 1px;
 	background: rgba(255, 255, 255, .1);
+	*background: #405567;
 }
 #leftMenus dd em {
 	position: absolute;
 	cursor: pointer;
 	margin: 0 0 0 -40px;
-	*margin-top: -2px;
+	*margin-top: -13px;
 	width: 40px;
 	height: 40px;
 	visibility: hidden;
-	background: url(out.png) no-repeat center;
+	background: url(out.png) no-repeat center center;
 }
 #leftMenus dd a:hover em {
 	visibility: visible;
@@ -307,6 +311,7 @@ a.link {
 #leftMenus dd a:hover {
 	color: #264d84;
 	background: rgba(255, 255, 255, .9);
+	*background: #ebeeef;
 }
 #leftMenus dd a.selected {
 	color: #264d84;
@@ -1022,9 +1027,11 @@ form label.right {
 	background: url(headerbg.png);
 	padding: 5px 0;
 	color: rgba(255, 255, 255, .2);
+	*color: #455965;
 }
 .copyright a {
 	color: rgba(255, 255, 255, .2);
+	*color: #455965;
 	text-decoration: none;
 }
 .copyright a:hover {

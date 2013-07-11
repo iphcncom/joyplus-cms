@@ -326,7 +326,7 @@ function edit(id)
 		}
 	?>
 	<tr class="formlast">
-	<td  colspan="8">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'ids[]')" />
+	<td  colspan="8"><input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'ids[]')" /> 全选 
 	<input type="button" value="批量删除" id="btnDel" class="input"  />
 	&nbsp;<input type="button" value="发送消息" id="btnEdit" class="input" />
 	

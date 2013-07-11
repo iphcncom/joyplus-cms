@@ -1177,15 +1177,6 @@ function send(e){
 					<?php if ($select_videourl==1){ echo "selected";} ?>>存在</option>
 					<option value="2"
 					<?php if ($select_videourl==2){ echo "selected";} ?>>不存在</option>
-				</select><select id="select_videourl_play"
-					name="select_videourl_play">
-					<option value="-1">视频是否有问题</option>
-					<option value="0"
-					<?php if ($select_videourl_play==0){ echo "selected";} ?>>没有问题</option>
-					<option value="2"
-					<?php if ($select_videourl_play==2){ echo "selected";} ?>>程序发现此视频网页地址有问题</option>
-					<option value="1"
-					<?php if ($select_videourl_play==1){ echo "selected";} ?>>网友发现此视频有问题</option>
 				</select><select id="d_status" name="d_status">
 					<option value="-1">是否已经审核过</option>
 					<option value="0" <?php if ($d_status==0){ echo "selected";} ?>>未审核</option>
@@ -1242,7 +1233,7 @@ function send(e){
 <form id="form1" name="form1" method="post">
 <table class="admin_vod tb">
 	<tr>
-		<td width="4%">&nbsp;</td>
+		<td width="4%"></td>
 		<td width="4%">编号</td>
 		<td width="15%">名称</td>
 		<td width="4%">播放次数</td>
@@ -1918,7 +1909,7 @@ $(document).ready(function(){
 		value="<?php echo $backurl?>">
 	<tr>
 		<td width="10%">参数：</td>
-		<td>&nbsp;<select id="d_type" name="d_type"
+		<td><select id="d_type" name="d_type"
 			onchange="changeArea(this.options[this.selectedIndex].value,'<?php echo $d_area;?>','<?php echo $d_type_name?>');">
 			<option value="">请选择栏目</option>
 			<?php echo makeSelectAll("{pre}vod_type","t_id","t_name","t_pid","t_sort",0,"","&nbsp;|&nbsp;&nbsp;",$d_type)?>
@@ -1947,7 +1938,7 @@ $(document).ready(function(){
 	</tr>
 	<tr>
 		<td>名称：</td>
-		<td>&nbsp;<input id="d_name" name="d_name" type="text" size="40"
+		<td><input id="d_name" name="d_name" type="text" size="40"
 			value="<?php echo $d_name?>"
 			onBlur="if(this.value){ajaxckname(this.value);}"><span id="d_name_ok"></span>
 		&nbsp;名称首字母：<input id="d_capital_name" name="d_capital_name"
@@ -1955,16 +1946,11 @@ $(document).ready(function(){
 
 
 
-		&nbsp;&nbsp;&nbsp;视频是否有问题: <select id="d_play_check"
-			name="d_play_check">
-			<option value="0" <?php if ($d_play_check==0){ echo "selected";} ?>>没有问题</option>
-			<option value="2" <?php if ($d_play_check==2){ echo "selected";} ?>>程序发现此视频网页地址有问题</option>
-			<option value="1" <?php if ($d_play_check==1){ echo "selected";} ?>>网友发现此视频有问题</option>
-		</select></td>
+		</td>
 	</tr>
 	<tr>
 		<td>拼音：</td>
-		<td>&nbsp;<input id="d_enname" name="d_enname" type="text" size="40"
+		<td><input id="d_enname" name="d_enname" type="text" size="40"
 			value="<?php echo $d_enname?>"> &nbsp;备注：<input id="d_remarks"
 			name="d_remarks" type="text" size="40"
 			value="<?php echo $d_remarks?>"> &nbsp;连载信息：<input id="d_state"
@@ -1976,7 +1962,7 @@ $(document).ready(function(){
 	</tr>
 	<tr>
 		<td>演员：</td>
-		<td>&nbsp;<input id="d_starring" name="d_starring" type="text"
+		<td><input id="d_starring" name="d_starring" type="text"
 			size="40" value="<?php echo $d_starring?>"> &nbsp;导演：<input
 			id="d_directed" name="d_directed" type="text" size="40"
 			value="<?php echo $d_directed?>"> &nbsp;上映日期：<input id="d_year"
@@ -2019,20 +2005,20 @@ $(document).ready(function(){
 
 	<tr>
 		<td>类别：</td>
-		<td>&nbsp;<span id="d_type_name_span"><?php echo $d_type_name?></span>
+		<td><span id="d_type_name_span"><?php echo $d_type_name?></span>
 		</td>
 	</tr>
 	<tr>
 		<td>地区：</td>
-		<td>&nbsp;<input id="d_area" name="d_area" type="text" size="50"
+		<td><input id="d_area" name="d_area" type="text" size="60"
 			value="<?php echo $d_area?>">可以多个，以空格分开 <br />
 		<span id='d_area_span'></span></td>
 	</tr>
 
 	<tr>
 		<td>图片：</td>
-		<td>&nbsp;<input id="pic" name="pic" type="text" size="50"
-			value="<?php echo $d_pic?>"><font color="red">（可以直接填写图片url地址）</font>&nbsp;<iframe
+		<td><input id="pic" name="pic" type="text" size="60"
+			value="<?php echo $d_pic?>"><font color="red">（可以直接填写图片url地址）</font><iframe
 			src="editor/uploadshow.php?action=vod" scrolling="no" topmargin="0"
 			width="320" height="24" marginwidth="0" marginheight="0"
 			frameborder="0" align="middle"></iframe></td>
@@ -2043,8 +2029,8 @@ $(document).ready(function(){
 
 	<tr>
 		<td>图片 For IPad：</td>
-		<td>&nbsp;<input id="d_pic_ipad" name="d_pic_ipad" type="text"
-			size="60" value="<?php echo $d_pic_ipad?>"><font color="red">（可以直接填写图片url地址）</font>&nbsp;<iframe
+		<td><input id="d_pic_ipad" name="d_pic_ipad" type="text"
+			size="60" value="<?php echo $d_pic_ipad?>"><font color="red">（可以直接填写图片url地址）</font><iframe
 			src="editor/uploadshow.php?action=vod" scrolling="no" topmargin="0"
 			width="320" height="24" marginwidth="0" marginheight="0"
 			frameborder="0" align="middle"></iframe> <br />
@@ -2087,7 +2073,7 @@ $(document).ready(function(){
 		<div id="playurldiv<?php echo $playnum?>" class="playurldiv">
 		<table width="100%" class='tb2'>
 			<tr>
-				<td width='11%'>网页播放器<?php echo $playnum?>：</td>
+				<td width='22%'>网页播放器<?php echo $playnum?>：</td>
 				<td><input id="urlid<?php echo $playnum?>" name="urlid[]"
 					type="hidden" value="<?php echo $playnum?>" /> &nbsp;播放器： <select
 					id="urlfrom<?php echo $playnum?>" name="urlfrom[]">
@@ -2156,7 +2142,7 @@ $(document).ready(function(){
 		<div id="downurldiv<?php echo $downnum?>" class="downurldiv">
 		<table width="100%" class='tb2'>
 			<tr>
-				<td width='14%'>视频下载选择<?php echo $downnum?>：</td>
+				<td width='22%'>视频下载选择<?php echo $downnum?>：</td>
 				<td><input id="downurlid<?php echo $downnum?>" name="downurlid[]"
 					type="hidden" value="<?php echo $downnum?>" /> &nbsp;类型： <select
 					id="downurlfrom<?php echo $downnum?>" name="downurlfrom[]">

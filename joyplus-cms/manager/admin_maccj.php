@@ -470,7 +470,7 @@ function setunion(dtype,utype)
 	var tl=offset.left;
 	creatediv(99997,250,20);
 	curtype=dtype;
-	$("#confirm").css('border','1px solid #55BBFF').css('background','#C1E7FF').css('padding',' 3px 0px 3px 4px').css('top',tt-4+'px').css('left',tl-100+'px').html('正在加载内容......');
+	$("#confirm").css('top',tt-4+'px').css('left',tl-100+'px').html('正在加载内容......');
 	$("#confirm").html( $("#typehtml").html() );
 	$("#confirm").show();
 }
@@ -666,7 +666,7 @@ function setunion(dtype,utype)
 	var tl=offset.left;
 	creatediv(99997,250,20);
 	curtype=dtype;
-	$("#confirm").css('border','1px solid #55BBFF').css('background','#C1E7FF').css('padding',' 3px 0px 3px 4px').css('top',tt-4+'px').css('left',tl-100+'px').html('正在加载内容......');
+	$("#confirm").css('top',tt-4+'px').css('left',tl-100+'px').html('正在加载内容......');
 	$("#confirm").html( $("#typehtml").html() );
 	$("#confirm").show();
 }

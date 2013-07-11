@@ -66,8 +66,9 @@ if($flag==1){
 	$sql = "SELECT count(*) FROM {pre}vod_topic_items as a "." where ".$where;;
 	$nums = $db->getOne($sql);
 	$pagecount=ceil($nums/app_pagenum);
-	$sql = "SELECT a.id as id, a.flag as flag, a.disp_order as disp_order, vod.d_name as vod_name,vod.d_id as vod_id FROM {pre}vod_topic_items a,{pre}vod vod where ".$where." and a.vod_id=vod.d_id ORDER BY a.disp_order,a.id ASC limit ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
+	//$sql = "SELECT a.id as id, a.flag as flag, a.disp_order as disp_order, vod.d_name as vod_name,vod.d_id as vod_id FROM {pre}vod_topic_items a,{pre}vod vod where ".$where." and a.vod_id=vod.d_id ORDER BY a.disp_order,a.id ASC limit ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
 //	var_dump($sql);
+	  $sql = "SELECT a.id as id, a.flag as flag, a.disp_order as disp_order, vod.d_name as vod_name,vod.d_id as vod_id FROM {pre}vod_topic_items AS a LEFT JOIN {pre}vod AS vod ON a.vod_id = vod.d_id WHERE a.topic_id =152 LIMIT ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
 	$rs = $db->query($sql);
 ?>
 <script language="javascript">
@@ -118,10 +119,10 @@ function edit(id)
 }
 </script>
 
-<table class="tb">
+<table class="admin_vod_topic_items tb">
 	<tr>
 	<td>
-	<table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
+	<table border="0" cellpadding="3" cellspacing="1">
 	<tr>
 	<td colspan="2">
 	过滤条件：视频榜单 <select id="topic_id" name="topic_id" >
@@ -190,13 +191,13 @@ function edit(id)
 			}
 		}
 	?>
-	<tr>
-	<td  colspan="8">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'ids[]')" />
+	<tr class="formlast">
+	<td  colspan="8"><input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'ids[]')" /> 全选
 	<input type="button" value="批量删除" id="btnDel" class="input"  />
 	&nbsp;<input type="button" value="批量修改" id="btnEdit" class="input" />
 	&nbsp;<input id="addvod" type="button" value="添加视频" class="input" onclick="javascript:window.location.href='admin_vod.php?action=addTopicItems&topic_id=<?php echo $topic_id?>'" />
 	</td></tr>
-    <tr align="center" >
+    <tr align="center" class="formlast">
 	<td colspan="8">
 		<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod_topic_items.php?page={p}&topic_id=".$topic_id ."&flag=".$flag)?>
 	</td>

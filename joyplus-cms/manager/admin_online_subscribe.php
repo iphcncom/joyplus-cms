@@ -434,7 +434,7 @@ function sendWeiboText(){
 <!--	</tr>-->
 	<tr class="formlast">
 	<td align="center" colspan="12">
-	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_online_subscribe.php?page={p}&can_search_device=" . $can_search_device . "&keyword=" . urlencode($keyword) . "&keyword_col=".$keyword_col."&sort=" . $sort . "&order=".$order ."&stype=" . $stype ."&from=".$from)?>   //
+	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_online_subscribe.php?page={p}&can_search_device=" . $can_search_device . "&keyword=" . urlencode($keyword) . "&keyword_col=".$keyword_col."&sort=" . $sort . "&order=".$order ."&stype=" . $stype ."&from=".$from)?>
 	</td>
 	</tr>
 </table>
@@ -521,17 +521,17 @@ $("#btnEdit").click(function(){
 <!--                      -->
 <!--                    </tr>-->
                     <tr>
-                        <td colspan="2"><span><font color="blue">发送信息 </font></span></td>    
+                        <td colspan="2"><span><h3>发送信息</h3></span></td>    
                        
                     </tr>
                     <input type="hidden" name="notify_msg_prod_id" id="notify_msg_prod_id" value="">
                     <input type="hidden" name="notify_msg_prod_type" id="notify_msg_prod_type" value="">
                       
                       <tr>
-                        <td colspan="2" align="center"><textarea name="wbText" id="weiboText" rows="10" cols="90" style="border:1;border-color:blue;" ></textarea></td>
+                        <td colspan="2" align="center"><textarea name="wbText" id="weiboText" rows="10" cols="90"></textarea></td>
                     </tr>
                      <tr>
-                        <td align="left" valign="top"> <br/>
+                        <td align="left"> <br/>
                             Parse 云推送<br/>
 	                        &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_ANDROID"   />悦视频 Android版<br/>
 <!--						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_TV"  />悦视频 TV版<br/>-->
@@ -539,7 +539,7 @@ $("#btnEdit").click(function(){
 						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IPHONE"  />今晚剧场iphone版<br/>
 						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_IPAD"  />今晚剧场IPAD版<br/>
                         </td>
-                         <td align="left" valign="top"> <br/>
+                         <td align="left"> <br/>
                                                                          百度云推送<br/>
 	                        &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_ANDROID_BAIDU"   />悦视频 Android版<br/>
 <!--						    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id='channel[]' name="channel[]" value="CHANNEL_TV_BAIDU"  />悦视频 TV版<br/>-->

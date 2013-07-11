@@ -1323,7 +1323,7 @@ EOT;
 		echo '<script type="text/javascript">showmessage(\'数据库结构创建完成... \');</script>';
 
 
-		$db->query( "insert into ".$app_tablepre."mac_manager(m_id,m_name,m_password,m_status,m_levels) values('1','".$m_name."','".md5($m_password1)."',1,'2, 4, 6, 7, 8 ,9, 10, 11')");
+		$db->query( "insert into ".$app_tablepre."mac_manager(m_id,m_name,m_password,m_status,m_levels) values('1','".$m_name."','".md5($m_password1)."',1,'2, 4, 6, 7, 8 ,9, 10')");
 		echo '<script type="text/javascript">showmessage(\'管理员帐号'.$m_name.'初始化成功... \');</script>';
 
 		
