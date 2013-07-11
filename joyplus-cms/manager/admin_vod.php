@@ -1177,15 +1177,6 @@ function send(e){
 					<?php if ($select_videourl==1){ echo "selected";} ?>>存在</option>
 					<option value="2"
 					<?php if ($select_videourl==2){ echo "selected";} ?>>不存在</option>
-				</select><select id="select_videourl_play"
-					name="select_videourl_play">
-					<option value="-1">视频是否有问题</option>
-					<option value="0"
-					<?php if ($select_videourl_play==0){ echo "selected";} ?>>没有问题</option>
-					<option value="2"
-					<?php if ($select_videourl_play==2){ echo "selected";} ?>>程序发现此视频网页地址有问题</option>
-					<option value="1"
-					<?php if ($select_videourl_play==1){ echo "selected";} ?>>网友发现此视频有问题</option>
 				</select><select id="d_status" name="d_status">
 					<option value="-1">是否已经审核过</option>
 					<option value="0" <?php if ($d_status==0){ echo "selected";} ?>>未审核</option>
@@ -1955,12 +1946,7 @@ $(document).ready(function(){
 
 
 
-		&nbsp;&nbsp;&nbsp;视频是否有问题: <select id="d_play_check"
-			name="d_play_check">
-			<option value="0" <?php if ($d_play_check==0){ echo "selected";} ?>>没有问题</option>
-			<option value="2" <?php if ($d_play_check==2){ echo "selected";} ?>>程序发现此视频网页地址有问题</option>
-			<option value="1" <?php if ($d_play_check==1){ echo "selected";} ?>>网友发现此视频有问题</option>
-		</select></td>
+		</td>
 	</tr>
 	<tr>
 		<td>拼音：</td>
