@@ -26,6 +26,7 @@ return array(
                     'iosCertPath'=>'iphone_dev.pem',
                     'iosCertPathRel'=>'iphone_prod.pem'
                 ),
+      'CHANNEL_IPAD'=>array(
 	    	        'appid'=>'appid',
 				    'restkey'=>'restkey',
 				    'appname'=>'百度云推今晚剧场IPAD版',
