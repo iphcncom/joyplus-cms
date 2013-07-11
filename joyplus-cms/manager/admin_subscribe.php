@@ -269,7 +269,7 @@ function edit(id)
 
 
 
-<table class="tb">
+<table class="admin_subscribe tb">
 <form action="" method="post" id="form1" name="form1">
 	<tr>
 	<td width="5%">&nbsp;</td>
@@ -325,13 +325,13 @@ function edit(id)
 			}
 		}
 	?>
-	<tr>
+	<tr class="formlast">
 	<td  colspan="8">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'ids[]')" />
 	<input type="button" value="批量删除" id="btnDel" class="input"  />
 	&nbsp;<input type="button" value="发送消息" id="btnEdit" class="input" />
 	
 	</td></tr>
-    <tr align="center" >
+    <tr align="center" class="formlast">
 	<td colspan="8">
 		<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_subscribe.php?page={p}&topic_id=".$topic_id ."&flag=".$flag)?>
 	</td>

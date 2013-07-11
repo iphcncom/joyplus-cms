@@ -306,7 +306,7 @@ function sendWeiboText(){
 }
 
 </script>
-<table class="tb">
+<table class="admin_online_subscribe tb">
 	<tr>
 	<td>
 	<table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
@@ -372,12 +372,13 @@ function sendWeiboText(){
 <form id="form1" name="form1" method="post">
 <table class="tb">
 	<tr>
-	<td width="5%">编号</td>
-	<td width="15%">名称</td>
-	<td width="6%">播放次数</td>
-	<td width="6%">上映日期</td>
-	<td width="5%">时间</td>
-	<td width="25%">操作</td>
+	<td width="10%">编号</td>
+	<td width="25%">名称</td>
+	<td width="10%">播放次数</td>
+	<td width="10%">上映日期</td>
+	<td width="5%">分类</td>
+	<td width="20%">时间</td>
+	<td width="20%">操作</td>
 	</tr>
 	<?php
 		if($nums==0){
@@ -431,7 +432,7 @@ function sendWeiboText(){
 <!--	<span id="plmsg" name="plmsg"></span>-->
 <!--	</td>-->
 <!--	</tr>-->
-	<tr>
+	<tr class="formlast">
 	<td align="center" colspan="12">
 	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_online_subscribe.php?page={p}&can_search_device=" . $can_search_device . "&keyword=" . urlencode($keyword) . "&keyword_col=".$keyword_col."&sort=" . $sort . "&order=".$order ."&stype=" . $stype ."&from=".$from)?>   //
 	</td>

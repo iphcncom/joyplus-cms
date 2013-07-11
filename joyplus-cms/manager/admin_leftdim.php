@@ -35,10 +35,10 @@ $(document).ready(function(){
 });
 </script>
 <form action="?action=save" method="post" id="form1" name="form1">
-<table class="tb">
-<tr class="thead"><th colspan="2">自定义快捷菜单</th></tr>
-<tr><td width="25%">1.格式：菜单名称,菜单链接地址</td>
-<td width="75%">2.每个快捷菜单各占一行</td>
+<table class="admin_leftdim tb">
+<tr class="thead"><th colspan="2"><h3>自定义快捷菜单</h3></th></tr>
+<tr><td width="50%">1.格式：菜单名称+“，”+菜单链接地址（例：数据添加,admin_vod.php?action=add）</td>
+<td width="50%">2.每个快捷菜单各占一行</td>
 </tr>
 <tr>
 	<td colspan="2">

@@ -40,8 +40,8 @@ function main()
 	});
 </script>
 <form action="?action=save" method="post" id="form1" name="form1">
-<table class="tb">
-<tr class="thead"><th colspan="2">自定义地区和语言 ->>> 1.每个各占一行;2.不要有多余的空行</th></tr>
+<table class="admin_vod_arealang tb">
+<tr class="thead"><th colspan="2"><h3>自定义地区和语言</h3><br />1.每个各占一行;2.不要有多余的空行</th></tr>
 <tr><td width="50%">地区</td>
 <td width="50%">语言</td>
 </tr>

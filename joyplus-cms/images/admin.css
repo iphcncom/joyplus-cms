@@ -1,48 +1,287 @@
-*{font-size:12px; font-family:Tahoma,Verdana,å¾®è½¯é›…é»‘,æ–°å®‹ä½“}
-html,body{height:100%}
-body{background:#fffff;}
-a{ color:Black; text-decoration:none;}
-a:hover{ color:Red; text-decoration:underline;}
-ul{list-style:none}
-table{border-collapse:collapse}
-
-.head a{color:White;text-decoration:underline;}
-.footer{text-align:center;color:#15428B; margin:0px; padding:0px;line-height:23px; font-weight:bold;}
-
-.easyui-accordion ul{list-style-type:none;margin:0px; padding:10px;}
-.easyui-accordion ul li{ padding:0px;}
-.easyui-accordion ul li a{line-height:24px;}
-.easyui-accordion ul li div{margin:2px 0px;padding-left:10px;padding-top:2px;}
-.easyui-accordion ul li div.hover{border:1px dashed #99BBE8; background:#E0ECFF;cursor:pointer;}
-.easyui-accordion ul li div.hover a{color:#416AA3;}
-.easyui-accordion ul li div.selected{border:1px solid #99BBE8; background:#E0ECFF;cursor:default;}
-.easyui-accordion ul li div.selected a{color:#416AA3; font-weight:bold;}
-
-.tb{clear:both;width:98%;margin:0 auto;padding-top:20px;border-top:4px solid #DEEFFA;border-bottom:4px solid #DEEFFA;}
-.tb th, .tb td{padding:4px 4px;background:#fff;border-top:1px solid #DEEFFA; border-bottom:1px solid #DEEFFA;}
-.thead td,.thead th{background:transparent url(bg_repx_hc.gif) repeat-x scroll 0 -40px;padding:2px;color:#0099CC;font-weight:700;line-height:21px;height:25px;border-top:1px solid #DEEFFA;font-size:12px}
-.tb tr:hover{color:#333}
-
-.tb2{clear:both;width:100%}
-.tb2 th, .tb2 td{padding:0px;background:#fff;border-top:0px solid #DEEFFA; border-bottom:1px solid #DEEFFA;}
-.tb2 tr:hover{color:#333}
-
-.selected { background:#aaaaaa;}
-.odd {background:#DEEFFA;}
-.highlight{background:#f1f1f1;}
-
-#htmltabs{width:100%; overflow:hidden;padding:8px 0 0;font-weight:700}
-#htmltabs li{float:left;margin-left:20px; display:inline;height:26px; line-height:25px;padding:0 8px;}
-#htmltabs li.hover{background:#DEEFFA}
-#htmltabs a{text-decoration:underline;}
-#htmltabs li.hover a{text-decoration:none;}
-
-.page { border : 1px solid #D2E0F2;	 padding-left : 4px; padding-right : 4px; padding-top : 2px;	text-decoration : none; } 
-.pagein { background-color : #fee; border : 1px solid red; color : red; padding-left : 4px; padding-right : 4px; padding-top : 2px; text-decoration : none; } 
-.error {color: red;	font-style: italic;	font-weight: normal;}
-
-.nav{margin-top:1px; margin-bottom:1px;width:96%;}
-.nav a,.menulist a:visited{ font-size:13px; color:blue;}
-.nav ul { width:100%;}
-.nav .spanli{ background:#2473A2; }
-.nav ul li{ float:left; width:110px; text-align:left}
+* {
+	font-size: 12px;
+	font-family: "Microsoft Yahei",Tahoma,Verdana,ÐÂËÎÌå;
+}
+html,body {
+	height: 100%
+}
+body {
+	margin: 20px;
+}
+a {
+	color: Black;
+	text-decoration: none;
+}
+a:hover {
+	color: #00a1d9;
+	text-decoration: underline;
+}
+h3 {
+	font-size: 16px;
+	margin-top: 0;
+}
+ul {
+	list-style: none
+}
+table {
+	border-collapse: collapse
+}
+.head a {
+	color: White;
+	text-decoration: underline;
+}
+.footer {
+	text-align: center;
+	color: #15428B;
+	margin: 0px;
+	padding: 0px;
+	line-height: 23px;
+	font-weight: bold;
+}
+.easyui-accordion ul {
+	list-style-type: none;
+	margin: 0px;
+	padding: 10px;
+}
+.easyui-accordion ul li {
+	padding: 0px;
+}
+.easyui-accordion ul li a {
+	line-height: 24px;
+}
+.easyui-accordion ul li div {
+	margin: 2px 0px;
+	padding-left: 10px;
+	padding-top: 2px;
+}
+.easyui-accordion ul li div.hover {
+	border: 1px dashed #99BBE8;
+	background: #E0ECFF;
+	cursor: pointer;
+}
+.easyui-accordion ul li div.hover a {
+	color: #416AA3;
+}
+.easyui-accordion ul li div.selected {
+	border: 1px solid #99BBE8;
+	background: #E0ECFF;
+	cursor: default;
+}
+.easyui-accordion ul li div.selected a {
+	color: #416AA3;
+	font-weight: bold;
+}
+.tb {
+	clear: both;
+	width: 100%;
+	margin: 0 auto;
+	padding-top: 20px;
+	line-height: 160%;
+}
+.tb tbody tbody{
+	margin-bottom: 10px;
+	float: left;
+	clear: both;
+}
+.tb tr{
+	padding: 5px 0;
+}
+.tb tr:nth-child(2n), .admin_vod_type.tb2 tr:nth-child(2n) {
+	background: #FaFbFF;
+}
+.tb tbody select{
+	margin: 5px 10px;
+}
+.tb tr:first-child {
+	border-top: 4px solid #DEEFFA;
+}
+.tb th, form .tb td {
+	padding: 8px;
+}
+.panel.window .tb {
+	border: none;
+}
+.thead td,.thead th {
+	text-align: left;
+}
+.tb tr: hover {
+	color: #333
+}
+.tb2 {
+	clear: both;
+	width: 100%
+}
+.tb2 th, .tb2 td {
+	padding: 5px;
+	border-top: 0px solid #DEEFFA;
+	border-bottom: 1px solid #DEEFFA;
+}
+.tb2 tr: hover {
+	color: #333
+}
+.selected {
+	background: #aaaaaa;
+}
+.odd {
+	background: #DEEFFA !important;
+}
+.highlight {
+	background: #f1f1f1;
+}
+#htmltabs {
+	width: 100%;
+	overflow: hidden;
+	padding: 8px 0 0;
+	font-weight: 700
+}
+#htmltabs li {
+	float: left;
+	margin-left: 20px;
+	display: inline;
+	height: 26px;
+	line-height: 25px;
+	padding: 0 8px;
+}
+#htmltabs li.hover {
+	background: #DEEFFA
+}
+#htmltabs a {
+	text-decoration: underline;
+}
+#htmltabs li.hover a {
+	text-decoration: none;
+}
+.page {
+	border : 1px solid #D2E0F2;
+	text-decoration: none;
+	height: 28px;
+	line-height: 28px;
+	width: 28px;
+	display: inline-block;
+	margin: 20px 2px;
+	font-size: 14px;
+}
+.page:hover {
+	background: #00a1d9;
+	color: #FFF;
+	text-decoration: none;
+}
+.formlast input {
+	margin-top: 20px;
+}
+.formlast #page, #page {
+	height: 24px;
+	line-height: 24px;
+	width: 24px;
+	margin: 0 8px 0 0px;
+}
+.pagein {
+	background-color: #fee;
+	border : 1px solid red;
+	color : red;
+	text-decoration : none;
+	height: 28px;
+	line-height: 28px;
+	width: 28px;
+	display: inline-block;
+	margin: 20px 2px;
+	cursor: default;
+}
+.pagein:hover {
+	color : red;
+	text-decoration : none;
+}
+.error {
+	color: red;
+	font-style: italic;
+	font-weight: normal;
+	padding-right: 10px;
+}
+.nav {
+	margin-top: 1px;
+	margin-bottom: 1px;
+	width: 96%;
+}
+.nav a,.menulist a: visited {
+	font-size: 13px;
+	color: blue;
+}
+.nav ul {
+	width: 100%;
+}
+.nav .spanli {
+	background: #2473A2;
+}
+.nav ul li {
+	float: left;
+	width: 110px;
+	text-align: left
+}
+#btnAdd, .admin_sql.tb .input, #addvod, .admin_forgot_pwd .input, .admin_leftdim .input, #btnEdit, #btnMove, #btnSave, #btnAddLunBo, .collect_vod_manage .input, .inputbut, #btnCancel, #go, #btnsearch, #btnDel, #pltj, #plfl, #plluobo, #plbd, #plbd, #plyc, #btnAddvideo, #btnAddbang, #btnDelall, .collect_vod .btn, #btnsearch1, #btnAdd_down, #btnSelin, #AllInflowProject {
+	padding: 0 15px;
+	height: 32px;
+	background: #04518c;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	margin-bottom: 10px;
+}
+#btnAdd:hover, .admin_sql.tb .input:hover, .admin_forgot_pwd .input:hover, .admin_leftdim .input:hover, #btnEdit:hover, #btnMove:hover, #btnSave:hover, #btnAddLunBo:hover, .collect_vod_manage .input:hover, .inputbut:hover, #btnCancel:hover, #go:hover, #btnsearch:hover, #btnDel:hover, #pltj:hover, #plfl:hover, #plluobo:hover, #plbd:hover, #plbd:hover, #plyc:hover, #btnAddvideo:hover, #btnAddbang:hover, #btnDelall:hover, .collect_vod .btn:hover, #btnsearch1:hover, #btnAdd_down:hover, #btnSelin:hover, #AllInflowProject:hover {
+	background: #00a1d9;
+}
+#go, #btnsearch {
+	height: 30px;
+}
+.index font[color="green"]{
+	background: #CFC;
+	padding: 0 5px;
+	margin-left: 10px;
+}
+.index font[color="red"]{
+	background: #F66;
+	color: #fff;
+	padding: 0 5px;
+	margin-left: 10px;
+}
+.admin_sql.tb tr:first-child, .admin_forgot_pwd.tb tr:first-child, .admin_leftdim.tb tr:first-child, .admin_vod_arealang.tb tr:first-child, .admin_vod_topic_1.tb tr:first-child, .admin_vod_1.tb tr:first-child, .admin_vod_2.tb tr:first-child, .admin_online_subscribe.tb tr:first-child, .panel .tb tr:first-child, .admin_vod_feedback_1.tb tr:first-child, .admin_program.tb tr:first-child, .admin_program_items.tb tr:first-child, .admin_program_play.tb tr:first-child, .admin_program_play_import.tb tr:first-child, .admin_program_config.tb tr:first-child, .admin_apk_company.tb tr:first-child, .admin_apk.tb tr:first-child, .admin_apk_temp.tb tr:first-child {
+	border-top: none !important;
+}
+.admin_sql .odd, .admin_sql.tb tr:nth-child(2n), .admin_forgot_pwd .odd, .admin_forgot_pwd.tb tr:nth-child(2n), .admin_leftdim .odd, .admin_leftdim.tb tr:nth-child(2n), .admin_vod_arealang .odd, .admin_vod_arealang.tb tr:nth-child(2n), .admin_vod_topic_1 .odd, .admin_vod_topic_1.tb tr:nth-child(2n), .admin_vod_1 .odd, .admin_vod_1.tb tr:nth-child(2n), .admin_vod_2 .odd, .admin_vod_2.tb tr:nth-child(2n), .admin_online_subscribe .odd, .admin_online_subscribe.tb tr:nth-child(2n), .panel.window .odd, .panel.window .tb tr:nth-child(2n), .admin_vod_feedback_1 .odd, .admin_program .odd, .admin_program.tb tr:nth-child(2n), .admin_program_items .odd, .admin_program_items.tb tr:nth-child(2n), .admin_program_play .odd, .admin_program_play.tb tr:nth-child(2n), .admin_program_play_import .odd, .admin_program_play_import.tb tr:nth-child(2n), .admin_program_config  .odd, .admin_program_config.tb tr:nth-child(2n), .admin_apk_company .odd, .admin_apk_company.tb tr:nth-child(2n), .admin_apk .odd, .admin_apk.tb tr:nth-child(2n) , .admin_apk_temp .odd, .admin_apk_temp.tb tr:nth-child(2n) {
+	background: none !important;
+}
+#import_file, #file {
+	background: #F7F7F7;
+	height: 14px;
+	padding: 10px;
+	cursor: pointer;
+}
+input[type="password"]{
+	width: 192px;
+	padding: 6px;
+	border: none;
+	background: #f2f2f2;
+	box-shadow: 0 0 3px #999 inset;
+	font-size: 16px;
+	margin-right: 10px;
+}
+.admin_vod_type input[type="text"]{
+	width: 100%;
+}
+.admin_vod_2 input[type="file"]{
+	background: #333;
+}
+.admin_vod_type {
+	text-align: center;
+}
+.admin_vod_type.tb2 td[align="left"] {
+	line-height: 20px;
+}
+.formlast, .formlast.odd {
+	background:none!important;
+}
+.admin_subscribe.tb tr, .admin_vod_popular.tb tr {
+	line-height: 300%;
+}
+.index.tb tr {
+	line-height: 200%;
+}

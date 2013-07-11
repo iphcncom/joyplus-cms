@@ -206,7 +206,7 @@ function edit(id,type)
 <!--	</tr>-->
 <!--</table>-->
 
-<table class="tb">
+<table class="admin_vod_popular tb">
 <form action="" method="post" id="form1" name="form1">
 	<tr>
 	<td width="2%">&nbsp;</td>
@@ -267,14 +267,14 @@ function edit(id,type)
  
 		}
 	?>
-	<tr>
-	<td  colspan="8">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'t_id[]')" />
+	<tr class="formlast">
+	<td  colspan="8"><input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'t_id[]')" /> 全选
 	<input type="button" value="批量删除" id="btnDel" class="input"  />
-	&nbsp;<input type="button" value="添加" id="btnAdd" class="input" />
-	&nbsp;<input type="button" value="添加视频" class="input" onclick="javascript:window.location.href='admin_vod.php?action=addVodPopular'" />
-	&nbsp;<input type="button" value="添加榜单" class="input" onclick="javascript:window.location.href='admin_vod_topic.php?keyword=&t_userid=0&t_flag=1&t_bdtype=-1'" />
+	
+	&nbsp;<input type="button" value="添加视频" id="btnAddvideo" class="input" onclick="javascript:window.location.href='admin_vod.php?action=addVodPopular'" />
+	&nbsp;<input type="button" value="添加榜单" id="btnAddbang" class="input" onclick="javascript:window.location.href='admin_vod_topic.php?keyword=&t_userid=0&t_flag=1&t_bdtype=-1'" />
 	</td></tr>
-    <tr align="center" >
+    <tr align="center" class="formlast">
 	<td colspan="8">
 		<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod_popular.php?page={p}&keyword=" . urlencode($keyword) . "&status=" . $status )?>
 	</td>
@@ -307,7 +307,7 @@ function edit(id,type)
     <tr>
      <td>类别</td>
       <td><select id="type" name="type">
-	   <option value="3" >二维码图片</option>
+	   
 	   <option value="0" selected>视频</option>
 	   <option value="1" >榜单</option>
 	</select>

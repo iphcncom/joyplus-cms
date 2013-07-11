@@ -3,7 +3,7 @@ require_once ("admin_conn.php");
 chkLogin();
 
 $action = be("all","action");
-headAdmin ("管理员管理");main();
+headAdmin ("用户管理");main();
 dispseObj();
 
 function main()
@@ -28,7 +28,7 @@ $(document).ready(function(){
 				maxlength:32
 			},
 			m_password:{
-				required:true,
+				
 				maxlength:32
 			},
 			m_status:{
@@ -65,6 +65,7 @@ $(document).ready(function(){
 		$('#form2').form('clear');
 		$("#flag").val("add");
 		$('#win1').window('open'); 
+	$("#m_status").get(0).options[0].selected = true;
 	});
 	$("#btnCancel").click(function(){
 		location.href= location.href;
@@ -127,11 +128,12 @@ function edit(id)
 			}
 		}
 	?>
+	<tr class="formlast">
 	<td colspan="6">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'m_id[]')" />
 	&nbsp;<input type="button" id="btnDel" value="批量删除" class="input" />
 	&nbsp;<input type="button" id="btnAdd" value="添加"  class="input"/>
 	</td></tr>
-    <tr align="center">
+    <tr align="center" class="formlast">
       <td colspan="6">
        <?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_manager.php?page={p}")?>
       </td>
@@ -150,8 +152,8 @@ function edit(id)
 	</td>
 	</tr>
 	<tr>
-	<td>管理员密码：</td>
-	<td><INPUT id="m_password" type="password" size=50 value="" name="m_password">
+	<td width="20%" >管理员密码：</td>
+	<td><INPUT id="m_password" type="password" size=50 value="" name="m_password"><br>(说明：密码为空时，不更新密码字段，仍为原密码)
 	</td>
 	</tr>
 	<tr>
@@ -173,7 +175,7 @@ function edit(id)
 	<td>管理员状态：</td>
 	<td>
 	<select id="m_status" name="m_status">
-	<option value=1>启动</option>
+	<option value=1>启用</option>
 	<option value=0>锁定</option>
 	</select>
 	</td>

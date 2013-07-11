@@ -55,6 +55,7 @@ return array(
 		'urlManager'=>array(
 			'urlFormat'=>'path',
 			'rules'=>array(
+		        'search_capital'=>'search/searchCapital',
 				'search'=>'search/search',
 				'topKeywords'=>'search/topKeywords',
 				'video_movies'=>'search/popMovie',
@@ -65,8 +66,13 @@ return array(
 		        'movie_tops'=>'top/SystemMovieTop',
 		        'tv_tops'=>'top/SystemTVTop',
 		        'show_tops'=>'top/SystemShowTop',
+		        'cart_tops'=>'top/SystemCartTop',
+		        'filter'=>'search/Filter',
                 'top_items'=>'top/TopItems',
+		        'show_top_items'=>'top/ShowTopItems',
 		        'lunbo'=>'search/lunBo',
+		        'tv_net_top'=>'top/TVNet',		
+		        'open_api_config'=>'api/openapiconfig',
 			),
 		),
 		
@@ -75,15 +81,7 @@ return array(
 //		),
 		// uncomment the following to use a MySQL database
 		
-		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=ijoyplus;port=30306',
-			'emulatePrepare' => true,
-			'username' => 'joyplus',
-			'password' => 'ilovetv001', //ilovetv001
-			'charset' => 'utf8',
-		    'enableParamLogging'=>true,
-		
-		),
+		'db'=>require(dirname(__FILE__).'/db.php'),
 		
 		//将session保持在数据库的设置：
 //		'session' => array (

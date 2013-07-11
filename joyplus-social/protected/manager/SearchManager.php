@@ -469,6 +469,11 @@ ORDER BY d.disp_order asc ';
    	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
    	       $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOP_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
    	    }
+   	    
+   	    if(IjoyPlusServiceUtils::isExcludeCopyMovie()){
+   	    	$where= $where . " and vod.d_area not like '%美国%' ";
+   	    }
+   	    
 	    $items = CacheManager::getValueFromCache($key);
 	    if($items){
 	    	return $items;
@@ -498,6 +503,11 @@ ORDER BY d.disp_order asc ';
    	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
    	       $key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOP_NUM_'.$top_id.'_DEVICE_'.$device;
    	    }
+   	    
+   	    if(IjoyPlusServiceUtils::isExcludeCopyMovie()){
+   	    	$where= $where . " and vod.d_area not like '%美国%' ";
+   	    }
+   	    
 	    $items = CacheManager::getValueFromCache($key);
 	    if($items){
 	    	return $items;
@@ -526,6 +536,10 @@ ORDER BY d.disp_order asc ';
    	    }else {
    	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
    	    	$key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOP_SHOW_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
+   	    }
+   	    
+   	    if(IjoyPlusServiceUtils::isExcludeCopyMovie()){
+   	    	$where= $where . " and vod.d_area not like '%美国%' ";
    	    }
 	    $items = CacheManager::getValueFromCache($key);
 	    if($items){
@@ -589,6 +603,11 @@ ORDER BY d.disp_order asc ';
    	    	$where=' AND (can_search_device like \'%'.$device.'%\' or can_search_device is null or can_search_device =\'\' ) ';
    	    	$key =SearchManager::CACHE_LIST_ITEMS_BY_TYPE_LIMIT_OFFSET.'_TOPTVNet_'.$top_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset.'_DEVICE_'.$device;
    	    }
+   	    
+   	    if(IjoyPlusServiceUtils::isExcludeCopyMovie()){
+   	    	$where= $where . " and vod.d_area not like '%美国%' ";
+   	    }
+   	    
 	    $items = CacheManager::getValueFromCache($key);
 	    if($items){
 	    	return $items;
@@ -634,7 +653,12 @@ ORDER BY d.disp_order asc ';
 	    if($prods){
 	    	return $prods;
 	    }
-	    
+   
+   	    
+   	    if(IjoyPlusServiceUtils::isExcludeCopyMovie()){
+   	    	$where= $where . " and d_area not like '%美国%' ";
+   	    }
+   	    
 	    $keyword='%'.$keyword.'%';
 //	    $keyword= iconv("iso-8859-1","UTF-8",$keyword);
 	    $prods= Yii::app()->db->createCommand()
@@ -664,6 +688,10 @@ ORDER BY d.disp_order asc ';
 	    if($prods){
 	    	return $prods;
 	    }
+   	    
+   	    if(IjoyPlusServiceUtils::isExcludeCopyMovie()){
+   	    	$where= $where . " and d_area not like '%美国%' ";
+   	    }
 	    
 	    $keyword='%'.$keyword.'%';
 //	    $keyword= iconv("iso-8859-1","UTF-8",$keyword);
@@ -699,14 +727,24 @@ ORDER BY d.disp_order asc ';
 	    if($prods){
 	    	return $prods;
 	    }
+   	    
+   	    if(IjoyPlusServiceUtils::isExcludeCopyMovie()){
+   	    	$where= $where . " and d_area not like '%美国%' ";
+   	    }
 	    
-	    $keyword='%'.$keyword.'%';
+	    if(strlen($keyword)==1){
+	    	$keyword=$keyword.'';
+	    }else  if(strlen($keyword)==2){
+	    	$keyword=$keyword.'%';
+	    }else {
+	       $keyword='%'.$keyword.'%';
+	    }
 //	    $keyword= iconv("iso-8859-1","UTF-8",$keyword);
 	    if( $type ===''){
 		    $prods= Yii::app()->db->createCommand()
 				->select('d_id as prod_id, d_name as prod_name, d_type as prod_type, d_level as definition,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode , duraning as duration ')
 				->from('mac_vod ')
-				->where('d_hide=:d_hide  and ( d_enname like \''.$keyword.'\' or d_capital_name like \''.$keyword.'\'  ) '.$where, array(
+				->where('d_hide=:d_hide  and (  d_capital_name like \''.$keyword.'\'  ) '.$where, array(
 					    ':d_hide'=>0,
 				))->order('d_level desc ,d_play_num desc,d_type asc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
 				->queryAll();
@@ -714,7 +752,7 @@ ORDER BY d.disp_order asc ';
 		    $prods= Yii::app()->db->createCommand()
 				->select('d_id as prod_id, d_name as prod_name, d_type as prod_type, d_level as definition,d_pic as prod_pic_url,  substring_index( d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url,d_content as prod_sumary,d_starring as star,d_directed as director,d_score as score ,favority_user_count as favority_num ,good_number as support_num ,d_year as publish_date,d_area as area, d_remarks as max_episode, d_state as cur_episode , duraning as duration ')
 				->from('mac_vod ')
-				->where('d_hide=:d_hide and d_type in ('.$type.') and ( d_enname like \''.$keyword.'\' or d_capital_name like \''.$keyword.'\'  ) '.$where, array(
+				->where('d_hide=:d_hide and d_type in ('.$type.') and ( d_capital_name like \''.$keyword.'\'  ) '.$where, array(
 					    ':d_hide'=>0,
 				))->order('d_level desc ,d_play_num desc,d_type asc ,d_good desc,d_time DESC')->limit($limit)->offset($offset)
 				->queryAll();        	
@@ -739,6 +777,10 @@ ORDER BY d.disp_order asc ';
 	    if($prods){
 	    	return $prods;
 	    }
+   	    
+   	    if(IjoyPlusServiceUtils::isExcludeCopyMovie()){
+   	    	$whereDevice= $whereDevice . " and d_area not like '%美国%' ";
+   	    }
 	    $where=" ";	   
 	    
 	    if (!(is_null($year) || $year==='')){

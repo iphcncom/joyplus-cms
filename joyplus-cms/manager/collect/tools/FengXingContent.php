@@ -71,7 +71,7 @@ class FengXingContent extends Content{ //56
   		    		  		if($rc  || !isN($videoAddressUrl3)){
   		    		  			$videoAddressUrl3=$videoAddressUrl3.MovieType::VIDEO_SEP_VERSION;
   		    		  		} 
-				  	  	 	$videoAddressUrl3=$videoAddressUrl3.MovieType::HIGH_CLEAR.MovieType::VIDEO_NAME_URL_SEP.$location;
+				  	  	 	$videoAddressUrl3=$videoAddressUrl3.MovieType::TOP_CLEAR .MovieType::VIDEO_NAME_URL_SEP.$location;
 				  	  	 	$rc=true;
 				  	  	 } 
 
@@ -79,7 +79,7 @@ class FengXingContent extends Content{ //56
   		    		  		if($rc  || !isN($videoAddressUrl2)){
   		    		  			$videoAddressUrl2=$videoAddressUrl2.MovieType::VIDEO_SEP_VERSION;
   		    		  		} 
-				  	  	 	$videoAddressUrl2=$videoAddressUrl2.MovieType::NORMAL .MovieType::VIDEO_NAME_URL_SEP.$location;
+				  	  	 	$videoAddressUrl2=$videoAddressUrl2.MovieType::HIGH_CLEAR .MovieType::VIDEO_NAME_URL_SEP.$location;
 				  	  	 	$rc=true;
 				  	  	 } 
 				  	  	 
@@ -87,7 +87,7 @@ class FengXingContent extends Content{ //56
   		    		  		if($rc || !isN($videoAddressUrl1)){
   		    		  			$videoAddressUrl1=$videoAddressUrl1.MovieType::VIDEO_SEP_VERSION;
   		    		  		} 
-				  	  	 	$videoAddressUrl1=$videoAddressUrl1.MovieType::Liu_Chang.MovieType::VIDEO_NAME_URL_SEP.$location;
+				  	  	 	$videoAddressUrl1=$videoAddressUrl1.MovieType::NORMAL .MovieType::VIDEO_NAME_URL_SEP.$location;
 				  	  	 	$rc=true;
 				  	  	 } 
   		    		  }  		    		  

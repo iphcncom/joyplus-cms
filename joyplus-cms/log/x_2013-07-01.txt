@@ -1,2 +1,0 @@
-2013-07-01 13:32:42:  UPDATE {pre}manager SET m_logintime='2013-07-01 13:32:42',m_loginip='127.0.0.1',m_random='783a14f254798016171d3207da76940d' WHERE  m_id=4 ;
-2013-07-01 18:52:38:  UPDATE {pre}manager SET m_logintime='2013-07-01 18:52:38',m_loginip='127.0.0.1',m_random='875a19c0e5de19bd4dde161565c6934c' WHERE  m_id=4 ;

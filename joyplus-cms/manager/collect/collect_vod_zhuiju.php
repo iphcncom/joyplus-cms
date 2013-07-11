@@ -72,7 +72,7 @@ function main()
 	$project = be("get","cj_vod_projects");
 	$zt = be("get","zt");
 	
-	$sql="Select a.crontab_desc, a.m_id,a.m_name,a.m_typeid,a.m_urltest,m_playfrom ,b.p_name as p_name from {pre}cj_zhuiju a,{pre}cj_vod_projects b where a.m_pid=b.p_id  ";
+	$sql="Select a.crontab_desc, a.m_id,a.m_name,a.m_typeid,a.m_urltest,m_playfrom ,b.p_name,status as p_name from {pre}cj_zhuiju a,{pre}cj_vod_projects b where a.m_pid=b.p_id  ";
 	
 	if ($keyword != "") {
 		$keyword= trim($keyword);
@@ -175,7 +175,7 @@ $(document).ready(function(){
 	?> 
     <tr>
 	<td><input name="m_id[]" type="checkbox" id="m_id" value="<?php echo $t_id;?>" /></td>
-	<td><?php echo $row["m_name"]?>  (连载:<?php echo $row["m_state"]?>)</td>
+	<td><?php echo $row["m_name"]?>  (连载：<?php echo $row["status"]?>)</td>
 	
 	<td>
 		
@@ -211,7 +211,7 @@ $(document).ready(function(){
 		}
 	}
 	?>
-	<tr>
+	<tr class="formlast">
 	<td colspan="4">
     全选<input name="chkall" type="checkbox" id="chkall" value="1" onClick="checkAll(this.checked,'m_id[]');"/>&nbsp;
      &nbsp;<input type="button" id="btnDel" value="批量删除" class="btn"  />
@@ -220,7 +220,7 @@ $(document).ready(function(){
 	</td>
 	</tr>
 	
-    <tr align="center" bgcolor="#f8fbfb">
+    <tr align="center" class="formlast">
 	<td colspan="4">
 	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"collect_vod_zhuiju.php?page={p}&cj_vod_projects=".$project."&keyword=".$keyword."&playfrom=".$from) ?></td>
     </tr>

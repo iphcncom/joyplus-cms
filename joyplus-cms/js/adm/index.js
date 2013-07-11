@@ -6,7 +6,7 @@ $(function(){
 function setWorkspace(){
     var wWidth = $(window).width();
     var wHeight = $(window).height();
-    $('#workspace').width(wWidth - $('#left').width() - parseInt($('#left').css('margin-right')) - 5);
+    $('#workspace').width(wWidth - $('#left').width()  - 5);
     $('#workspace').height(wHeight - $('#head').height() );
 }
 function initTopTab(){
@@ -53,7 +53,7 @@ function loadSubmenu(){
     $('#submenu').find('dd').remove();
     $.each(m.children, function(k, v){
         var p = v.parent ? v.parent : currTab;
-        var item = $('<dd><a href="javascript:;" url="' + v.url + '" parent="' + p + '" id="item_' + k + '"><em title="Open in new window" onclick="menuNewwin(this)"></em>' + v.text + '</a></dd>');
+        var item = $('<dd><a href="javascript:;" url="' + v.url + '" parent="' + p + '" id="item_' + k + '"><em title="在新窗口中打开" onclick="menuNewwin(this)"></em>' + v.text + '</a></dd>');
         item.children('a').click(function(){
             openItem(this.id.substr(5));
         });

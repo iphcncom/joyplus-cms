@@ -153,9 +153,10 @@ class AccountController extends Controller{
   	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
 		   return ;
 		}
-//		
+		
 		$sourceid= Yii::app()->request->getParam("source_id");
 		$source_type= Yii::app()->request->getParam("source_type");
+		$pre_user_id= Yii::app()->request->getParam("pre_user_id");
         if( (!isset($sourceid)) || is_null($sourceid)  ){
 			IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
 			return;
@@ -163,7 +164,11 @@ class AccountController extends Controller{
 		if(IjoyPlusServiceUtils::validateThirdPartSource($source_type)){
 			try{
 				$user = User::model()->searchUserByThirdParty( $source_type,$sourceid);
-				if (isset($user) && !is_null($user)){					
+				if (isset($user) && !is_null($user)){
+					//Delete previous user related information
+					if(isset($pre_user_id) && !is_null($pre_user_id) && $pre_user_id !==$user->id )		{
+						 User::model()->deleteUserInfo($pre_user_id);
+					}			
 	   		    	$identity=new IjoyPlusUserIdentity($user->username,'');
 	   		    	$identity->setId($user->id);
 	   		    	$identity->setState('nickname', $user->nickname);

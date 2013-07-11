@@ -33,9 +33,9 @@ $(document).ready(function(){
 				stringCheck:true,
 				maxlength:64
 			},
-			sort:{
-				number:true
-			},
+//			sort:{
+//				number:true
+//			},
 			tip:{
 				maxlength:255
 			}
@@ -82,12 +82,12 @@ function edit(id)
 <table class="tb">
     <tr>
       <td width="10%">来源</td>
-      <td width="10%">序号</td>
+<!--      <td width="10%">序号</td>-->
       <td width="13%">名称</td>
       <td width="10%">状态</td>
       <td width="13%">备注</td>
       <td>提示信息</td>
-<!--      <td width="15%">操作</td>-->
+	  <td width="15%">操作</td>
     </tr>
 	<?php
 		if(count($nodes)==0){
@@ -97,14 +97,14 @@ function edit(id)
 			foreach($nodes as $node){
 				$from = $node->attributes->item(2)->nodeValue;
 				$status = $node->attributes->item(0)->nodeValue;
-				$sort = $node->attributes->item(1)->nodeValue;
+//				$sort = $node->attributes->item(1)->nodeValue;
 				$show = $node->attributes->item(3)->nodeValue;
 				$des = $node->attributes->item(4)->nodeValue;
 				$tip = $node->getElementsByTagName("tip")->item(0)->nodeValue;
 	?>
     <tr>
       <td><?php echo $from?></td>
-      <td><?php echo $sort?></td>
+<!--      <td><?php echo $sort?></td>-->
       <td><?php echo $show?></td>
       <td><?php
       if ($status=="1"){ echo "<font color=green>启用</font>";} else{ echo "<font color=red>禁用</font>";}
@@ -123,7 +123,7 @@ function edit(id)
 	
 	<tr>
 	<td  colspan="7">
-	&nbsp;<input type="button" value="添加" id="btnAdd" class="input" />
+	<input type="button" value="添加" id="btnAdd" class="input" />
 	</td></tr>
 </table>
 </form>
@@ -151,11 +151,11 @@ function edit(id)
 	</select>
 	</td>
 	</tr>
-    <tr>
-     <td>排序：</td>
-      <td><input id="sort" size=10 value="" name="sort" >
-	  </td>
-    </tr>
+<!--    <tr>-->
+<!--     <td>排序：</td>-->
+<!--      <td><input id="sort" size=10 value="" name="sort" >-->
+<!--	  </td>-->
+<!--    </tr>-->
 	<tr>
 	<td width="20%">备注：</td>
 	<td><input id="des" size=40 value="" name="des">

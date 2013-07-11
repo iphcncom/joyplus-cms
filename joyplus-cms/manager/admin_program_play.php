@@ -148,10 +148,10 @@ function edit(id)
 }
 </script>
 
-<table class="tb">
+<table class="admin_program_play tb">
 	<tr>
 	<td>
-	<table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
+	<table border="0" align="center" cellpadding="3" cellspacing="1">
 	<tr>
 	<td colspan="2">
 	过滤条件：频道<select id="tv_id" name="tv_id" >
@@ -232,8 +232,8 @@ function edit(id)
 			}
 		}
 	?>
-	<tr>
-	<td  colspan="7">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'t_id[]')" />
+	<tr class="formlast">
+	<td  colspan="7"><input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'t_id[]')" /> 全选
 <!--	<input type="button" value="批量删除" id="btnDel" class="input"  />-->
 	&nbsp;<input type="button" value="批量修改" id="btnEdit" class="input" />
 	&nbsp;<input type="button" value="添加" id="btnAdd" class="input" />

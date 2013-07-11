@@ -179,32 +179,7 @@ $(document).ready(function(){
 	});
 });
 </script>
-<form action="?action=tjsave" method="post" name="form1" id="form1">
-<table class="tb">
-	<tr>
-	<td width="20%">统计代码内容：</td>
-	<td>
-	<textarea id="tjstr" name="tjstr" style="width:100%;" rows="15" ><?php echo $fc?></textarea>
-	</td>
-	</tr>
-	<tr>
-	<td>实例cnzz统计：</td>
-	<td>
-	<textarea id="text" name="text" style="width:100%;" rows="3"> document.writeln('<script src="http://s94.cnzz.com/stat.php?id=420039&web_id=420039" language="JavaScript"></script>'); </textarea>
-	</td>
-	</tr>
-	<tr>
-	<td>调用方法：</td>
-	<td>
-	将以下的代码，插入模板即可。<br>
-	<xmp><script src="{maccms:path}js/tj.js"></script> 或者 {maccms:visits}  </xmp>
-	</td>
-	</tr>
-	<tr align="center">
-	<td colspan="2"><input class="input" type="submit" value="保存" id="btnSave"></td>
-	</tr>
-</table>
-</form>
+
 <?php
 }
 ?>

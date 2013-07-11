@@ -79,6 +79,26 @@
   	  return true; 		
   	}
   	
+  	public static function getDevice(){
+   	  $HTTP_CLIENT= isset($_SERVER['HTTP_CLIENT'])?$_SERVER['HTTP_CLIENT']:"";
+   	  if(isset($HTTP_CLIENT) && !is_null($HTTP_CLIENT) && strlen($HTTP_CLIENT) >0){
+   	  	 if(array_key_exists($HTTP_CLIENT, Yii::app()->params['devices'])){   	  	 	
+   	  	 	return Yii::app()->params['devices'][$HTTP_CLIENT.''];
+   	  	 }
+   	  }   	  
+   	  return false;	
+  	}
+  	
+  	
+   public static function isExcludeCopyMovie(){
+   	  $HTTP_CLIENT= isset($_SERVER['HTTP_EX_COPY_MOVIE'])?$_SERVER['HTTP_EX_COPY_MOVIE']:"";
+   	  if(isset($HTTP_CLIENT) && !is_null($HTTP_CLIENT) && $HTTP_CLIENT ==='1'){
+   	  	 return true;
+   	  }   	  
+   	  return false;	
+  	}
+  	
+  	
   	private static function login($userid){
   		$user = User::model()->findUser($userid);
   		if($user!==false && isset($user) && !is_null($user)) {  						

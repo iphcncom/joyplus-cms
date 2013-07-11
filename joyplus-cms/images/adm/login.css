@@ -1,33 +1,181 @@
 
-body, th, td, input, select, textarea { font: 12px/1.5em Verdana, "Lucida Grande", Arial, Helvetica, sans-serif; }
-body, h1, h2, h3, h4, h5, h6, p, ul, dl, dt, dd, form, img,fieldset { margin: 0; padding: 0; border:0;list-style: none; }
-a img { border: none; }
-input,select{vertical-align:middle;}
-.clear {clear:both; height:0; overflow:hidden; display:block; line-height:0}
-a:link {color:#0000ff; text-decoration:none}
-a:hover { text-decoration:underline}
-#header { background:url(console_header_bg.gif) repeat-x; height:140px;}
-#header .logo {background: url(console_heder_bg_2.gif) no-repeat center 0; width:960px; height:50px; padding:10px; margin:0 auto; }
-#header .logo h1 { text-align:right;}
-#wrapper {width:960px; margin:0 auto}
-.console_left{ float:left; border-right:1px dashed #ccc; width:420px; padding:0 60px 0 20px; display:block; overflow:hidden}
-.console_right{ float:right; width:386px;}
-.console_left p { font-size:12px; padding:10px 0}
-.title { font-size:24px; line-height:160%; font-weight:bold; }
-.intro_1, .intro_2, .intro_3 {background: url(console_icon.gif) 0 0 no-repeat; padding:0 0 0 80px; height:65px; line-height:65px; margin:10px 0 0 0; font-size:12px;}
-.intro_2 { background-position:0 -68px}
-.intro_3 { background-position:0 -148px}
-.login label { display:block; height:30px; line-height:30px; color:#000000; margin:10px 0 5px 0; overflow:hidden; font-size:12px;font-weight:bold;}
-.login input { margin:0 10px 0 0}
-.txt_input { height:18px; width:150px;}
-.code_input { height:18px; width:60px;}
-.login .user, .login .pwd { color:#FF0000}
-.login .forget { color:#0000ff; padding:15px 0 0 0; }
-.login .code label { margin:5px 0;}
-.login .code img { vertical-align:middle;cursor: hand;}
-.login .btn_login { padding:15px 0}
-.reg { height:30px; line-height:30px; padding:20px 0 15px 20px; font-size:12px;}
-.hr_solid {border-bottom:1px #666666 solid; border-top:none;height:1px; line-height:1px;}
-#footer { width:920px; height:30px; line-height:30px; padding:0 20px; margin:0 auto;}
-#footer .left { width:600px; float:left}
-#footer .right { float:right; text-align:right}
+body, th, td, input, select, textarea {
+	font: 13px/1.5em Helvetica, "Microsoft yahei", Verdana, "Lucida Grande", Arial, sans-serif;
+}
+body, h1, h2, h3, h4, h5, h6, p, ul, dl, dt, dd, form, img,fieldset {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	list-style: none;
+}
+body{
+	background: #254055 url('bodybg.png');
+}
+a img {
+	border: none;
+}
+input,select {
+	vertical-align: middle;
+}
+.clear {
+	clear: both;
+	height: 0;
+	overflow: hidden;
+	display: block;
+	line-height: 0
+}
+a: link {
+	color: #0000ff;
+	text-decoration: none
+}
+a: hover {
+	text-decoration: underline
+}
+#header {
+	height: 100px;
+}
+#header .logo {
+	width: 960px;
+	height: 50px;
+	padding: 10px;
+	margin: 0 auto;
+}
+#header .logo h1 {
+	text-align: right;
+}
+#wrapper {
+	width: 960px;
+	background: url('login.png') no-repeat center top;
+	margin: 0 auto;
+	color: #666;
+	padding: 80px 0 0;
+}
+.console_left {
+	float: left;
+	border-right: 1px dashed #ccc;
+	width: 520px;
+	padding: 0 40px 0 50px;
+	display: block;
+	overflow: hidden
+}
+.console_right {
+	float: right;
+	width: 300px;
+}
+.console_left p {
+	font-size: 12px;
+	padding: 10px 0
+}
+.title {
+	font-size: 24px;
+	line-height: 260%;
+	font-weight: bold;
+	color: #333;
+}
+.intro_1, .intro_2, .intro_3 {
+	width: 160px;
+	padding-top: 120px;
+	margin: 50px 10px 50px 0;
+	float: left;
+	text-align: center;
+}
+.intro_1 {
+	background:url('login_setting.png') no-repeat center top;
+}
+.intro_2 {
+	background:url('login_search.png') no-repeat center top;
+}
+.intro_3 {
+	margin-right: 0;
+	width: 180px;
+	background:url('login_safe.png') no-repeat center top;
+}
+.login div{
+	margin-bottom: 5px;
+}
+.login label {
+	display: block;
+	height: 30px;
+	line-height: 30px;
+	color: #666;
+	overflow: hidden;
+	font-size: 12px;
+	font-weight: bold;
+}
+.login input {
+	padding: 0 10px;
+	width: 220px;
+	height: 36px;
+	line-height: 40px;
+	font-size: 16px;
+	border: none;
+	background: #eee;
+	box-shadow: 0 0 5px #ccc inset;
+	color: #00a1d9;
+}
+.login input#login {
+	width: 240px;
+	height: 40px;
+	line-height: 40px;
+	background: #00a1d9;
+	color: #FFF;
+	box-shadow: 0 0 5px #ccc;
+}
+.txt_input {
+	height: 18px;
+	width: 150px;
+}
+.code_input {
+	height: 18px;
+	width: 60px;
+}
+.login .user, .login .pwd {
+	color: #FF0000
+}
+.login .forget {
+	color: #0000ff;
+	padding: 15px 0 0 0;
+}
+.login .code label {
+	margin: 5px 0;
+}
+.login .code img {
+	vertical-align: middle;
+	cursor: hand;
+}
+.login .btn_login {
+	padding: 15px 0
+}
+.reg {
+	height: 15px;
+	line-height: 30px;
+	padding: 5px 0;
+	font-size: 12px;
+}
+.hr_solid {
+	border-bottom: 1px #666666 solid;
+	border-top: none;
+	height: 1px;
+	line-height: 1px;
+	display: none;
+}
+#footer {
+	width: 920px;
+	height: 30px;
+	line-height: 30px;
+	padding: 10px 20px;
+	margin: 0 auto;
+	color: #fff;
+}
+#footer a{
+	color: #fff;
+	text-decoration: none;
+}
+#footer .left {
+	width: 600px;
+	float: left
+}
+#footer .right {
+	float: right;
+	text-align: right
+}

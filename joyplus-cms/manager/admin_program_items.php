@@ -187,10 +187,10 @@ function edit(id)
 }
 </script>
 <script type="text/javascript" src="/js/calendar.js"></script>
-<table class="tb">
+<table class="admin_program_items tb">
 	<tr>
 	<td>
-	<table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
+	<table border="0" align="center" cellpadding="3" cellspacing="1">
 	<tr>
 	<td colspan="2">
 	过滤条件：频道 <select id="tv_id" name="tv_id" >
@@ -198,7 +198,7 @@ function edit(id)
 	<?php echo makeSelectWhere("{pre}tv","id","tv_name","tv_type","","&nbsp;|&nbsp;&nbsp;",$tv_id," where status=1")?>
 	</select>
 	
-	 <input id="date" name="date" type="text" onclick="new Calendar().show(this);" value="<?php echo $day; ?>" readonly="readonly"/>
+	<input id="date" name="date" type="text" onclick="new Calendar().show(this);" value="<?php echo $day; ?>" readonly="readonly"/>
 	<input class="input" type="button" value="搜索" id="btnsearch" onClick="filter();">	 |  <input class="input" type="button" value="采集节目单" id="btnsearch1" onClick="collecProgram();">	 | <a href="admin_program.php">返回电视直播</a>
 	</td> 
 	</tr>
@@ -268,7 +268,7 @@ function edit(id)
 			
 		}
 	?>
-	<tr>
+	<tr class="formlast">
 	<td  colspan="7">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'t_id[]')" />
 <!--	<input type="button" value="批量删除" id="btnDel" class="input"  />-->
 	&nbsp;<input type="button" value="批量修改" id="btnEdit" class="input" />

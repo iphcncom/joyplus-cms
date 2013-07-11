@@ -33,7 +33,7 @@
 				echo "{'err':'".$errm."','msg':'".app_installdir. replaceStr($upfileDir,"../../","").$targetFile."'}";
 			}
 			else{
-				die("<script>parent.document.getElementById('pic').value='".replaceStr($upfileDir,"../../","").$targetFile."'</script>上传成功![ <a href=### onclick=history.go(-1)>重新上传</a> ]");
+				die("<script>parent.document.getElementById('pic').value='"."http://".$_SERVER["HTTP_HOST"].'/'."cms".'/'.replaceStr($upfileDir,"../../","").$targetFile."'</script>上传成功!");
 			}
 		}
 		else{
@@ -48,7 +48,7 @@
 				echo "{'err':'".$errm."','msg':'".app_installdir. replaceStr($upfileDir,"../../","").$targetFile."'}";
 			}
 			else{
-				die("<script>parent.document.getElementById('pic').value='".replaceStr($upfileDir,"../../","").$targetFile."'</script> 上传成功![ <a href=### onclick=history.go(-1)>重新上传</a> ]");
+				die("<script>parent.document.getElementById('pic').value='".replaceStr($upfileDir,"../../","").$targetFile."'</script> 上传成功!");
 			}
 		}
 	}

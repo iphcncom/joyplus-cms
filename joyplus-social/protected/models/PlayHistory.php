@@ -92,7 +92,7 @@ class PlayHistory extends CActiveRecord
 	
    public function getUserHistory($userid,$limit=20,$offset=0){
 		return Yii::app()->db->createCommand()
-		->select('a.id,a.prod_type, a.prod_name, a.prod_subname, a.prod_id, a.create_date, a.play_type, a.playback_time, a.video_url, a.duration,	a.create_date ,vod.d_pic as prod_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url  , vod.d_level as definition,vod.d_content as prod_summary, vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode  ')
+		->select(' vod.d_hide as hide,a.id,a.prod_type, a.prod_name, a.prod_subname, a.prod_id, a.create_date, a.play_type, a.playback_time, a.video_url, a.duration,	a.create_date ,vod.d_pic as prod_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url  , vod.d_level as definition,vod.d_content as prod_summary, vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode  ')
 		->from('tbl_play_history as a ')
 		->join('mac_vod vod', "a.prod_id=vod.d_id")
 		->where('a.author_id=:author_id and a.status=:status', array(
@@ -106,7 +106,7 @@ class PlayHistory extends CActiveRecord
 	
    public function getUserHistoryVodType($userid,$limit=20,$offset=0,$vodType){
 		return Yii::app()->db->createCommand()
-		->select('a.id,a.prod_type, a.prod_name, a.prod_subname, a.prod_id, a.create_date, a.play_type, a.playback_time, a.video_url, a.duration,	a.create_date ,vod.d_pic as content_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_content_pic_url  , vod.d_level as definition,vod.d_content as prod_summary,  vod.d_pic_ipad as prod_pic_url,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode  ')
+		->select(' vod.d_hide as hide,a.id,a.prod_type, a.prod_name, a.prod_subname, a.prod_id, a.create_date, a.play_type, a.playback_time, a.video_url, a.duration,	a.create_date ,vod.d_pic as prod_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_prod_pic_url  , vod.d_level as definition,vod.d_content as prod_summary,  vod.d_pic_ipad as prod_pic_url,vod.d_starring as stars,vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num ,vod.d_year as publish_date,vod.d_score as score,vod.d_area as area, vod.d_remarks as max_episode, vod.d_state as cur_episode  ')
 		->from('tbl_play_history as a ')
 		->join('mac_vod vod', "a.prod_id=vod.d_id")
 		->where('a.author_id=:author_id and a.status=:status and a.prod_type='.$vodType, array(

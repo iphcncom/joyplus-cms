@@ -1870,19 +1870,19 @@ function main()
 <table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
 	<tr>
 	<td>
-		菜单：<a href="collect_vod_manage.php?action=add">添加采集规则</a> | <a href="collect_vod_manage.php?action=upexp">导入采集规则</a> | <a href="collect_vod_change.php">分类转换</a> | <a href="collect_vod_filters.php">信息过滤</a> 
+		菜单：<a href="collect_vod_manage.php?action=add">添加采集规则</a> | <a href="collect_vod_manage.php?action=upexp">导入采集规则</a>
 	</td>
 	</tr>
 </table>
 <form action="" method="post" name="form1">
-<table class="tb">
+<table class="collect_vod_manage tb">
     <tr>
-	  <td width="4%">&nbsp;</td>
-      <td>项目名称</td>
+	  <td width="5%">&nbsp;</td>
+      <td width="10%">项目名称</td>
       <td width="10%">播放类型</td>
       <td width="10%">入库分类</td>
-      <td width="10%">上次采集</td>
-      <td width="50%">操作</td>
+      <td width="20%">上次采集</td>
+      <td width="45%">操作</td>
     </tr>
 	<?php
 	if (!$rs){
@@ -1916,7 +1916,7 @@ function main()
  	   <A href="collect_vod_cj.php?p_id=<?php echo  $row["p_id"] ?>">采集(包括已经采集过)</A>｜
  	  <A href="?action=collectSimple&p_id=<?php echo $row["p_id"]?>&p_name=<?php echo $row["p_name"]?>">采集单个视频</A>｜
  	  <A href="?action=collectVideo&p_id=<?php echo $row["p_id"]?>&p_name=<?php echo $row["p_name"]?>">采集视频地址</A>｜
- 	  <A href="?action=edit&p_id=<?php echo $row["p_id"]?>">修改</A>｜
+ 	  <A href="?action=edit&p_id=<?php echo $row["p_id"]?>">设置</A>｜
  	  <A href="?action=copy&p_id=<?php echo  $row["p_id"] ?>">复制</A>｜
  	  <A href="?action=export&p_id=<?php echo  $row["p_id"] ?>">导出</A>｜
  	  <A href="?action=del&p_id=<?php echo $row["p_id"]?>">删除</A>
@@ -1927,14 +1927,14 @@ function main()
 		}
 	}
 	?>
-	<tr>
+	<tr class="formlast">
 	<td  colspan="6">
 	全选<input name="chkall" type="checkbox" id="chkall" value="1" onClick="checkAll(this.checked,'p_id[]');"/>&nbsp;
 	<input type="submit" value="批量删除" onClick="if(confirm('确定要删除吗')){form1.action='?action=delall';}else{return false}"  class="input"/>
-	<input type="submit" value="批量采集" onClick="if(confirm('确定要批量采集吗')){form1.action='collect_vod_cj.php?action=pl';}else{return false}"  class="input"/>
+	
 	</td>
 	</tr>
-    <tr align="center" bgcolor="#f8fbfb">
+    <tr align="center" class="formlast">
       <td colspan="7">
         <?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"collect_vod_manage.php?page={p}") ?>
       </td>

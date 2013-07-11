@@ -100,13 +100,13 @@ function getTypeList($t_pid)
     	<td align="left" >
         <div style="float:left;">
         <?php for($i=0;$i<$tempnum-3;$i++){ echo "&nbsp;";}?>
-        <?php if($t_pid==0){ echo "╄"; }else{ echo "├"; }?>
+        <?php if($t_pid==0){ echo " "; }else{ echo "├"; }?>
         <input type="checkbox" name="t_id[]" value="<?php echo $row["t_id"]?>" class="checkbox" />
         <a href="admin_art.php?{pre}art_type=<?php echo $row["t_id"]?>"><?php echo $row["t_name"]?></a>
         <input type="button" value="父" onClick="ShowPDIV(<?php echo $row["t_id"]?>,<?php echo $row["t_pid"]?>);" name="Input" class="btn" />
         </div>
         (<font color="red"><?php echo $tcount?></font>)
-        <div id="type_P_DIV_<?php echo $row["t_id"]?>" style=" float:left;display:none; height:25px; margin-top:5px;">
+        <div id="type_P_DIV_<?php echo $row["t_id"]?>" style=" float:left;display:none;">
         <select id="type_P_CID_<?php echo $row["t_id"]?>" name="type_P_CID_<?php echo $row["t_id"]?>" onChange="SelectPid(this.value,<?php echo $row["t_id"]?>);">
 	     </select>
 	    </div>

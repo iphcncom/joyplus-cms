@@ -56,23 +56,23 @@ class Dynamic extends CActiveRecord
 
 	public function searchUserWatchs($userid,$limit=20,$offset=0){
 		return Yii::app()->db->createCommand()
-		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,
-		 vod.d_pic as content_pic_url,	a.create_date,vod.d_starring as stars,
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type, vod.d_hide as hide,
+		 vod.d_pic as content_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_content_pic_url,	a.create_date,vod.d_starring as stars,
 		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
 		->from('tbl_my_dynamic as a')
 		->join('mac_vod vod', "a.content_id=vod.d_id")
-		->where('author_id=:author_id  and dynamic_type=:type', array(
+		->where('author_id=:author_id  and dynamic_type=:type and a.status=:status', array(
 			    ':author_id'=>$userid,
-//			    ':status'=>Constants::OBJECT_APPROVAL,
+			    ':status'=>Constants::OBJECT_APPROVAL,
                 ':type'=>Constants::DYNAMIC_TYPE_WATCH,
 		))->order('create_date DESC')->limit($limit)->offset($offset)
 		->queryAll();
 	}
 	
-public function searchUserRecommends($userid,$limit=20,$offset=0){
+    public function searchUserRecommends($userid,$limit=20,$offset=0){
 		return Yii::app()->db->createCommand()
 		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,
-		 vod.d_pic as content_pic_url,	a.create_date,vod.d_starring as stars,
+		 vod.d_pic as content_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_content_pic_url,	a.create_date,vod.d_starring as stars,
 		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
 		->from('tbl_my_dynamic as a')
 		->join('mac_vod vod', "a.content_id=vod.d_id")
@@ -86,9 +86,9 @@ public function searchUserRecommends($userid,$limit=20,$offset=0){
 	
   public function searchUserFavorities($userid,$limit=20,$offset=0){
 		return Yii::app()->db->createCommand()
-		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,
-		 vod.d_pic as content_pic_url,	a.create_date,vod.d_starring as stars,
-		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type, vod.d_hide as hide,
+		 vod.d_pic as content_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_content_pic_url,	a.create_date,vod.d_starring as stars,
+		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score,vod.d_remarks as max_episode, vod.d_state as cur_episode , vod.duraning as duration ')
 		->from('tbl_my_dynamic as a')
 		->join('mac_vod vod', "a.content_id=vod.d_id")
 		->where('author_id=:author_id and status=:status and dynamic_type=:type', array(
@@ -101,8 +101,8 @@ public function searchUserRecommends($userid,$limit=20,$offset=0){
 	
    public function searchUserShares($userid,$limit=20,$offset=0){
 		return Yii::app()->db->createCommand()
-		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,
-		 vod.d_pic as content_pic_url,	a.create_date,vod.d_starring as stars,
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,  vod.d_hide as hide,
+		 vod.d_pic as content_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_content_pic_url,	a.create_date,vod.d_starring as stars,
 		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
 		->from('tbl_my_dynamic as a')
 		->join('mac_vod vod', "a.content_id=vod.d_id")
@@ -116,8 +116,8 @@ public function searchUserRecommends($userid,$limit=20,$offset=0){
 	
    public function searchUserSupports($userid,$limit=20,$offset=0){
 		return Yii::app()->db->createCommand()
-		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,
-		 vod.d_pic as content_pic_url,	a.create_date,vod.d_starring as stars,
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type, vod.d_hide as hide,
+		 vod.d_pic as content_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_content_pic_url,	a.create_date,vod.d_starring as stars,
 		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
 		->from('tbl_my_dynamic as a')
 		->join('mac_vod vod', "a.content_id=vod.d_id")
@@ -125,6 +125,37 @@ public function searchUserRecommends($userid,$limit=20,$offset=0){
 			    ':author_id'=>$userid,
 			    ':status'=>Constants::OBJECT_APPROVAL,
                 ':type'=>Constants::DYNAMIC_TYPE_MAKE_GOOD,
+		))->order('create_date DESC')->limit($limit)->offset($offset)
+		->queryAll();
+	}
+	
+   public function searchUserSupportsVodType($userid,$limit=20,$offset=0,$type){
+		return Yii::app()->db->createCommand()
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,  vod.d_hide as hide,
+		 vod.d_pic as content_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_content_pic_url,	a.create_date,vod.d_starring as stars,
+		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score')
+		->from('tbl_my_dynamic as a')
+		->join('mac_vod vod', "a.content_id=vod.d_id")
+		->where('a.author_id=:author_id and a.status=:status and a.dynamic_type=:type and a.content_type='.$type, array(
+			    ':author_id'=>$userid,
+			    ':status'=>Constants::OBJECT_APPROVAL,
+                ':type'=>Constants::DYNAMIC_TYPE_MAKE_GOOD,
+		))->order('create_date DESC')->limit($limit)->offset($offset)
+		->queryAll();
+	}
+	
+	
+	public function searchUserFavoritiesVodType($userid,$limit=20,$offset=0,$type){
+		return Yii::app()->db->createCommand()
+		->select('vod.d_id as content_id,vod.d_name as content_name, vod.d_type as content_type,  vod.d_hide as hide,
+		 vod.d_pic as content_pic_url, substring_index( vod.d_pic_ipad, \'{Array}\', 1 )  as big_content_pic_url,	a.create_date,vod.d_starring as stars,
+		vod.d_directed as directors ,vod.favority_user_count as favority_num ,vod.good_number as support_num,vod.d_area as area,vod.d_year as publish_date,vod.d_score as score,vod.d_remarks as max_episode, vod.d_state as cur_episode , vod.duraning as duration ')
+		->from('tbl_my_dynamic as a')
+		->join('mac_vod vod', "a.content_id=vod.d_id")
+		->where('author_id=:author_id and status=:status and dynamic_type=:type and a.content_type='.$type, array(
+			    ':author_id'=>$userid,
+			    ':status'=>Constants::OBJECT_APPROVAL,
+                ':type'=>Constants::DYNAMIC_TYPE_FAVORITY,
 		))->order('create_date DESC')->limit($limit)->offset($offset)
 		->queryAll();
 	}

@@ -78,6 +78,7 @@ private static function genTV($program,$flag){
 	      'id'=>$program->d_id,  
 	      'definition'=>$program->d_level,  
 	      'area'=>$program->d_area,  
+	      'duration'=>$program->duraning,  
 	      'total_comment_number'=>$program->total_comment_number,
 	      'douban_id'=>$program->d_douban_id,
 //	      'typeName'=>$program->d_type_name  ,

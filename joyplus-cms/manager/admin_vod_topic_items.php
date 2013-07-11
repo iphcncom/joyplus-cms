@@ -194,7 +194,7 @@ function edit(id)
 	<td  colspan="8">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'ids[]')" />
 	<input type="button" value="批量删除" id="btnDel" class="input"  />
 	&nbsp;<input type="button" value="批量修改" id="btnEdit" class="input" />
-	&nbsp;<input type="button" value="添加视频" class="input" onclick="javascript:window.location.href='admin_vod.php?action=addTopicItems&topic_id=<?php echo $topic_id?>'" />
+	&nbsp;<input id="addvod" type="button" value="添加视频" class="input" onclick="javascript:window.location.href='admin_vod.php?action=addTopicItems&topic_id=<?php echo $topic_id?>'" />
 	</td></tr>
     <tr align="center" >
 	<td colspan="8">

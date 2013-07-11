@@ -278,6 +278,7 @@ function cjList()
 	
 	if (isN($_SESSION["strListCode"])) {
 		$strListCode = getPage($strListUrl,$p_coding);
+		
 		$_SESSION["strListCode"] = $strListCode;
 	}
 	else{

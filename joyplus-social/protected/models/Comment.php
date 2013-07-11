@@ -63,7 +63,7 @@ class Comment extends CActiveRecord
     }
     
    public function getReviewsByProgram($programid,$limit=3,$offset=0){     
-		$key ='PROGRAM_REVIEW_LIST_PROD_ID'.$prod_id.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
+		$key ='PROGRAM_REVIEW_LIST_PROD_ID'.$programid.'_LIMIT_'.$limit.'_OFFSET_'.$offset;
         $lists = CacheManager::getValueFromCache($key);
 	    if($lists){
 	    	return $lists;

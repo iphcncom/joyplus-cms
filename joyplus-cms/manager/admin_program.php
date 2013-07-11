@@ -197,7 +197,7 @@ function edit(id)
 }
 </script>
 
-<table class="tb">
+<table class="admin_program tb">
 	<tr>
 	<td>
 	<table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
@@ -315,13 +315,13 @@ function edit(id)
 			}
 		}
 	?>
-	<tr>
+	<tr class="formlast">
 	<td  colspan="7">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'t_id[]')" />
 <!--	<input type="button" value="批量删除" id="btnDel" class="input"  />-->
 	&nbsp;<input type="button" value="批量修改" id="btnEdit" class="input" />
 	&nbsp;<input type="button" value="添加" id="btnAdd" class="input" />
 	</td></tr>
-    <tr align="center" >
+    <tr align="center" class="formlast">
 	<td colspan="8">
 		<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_program.php?page={p}&tv_type=" . $tv_type . "&keyword=" . urlencode($keyword) )?>
 	</td>

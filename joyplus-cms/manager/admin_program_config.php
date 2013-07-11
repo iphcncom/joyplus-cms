@@ -57,7 +57,7 @@ function main()
 	});
 </script>
 <form action="?action=save" method="post" id="form1" name="form1">
-<table class="tb">
+<table class="admin_program_config tb">
 <tr class="thead"><th colspan="2"> 1.每个各占一行;2.不要有多余的空行</th></tr>
 <tr><td>国家</td>
 <td>地区</td>
@@ -78,7 +78,7 @@ function main()
 	<textarea id="tv_playfrom" name="tv_playfrom" style="width:100%;font-family: Arial, Helvetica, sans-serif;font-size: 14px;" rows="25"><?php echo $fc4?></textarea>
 	</td>
 	</tr>
-	<tr>
+	<tr class="formlast">
 	<td align="center" colspan="4"> <input type="submit" id="btnSave" name="btnSave" value="保存" class="input" /> </td>
 	</tr>
 </table>

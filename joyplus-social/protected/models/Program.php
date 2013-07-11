@@ -52,6 +52,7 @@
  * @property string $total_comment_number 
  * @property integer $can_play_device
  * @property integer $d_douban_id
+ * @property string $duraning
  */
 class Program extends CActiveRecord
 {

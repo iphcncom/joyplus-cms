@@ -65,43 +65,10 @@ function logout()
 function wel()
 {
 ?>
-    <script type="text/javascript">
-    function checkVersion()
-	{
-//		$("#update").html("<font color='red'>请稍等，正在检测新版本...</font>");
-//		var getUrl = "admin_update.php?action=checkversion&rnd=" + Math.random();
-//		$.get(getUrl,function(obj){
-//			if (obj == "False"){
-//				$("#update").html("<font color='red'>当前已是最新版本!</font>");
-//			}else{
-//				updatediv(obj);
-//			}
-//		});
-	}
-	function getUpdate(){
-		$("#update").html("<font color='red'>正在升级中，请不要刷新页面...!</font>");
-		var getUrl = "admin_update.php?action=updatefile";
-		$.get(getUrl,function(obj){
-			$("#update").html("<font color='red'>当前已经是最新版本...!</font>");
-			alert("更新完毕!");
-		});
-	}
-	function updatediv(str){
-		$.messager.defaults.ok = "确认更新";
-		$.messager.defaults.cancel = "暂不更新";
-		$.messager.confirm('系统发现升级文件', '<br>'+ str, function(r) {
-	    	if(r==true){
-	    		location.href ='admin_update.php?action=showfilelist';
-	    	}
-	    	else{
-	    		$("#update").html("<font color='red'>版本未升级...!</font>");
-	    	}
-		});
-	}
-    </script>
+   
 </head>
 <body>
-	<table class="tb">
+	<table class="index tb">
         <tr><td colspan="4">站点信息</td></tr>
         <tr>
             <td width="90">服务器类型：</td><td width="400"><?php echo PHP_OS;?></td>
@@ -130,64 +97,59 @@ function wel()
         <tr>
             <td>目录权限检测：</td><td colspan=3>
         		<?php
-        		echo "/&nbsp;&nbsp;&nbsp;&nbsp;";
-				if(is_writable("../")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
+        		echo "/";
+				if(is_writable("../")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
 				echo "<br>/inc/";
-				if(is_writable("../inc/")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/inc/config.php&nbsp;&nbsp;&nbsp;&nbsp;";
-				if(is_writable("../inc/config.php")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/inc/ftp.php";
-				if(is_writable("../inc/ftp.php")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/inc/cache.php";
-				if(is_writable("../inc/cache.php")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "<br>/inc/timmingset.xml";
-				if(is_writable("../inc/timmingset.xml")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/inc/voddown.xml";
-				if(is_writable("../inc/voddown.xml")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/inc/vodplay.xml";
-				if(is_writable("../inc/vodplay.xml")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "<br>/inc/vodserver.xml";
-				if(is_writable("../inc/vodserver.xml")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/inc/vodarea.txt";
-				if(is_writable("../inc/vodarea.txt")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/inc/vodlang.txt";
-				if(is_writable("../inc/vodlang.txt")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-
-				echo "<br>/upload/&nbsp;&nbsp;&nbsp;&nbsp;";
-				if(is_writable("../upload/")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/upload/art/";
-				if(is_writable("../upload/art/")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/upload/vod/";
-				if(is_writable("../upload/vod/")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/upload/cache/";
-				if(is_writable("../upload/cache/")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
+				if(is_writable("../inc/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/inc/config.php";
+				if(is_writable("../inc/config.php")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/inc/ftp.php";
+				if(is_writable("../inc/ftp.php")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/inc/cache.php";
+				if(is_writable("../inc/cache.php")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+//				echo "<br>/inc/timmingset.xml";
+//				if(is_writable("../inc/timmingset.xml")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+//				echo "<br>/inc/voddown.xml";
+//				if(is_writable("../inc/voddown.xml")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/inc/vodplay.xml";
+				if(is_writable("../inc/vodplay.xml")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+//				echo "<br>/inc/vodserver.xml";
+//				if(is_writable("../inc/vodserver.xml")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/inc/vodarea.txt";
+				if(is_writable("../inc/vodarea.txt")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/inc/vodlang.txt";
+				if(is_writable("../inc/vodlang.txt")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/upload/";
+				if(is_writable("../upload/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+//				echo "<br>/upload/art/";
+//				if(is_writable("../upload/art/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/upload/vod/";
+				if(is_writable("../upload/vod/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/upload/cache/";
+				if(is_writable("../upload/cache/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
 				echo "<br>/upload/export/";
-				if(is_writable("../upload/export/")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/upload/topic/";
-				if(is_writable("../upload/topic/")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;/upload/playdata/&nbsp;&nbsp;&nbsp;&nbsp;";
-				if(is_writable("../upload/playdata/")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-				
-				echo "<br>/js/player.js&nbsp;&nbsp;&nbsp;&nbsp;";
-				if(is_writable("../js/player.js")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-
-				echo "<br>/admin/bak/&nbsp;&nbsp;&nbsp;&nbsp;";
-				if(is_writable("bak/")){ echo "<font color=green>ok</font>";}else{ echo "<font color=red>no</font>";}
-                ?>；
+				if(is_writable("../upload/export/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/upload/topic/";
+				if(is_writable("../upload/topic/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/upload/thirdpartlogo/";
+				if(is_writable("../upload/thirdpartlogo/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+				echo "<br>/log/";
+				if(is_writable("../log/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+//				echo "<br>/upload/playdata/";
+//				if(is_writable("../upload/playdata/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+//				echo "<br>/js/player.js";
+//				if(is_writable("../js/player.js")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+//				echo "<br>/admin/bak/";
+//				if(is_writable("bak/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
+                ?>;
                 <br>备注：如使用在线更新补丁需程序所有目录有写权限；
-                upload 和 template 及其子目录都需要有写权限；
-                静态生成配置的目录也需要有写权限；
+                upload及其子目录都需要有写权限；
+                <br>本网站不支持IE浏览器，因为IE浏览器一直在浪费前端工程师的时间；
              </td>
         </tr>
-        <tr>
-            <td colspan="4">当前版本 ：<?php echo version?> &nbsp;&nbsp;&nbsp;&nbsp; <span id="update"><font color='red'> </font></span> </td>
-        </tr>
+        
     </table>
-	<script language="javascript" src="http://www.maccms.com/update/updateutf.js"></script>
-    <span style="display:none">
-    	<script src="http://s11.cnzz.com/stat.php?id=2081333&web_id=2081333" language="JavaScript"></script>
-    </span>
-<script> setTimeout("checkVersion()",2000); </script>
+	
 </body>
 </html>
 <?php
@@ -197,8 +159,13 @@ function main()
 {
 	$menustr = file_get_contents( "../inc/dim_menu.txt" );
 	$menustr = replaceStr($menustr,chr(10),"");
-	$menuarr = explode(chr(13),$menustr);
-	$rc=false;
+
+	if(!is_null($menustr) && strlen($menustr)>0){
+	  $menuarr = explode(chr(13),$menustr);
+    $rc=false;
+  }else {
+    $menuarr =array();
+  }
 	
 	$menudiy = "\"welcome\":{\"text\":\"欢迎页面\",\"url\":\"index.php?action=wel\"}";
 	if( count($menuarr)>0) { $menudiy = $menudiy.","; }
@@ -216,14 +183,14 @@ function main()
 		$rc = true;
 	}
 //	echo($menudiy);
-	$menudiy = $menudiy .",\"diym_1\":{\"text\":\"<font color='red'>修改密码</font>\",\"url\":\"admin_forgot_pwd.php\"}";
+	$menudiy = $menudiy .",\"diym_1\":{\"text\":\"<font>修改密码</font>\",\"url\":\"admin_forgot_pwd.php\"}";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=7" />
-<title>管理中心 - 苹果CMS</title>
+<title>管理中心 </title>
 <link rel="stylesheet" type="text/css" href="../images/adm/style.css" />
 <link rel="stylesheet" type="text/css" href="../images/adm/form.css" />
 <script language="javascript" src="../js/jquery.js"></script>
@@ -242,50 +209,26 @@ function main()
 			}
 		});
 	}
-	function updatedatacache(){
-		$("#cachestate").text("Loading....");
-		$.get("admin_cache.php?action=uptodata&rnd"+Math.random(),function(obj){
-			if(obj !="" && obj !=undefined){
-				$("#cachestate").text("数据缓存更新失败！");
-			}
-			else{
-				$("#cachestate").text("数据缓存更新完毕！");
-			}
-		});
-	}
-    function updatecache(){
-		$("#cachestate").text("Loading....");
-		$.get("admin_cache.php?action=upto&rnd"+Math.random(),function(obj){
-			$("#cachestate").text("内存缓存更新完毕！");
-		});
-	}	
-	function updatefilecache(){
-		$("#cachestate").text("Loading....");
-		$.get("admin_cache.php?action=uptofile&rnd"+Math.random(),function(obj){
-			$("#cachestate").text("文件缓存更新完毕！");
-		});
-	}
+	
 var menu = {
 	"m1":{"text":"首页快捷","default":"welcome","children":{<?php echo $menudiy;?> }},
 	
-	"m2":{"text":"系统管理","default":"basic_config","children":{"basic_config":{"text":"站点配置","url":"admin_config.php"},"player_config":{"text":"播放器管理","url":"admin_player.php"},"play_config":{"text":"播放器配置","url":"admin_config.php?action=configplay"},"connect_config":{"text":"一键登录配置","url":"admin_config.php?action=configconnect"},"leftdim_config":{"text":"快捷菜单配置","url":"admin_leftdim.php"},"timming_config":{"text":"定时任务配置","url":"admin_timming.php"},"database":{"text":"数据库管理","url":"admin_db.php"},"cache":{"text":"缓存管理","url":"admin_cache.php"},"weixin_keyword":{"text":"微信配置","url":"http://weixin.joyplus.tv/admin_keyword.php"}}},
+	"m2":{"text":"系统管理","default":"player_config","children":{"sql":{"text":"执行SQL语句","url":"admin_sql.php"},"player_config":{"text":"播放器管理","url":"admin_player.php"},"leftdim_config":{"text":"快捷菜单配置","url":"admin_leftdim.php"},"weixin_keyword":{"text":"微信配置","url":"http://weixin.joyplus.tv/admin_keyword.php"}}},
 	
-	"m3":{"text":"扩展功能","default":"sql","children":{"sql":{"text":"执行SQL语句","url":"admin_sql.php"},"pic":{"text":"图片管理","url":"admin_pic.php"},"link":{"text":"友情链接","url":"admin_link.php"},"ads":{"text":"自定广告","url":"admin_ads.php"},"tongji":{"text":"流量统计","url":"admin_ads.php?action=tj"},"htmltojs":{"text":"HTML互转JS","url":"editor/htmltojs.html"},"urlencode":{"text":"URL汉字编码","url":"editor/urlencode.html"},"gbook":{"text":"留言本","url":"admin_gbook.php"},"comment":{"text":"评论","url":"admin_comment.php"}}},
 	
-	"m4":{"text":"视频管理","default":"vod","children":{"vodtype":{"text":"视频分类","url":"admin_vod_type.php"},"arealang":{"text":"地区语言","url":"admin_vod_arealang.php"},"vodtopic":{"text":"视频榜单","url":"admin_vod_topic.php"},"vodpopular":{"text":"视频轮播图","url":"admin_vod_popular.php"},"server":{"text":"服务器组","url":"admin_vod_server.php"},"vod":{"text":"视频数据","url":"admin_vod.php"},"vodadd":{"text":"添加视频","url":"admin_vod.php?action=add"},"vodpse":{"text":"伪原创","url":"admin_vod.php?action=pse"},"vodbatch":{"text":"批量操作","url":"admin_vod_batch.php"},"vod_feedback":{"text":"用户视频反馈","url":"admin_vod_feedback.php"}}},
+	"m4":{"text":"视频管理","default":"vod","children":{"vodtype":{"text":"视频分类","url":"admin_vod_type.php"},"arealang":{"text":"地区语言","url":"admin_vod_arealang.php"},"vodtopic":{"text":"视频榜单","url":"admin_vod_topic.php"},"vodpopular":{"text":"视频轮播图","url":"admin_vod_popular.php"},"vod":{"text":"视频数据","url":"admin_vod.php"},"vodadd":{"text":"添加视频","url":"admin_vod.php?action=add"},"vod_feedback":{"text":"用户视频反馈","url":"admin_vod_feedback.php"}}},
 	
-//	"m5":{"text":"文章管理","default":"art","children":{"arttype":{"text":"文章分类","url":"admin_art_type.php"},"arttopic":{"text":"文章专题","url":"admin_art_topic.php"},"art":{"text":"文章数据","url":"admin_art.php"},"artadd":{"text":"添加文章","url":"admin_art.php?action=add"}}},
-	
-	"m6":{"text":"用户管理","default":"manager","children":{"manager":{"text":"管理员","url":"admin_manager.php"},"usergroup":{"text":"会员组","url":"admin_user_group.php"},"user":{"text":"会员","url":"admin_user.php"},"usercard":{"text":"充值卡","url":"admin_user_card.php"}}},
-	
-//	"m7":{"text":"模板生成","default":"make","children":{"html":{"text":"页面模板","url":"admin_templates.php"},"custom":{"text":"自定义页面","url":"admin_templates.php?action=label"},"makeindex":{"text":"生成首页","url":"admin_makehtml.php?action=index"},"makeartindex":{"text":"生成文章首页","url":"admin_makehtml.php?action=index&flag=art"},"makemap":{"text":"生成地图","url":"admin_makehtml.php?action=map&flag=vod"},"makeartmap":{"text":"生成文章地图","url":"admin_makehtml.php?action=map&flag=art"},"make":{"text":"生成选项","url":"admin_makehtml.php"}}},
-	
-	"m8":{"text":"采集管理","default":"maccj","children":{"maccj":{"text":"联盟资源(官方)","url":"admin_maccj.php"},"interface":{"text":"站外入库配置","url":"admin_interface.php?action=retype"},"vodcj":{"text":"视频自定义采集","url":"collect/collect_vod_manage.php"},"artcjdatazhuiju":{"text":"----追剧管理","url":"collect/collect_vod_zhuiju.php"},"vodcjchange":{"text":"----分类转换","url":"collect/collect_vod_change.php"},"vodcjfilter":{"text":"----过滤替换","url":"collect/collect_vod_filters.php"},"vodcjdata":{"text":"----入库管理","url":"collect/collect_vod.php?action=main"},"artcj":{"text":"文章自定义采集","url":"collect/collect_art_manage.php"},"artcjchange":{"text":"----分类转换","url":"collect/collect_art_change.php"},"artcjfilter":{"text":"----过滤替换","url":"collect/collect_art_filters.php"},"artcjdata":{"text":"----入库管理","url":"collect/collect_art.php"}  }},
 
-	"m9":{"text":"消息推送","default":"subscribe","children":{"subscribe":{"text":"追剧推送","url":"admin_subscribe.php"},"onlinesubscribe":{"text":"实时推送","url":"admin_online_subscribe.php"},"offline_subscribe":{"text":"定时推送","url":"#"}}},
-	"m10":{"text":"电视直播","default":"program","children":{"program":{"text":"电视频道管理","url":"admin_program.php"},"program_items":{"text":"节目单管理","url":"admin_program_items.php"},"program_play":{"text":"电视直播源管理","url":"admin_program_play.php"},"program_play_cj":{"text":"导入直播源","url":"admin_program_play_import.php"},"program_items_config":{"text":"相关配置","url":"admin_program_config.php"}}},  //,"program_type_item":{"text":"节目类别管理","url":"admin_program_type_items.php"}
-	"m11":{"text":"云端推推","default":"subscribe","children":{"subscribe":{"text":"类别管理","url":"admin_apk_category.php"},"onlinesubscribe":{"text":"渠道管理","url":"admin_apk_company.php"},"offline_subscribe":{"text":"应用管理","url":"admin_apk.php"},"offline_subscribe_dd":{"text":"用户上传应用","url":"admin_apk_temp.php"}}},
 	
+	"m6":{"text":"用户管理","default":"manager","children":{"manager":{"text":"用户管理","url":"admin_manager.php"}}},
+	
+	
+	"m8":{"text":"采集管理","default":"vodcj","children":{"vodcj":{"text":"视频自定义采集","url":"collect/collect_vod_manage.php"},"artcjdatazhuiju":{"text":"追剧管理","url":"collect/collect_vod_zhuiju.php"},"vodcjdata":{"text":"入库管理","url":"collect/collect_vod.php?action=main"}}},
+
+	 "m9":{"text":"消息推送","default":"subscribe","children":{"wel":{"text":"介绍页面","url":"message_default.php"},"subscribe":{"text":"追剧推送","url":"admin_subscribe.php"},"onlinesubscribe":{"text":"实时推送","url":"admin_online_subscribe.php"}}},
+	"m7":{"text":"开放API","default":"api","children":{"api":{"text":"配置","url":"api_manager.php"}}},
+    "m10":{"text":"电视直播","default":"program","children":{"program":{"text":"电视频道管理","url":"admin_program.php"},"program_items":{"text":"节目单管理","url":"admin_program_items.php"},"program_play":{"text":"电视直播源管理","url":"admin_program_play.php"},"program_play_cj":{"text":"导入直播源","url":"admin_program_play_import.php"},"program_items_config":{"text":"相关配置","url":"admin_program_config.php"}}}
+
 };
 var currTab = 'm1';
 var firstOpen = [];
@@ -305,23 +248,14 @@ var levels = '1, <?php echo getCookie("adminlevels")?>';
     <div class="close_float"><img src="../images/adm/close2.gif" /></div>
 </div>
 <div id="head">
-    <div id="logo"><img  src="../images/adm/logo.png" /></div>
-    <div id="menu"><span>您好，<strong><?php echo getCookie("adminname")?></strong> [欢迎使用MacCMS 7.x] [<a href="?action=logout" title="注销登陆">注销登陆</a>]</span>
-    <a href="javascript:;" class="menu_btn1" id="iframe_refresh" title="刷新工作区页面">刷新页面</a>
-    <a href="../" target="_blank" class="menu_btn1" title="返回网站首页">站点首页</a>
-    <a href="http://www.maccms.com/" target="_blank" class="menu_btn1" title="官方网站">官方网站</a>
-    <a href="http://bbs.maccms.com/" target="_blank" class="menu_btn1" title="官方论坛">官方论坛</a>
-    <iframe id="tongji" name="tongji" src="http://www.maccms.com/update/updatephp7.htm?v=<?php echo version?>" MARGINWIDTH="0" MARGINHEIGHT="0" HSPACE="0" VSPACE="0" FRAMEBORDER="0" SCROLLING="no" width="0" height="0"></iframe>
+    <div id="logo"><img  src="../images/adm/joylogo.png" /></div>
+    <div id="menu"><span>您好，<strong><?php echo getCookie("adminname")?></strong> [<a href="?action=logout" title="注销登陆">注销</a>]</span>
+    
+    
     </div>
-    <div id="menu1">
-    	&nbsp;<font id="cachestate" style="color:red;"></font>
-    	&nbsp;静态首页：<a href="javascript:void(0)" onClick="updateindex();">[点击删除]</a>
-    	&nbsp;数据缓存：<a href="javascript:void(0)" onClick="updatedatacache();">[点击更新]</a>
-		&nbsp;内存缓存：<a href="javascript:void(0)" onClick="updatecache();">[点击更新]</a>
-		&nbsp;文件缓存：<a href="javascript:void(0)" onClick="updatefilecache();">[点击更新]</a>
-    </div>
+    
     <ul id="nav"></ul>
-    <div id="headBg"></div>
+    <!-- div id="headBg"></div -->
 </div>
 <div id="content">
     <div id="left">
@@ -331,8 +265,8 @@ var levels = '1, <?php echo getCookie("adminlevels")?>';
             </dl>
          </div>
 		<div class="copyright">
-			<p>Powered by 苹果CMS </p>
-			<p>&copy; 2008-2012 <a href="http://www.maccms.com/" target="_blank">MACCMS</a> Inc.</p>
+			<p>&copy; 2012-2013 </p>
+			<p>Powered by <a href="http://www.joyplus.tv" target="_blank">Joyplus</a></p>
 		</div>
     </div>
     <div id="right">
@@ -348,12 +282,13 @@ var levels = '1, <?php echo getCookie("adminlevels")?>';
 function login()
 {
 ?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=7" />
-<title>登录管理中心 - 苹果CMS</title>
+<title>登录管理中心 </title>
 <link rel="stylesheet" type="text/css" href="../images/adm/login.css" />
 <script language="javascript" src="../js/jquery.js"></script>
 <script language="javascript" src="../js/jquery.pngFix.js"></script>
@@ -364,14 +299,14 @@ function login()
 </div>
 <div id="wrapper">
    <div class="console_left">
-	   <div class="title">登录管理中心</div>
-	   <p><span>苹果CMS(maccms)</span> 是一个采用ASP(access、mssql)或<span>PHP(mysql)</span>构建的高效视频电影网站管理系统！</p>
+	   <div class="title">欢迎使用Joyplus视频管理系统</div>
+	   <p><span>Joyplus CMS</span> 是一个采用<span>PHP(mysql)</span>构建的高效视频电影网站管理系统！</p>
 	   <div class="intro_1">轻松管理和配置各种信息</div>
 	   <div class="intro_2">轻松发布在线视频资源</div>
 	   <div class="intro_3">设置网站安全验证过滤无效信息</div>
    </div>
    <div class="console_right">
-	   <div class="title">请您在这里登录</div>
+	   <div class="title">请登录</div>
 	   <div class="login">
 		  <form action="?action=check" method="post" name="form1" id="form1" class="s_lo_f" autocomplete="off">
 				<div class="user"><label>用户名:</label><input tabindex="1" type="text" name="m_name" id="m_name" size="20" maxLength="20" value=""></div>
@@ -385,8 +320,7 @@ function login()
 	<div class="reg"> </div>
 	<hr class="hr_solid" /></div>
 </div>
-<div id="footer"><span class="left">&copy;2008-2012 Powered By 苹果CMS, <a href="http://www.maccms.com/">MACCMS</a> Inc.
-</span><span class="right"><a href="../" title="返回首页">返回首页</a>&nbsp;|&nbsp;<a href="http://bbs.maccms.com/">反馈</a></span> 
+<div id="footer"><span class="left">&copy;2012-2013 Powered by <a href="http://www.joyplus.tv" target="_blank">JoyPlus</a>.</span>
 </div>
 <script>
 var cururl=",<?php echo geturl();?>";

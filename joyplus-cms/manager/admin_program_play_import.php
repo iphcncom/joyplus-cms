@@ -99,21 +99,13 @@ $(document).ready(function(){
 });
 </script>
 <form name="form3" id="form3" method="post" action="?action=import" enctype="multipart/form-data">
-<table class="tb">
+<table class="admin_program_play_import tb">
 	<tr>
-	<td>
-	<table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
-	<tr>
-	
-	<td colspan="2">
+	<td colspan="3">
 	请选择导入直播源，文件后缀为csv，每行数据的格式为 ：格式为频道id,直播源地址,清晰度,来源 ,文件必须按照utf-8来保存<br>
 	<input type="file" name="file" id="file" /> 
 	<input class="input" type="submit" value="导入" id="btnsearch" onClick="filter();">	| <a href="admin_program.php">返回电视直播</a>
 	</td> 
-	</tr>
-	
-	</table>
-	</td>
 	</tr>
 </table>
  </form>

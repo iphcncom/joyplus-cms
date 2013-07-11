@@ -269,7 +269,7 @@ class ProgramController extends Controller
 //			}
 
 			if($prod_type ==='1'){
-		       if(is_numeric($duration)){       	  
+		       if(is_numeric($duration) && intval($duration)>0){       	  
 		       	   $durations= intval($duration);
 		       	   $h=intval($durations/3600);
 		       	   $m=intval($durations%3600/60);
@@ -290,7 +290,23 @@ class ProgramController extends Controller
 		       	   }else {
 		       	   	 $durations=$durations.$s;
 		       	   }
-		       	   Program::model()->incPlayCount($prod_id,$durations);
+		       	   
+		       	   Program::model()->updateDuraning($prod_id,$durations);
+		       	   
+		       }else {
+		           try{
+						$history = new VideoFeedback();		
+						$history->author_id=$userid;
+						$history->client=$HTTP_CLIENT;
+						$history->prod_type=$prod_type;
+						$history->prod_name=$prod_name;
+						$history->prod_id=$prod_id;				
+						$history->feedback_type='9';
+						$history->create_date=new CDbExpression('NOW()');
+						$history->save();
+					} catch (Exception $e) {
+						Yii::log( CJSON::encode($e), "error");
+					}
 		       }	
 			}
 			
@@ -1174,6 +1190,39 @@ class ProgramController extends Controller
 		    	$prod['topics']=array();
 		    }
 			IjoyPlusServiceUtils::exportEntity($prod);
+		}
+		
+		public function actionRelatedGroup(){
+		    header('Content-type: application/json');
+		    if(!IjoyPlusServiceUtils::validateAPPKey()){
+	  	  	   IjoyPlusServiceUtils::exportServiceError(Constants::APP_KEY_INVALID);		
+			   return ;
+			}
+			$prod_id= Yii::app()->request->getParam("prod_id");
+			if( (!isset($prod_id)) || is_null($prod_id)  ){
+				IjoyPlusServiceUtils::exportServiceError(Constants::PARAM_IS_INVALID);
+				return;
+			}  
+		  try{	      
+	        
+		    $sql="SELECT topic_id,t_name FROM mac_vod_topic_items,mac_vod_topic WHERE flag=1  and t_name like '%全系列' and topic_id=t_id and t_bdtype=1 and vod_id =".$prod_id;
+			$lists= Yii::app()->db->createCommand($sql)->queryAll();
+			$top_id=false;
+			$top_name=false;
+			if(isset($lists) && !is_null($lists)){
+				foreach ($lists as $list){
+				  $top_id=$list['topic_id'];
+				  $top_name=$list['t_name'];
+				  break;
+				}
+			}
+		    IjoyPlusServiceUtils::exportEntity(array('top_id'=>$top_id,'top_name'=>$top_name));		
+		    
+		  }catch (Exception $e){
+			Yii::log( CJSON::encode($e), "error");
+		    IjoyPlusServiceUtils::exportServiceError(Constants::SYSTEM_ERROR);	
+		  }
+		    
 		}
 		
         public function actionRelatedVideos(){

@@ -65,23 +65,23 @@ $(document).ready(function(){
 });
 </script>
 <form action="admin_forgot_pwd.php?action=chgpwd" method="post" name="form1" id="form1">
-<table class="tb">
+<table class="admin_forgot_pwd tb">
 	<tr>
 	<td colspan='2'>
       <h3>更改用户密码</h3></td>
 	</tr>
 	<tr style="display:none">
-	  <td align="right">旧密码&nbsp;&nbsp;&nbsp;</td> 
+	  <td align="right">旧密码</td> 
 	  <td align="left"><input type='password' name='x' id="x" value="" ></td>
 	</tr>
 	
 	<tr>
-	  <td align="right">旧密码&nbsp;&nbsp;&nbsp;</td> 
+	  <td align="right">旧密码</td> 
 	  <td align="left"><input type='password' name='old_pwds' id="old_pwds" value="" ></td>
 	</tr>
 	
 	<tr>
-	  <td align="right">新密码&nbsp;&nbsp;&nbsp;</td> 
+	  <td align="right">新密码</td> 
 	  <td align="left"><input type='password' name='new_pwd' id="new_pwd" value="" >必须大于6位,并且包含数字和字母
 	  </td>
 	</tr>

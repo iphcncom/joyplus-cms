@@ -63,20 +63,20 @@ function editall()
 		$t_name = be("post","t_name" .$id);
 		$t_enname = be("post","t_enname" .$id) ;
 		$t_sort = be("post","t_sort" .$id);
-		$t_template = be("post","t_template" .$id);
-		$t_vodtemplate = be("post","t_vodtemplate" .$id);
-		$t_playtemplate = be("post","t_playtemplate" .$id);
-		$t_key = be("post","t_key" .$id);
-		$t_des = be("post","t_des" .$id);
+//		$t_template = be("post","t_template" .$id);
+//		$t_vodtemplate = be("post","t_vodtemplate" .$id);
+//		$t_playtemplate = be("post","t_playtemplate" .$id);
+//		$t_key = be("post","t_key" .$id);
+//		$t_des = be("post","t_des" .$id);
 		
 		if (isN($t_name)) { echo "名称不能为空"; exit;}
 		if (isN($t_enname)) { echo "别名不能为空"; exit;}
 		if (!isNum($t_sort)) { echo "排序号不能为空或不是数字"; exit;}
-		if (isN($t_template)) { $t_template = "vodlist.html";}
-		if (isN($t_vodtemplate)) { $t_vodtemplate = "vod.html";}
-		if (isN($t_playtemplate)) { $t_playtemplate = "vodplay.html";}
+//		if (isN($t_template)) { $t_template = "vodlist.html";}
+//		if (isN($t_vodtemplate)) { $t_vodtemplate = "vod.html";}
+//		if (isN($t_playtemplate)) { $t_playtemplate = "vodplay.html";}
 		
-		$db->Update ("{pre}vod_type",array("t_name","t_enname", "t_sort","t_template","t_vodtemplate","t_playtemplate","t_key","t_des"),array($t_name,$t_enname,$t_sort,$t_template,$t_vodtemplate,$t_playtemplate,$t_key,$t_des),"t_id=".$id);
+		$db->Update ("{pre}vod_type",array("t_name","t_enname", "t_sort"),array($t_name,$t_enname,$t_sort),"t_id=".$id);
 	}
 	updateCacheFile();
 	echo "修改完毕";
@@ -92,7 +92,7 @@ function getTypeCount($t_id)
 function getTypeList($t_pid)
 {
 	global $db,$tempnum,$arrtype;
-	$sql = "SELECT t_id,t_name,t_enname,t_sort,t_pid,t_hide,t_template,t_vodtemplate,t_playtemplate,t_key,t_des FROM {pre}vod_type WHERE t_pid = ".$t_pid. " ORDER BY t_sort,t_id ASC";
+	$sql = "SELECT t_id,t_name,t_enname,t_sort,t_pid,t_hide FROM {pre}vod_type WHERE t_pid = ".$t_pid. " ORDER BY t_sort,t_id ASC";
 	$rs = $db->query($sql);
 	$tempnum = $tempnum + 3;
 	while ($row = $db ->fetch_array($rs)){
@@ -102,13 +102,13 @@ function getTypeList($t_pid)
     	<td align="left" >
         <div style="float:left;">
         <?php for($i=0;$i<$tempnum-3;$i++){ echo "&nbsp;";}?>
-        <?php if($t_pid==0){ echo "╄"; }else{ echo "├"; }?>
+        <?php if($t_pid==0){ echo " "; }else{ echo "├"; }?>
         <input type="checkbox" name="t_id[]" value="<?php echo $row["t_id"]?>" class="checkbox" />
         <a href="admin_vod.php?stype=<?php echo $row["t_id"]?>"><?php echo $row["t_name"]?></a>
         <input type="button" value="父" onClick="ShowPDIV(<?php echo $row["t_id"]?>,<?php echo $row["t_pid"]?>);" name="Input" class="btn" />
         </div>
         (<font color="red"><?php echo $tcount;?></font>)
-        <div id="type_P_DIV_<?php echo $row["t_id"]?>" style=" float:left;display:none; height:25px; margin-top:5px;">
+        <div id="type_P_DIV_<?php echo $row["t_id"]?>" style=" float:left;display:none;">
         <select id="type_P_CID_<?php echo $row["t_id"]?>" name="type_P_CID_<?php echo $row["t_id"]?>" onChange="SelectPid(this.value,<?php echo $row["t_id"]?>);">
 	     </select>
 	    </div>
@@ -116,11 +116,11 @@ function getTypeList($t_pid)
         <td><?php echo $row["t_id"]?></td>
 		<td><input size="10" type="text" name="t_name<?php echo $row["t_id"]?>" value="<?php echo $row["t_name"]?>"></td>
 		<td><input size="10" type="text" name="t_enname<?php echo $row["t_id"]?>" value="<?php echo $row["t_enname"]?>"></td>
-        <td><input size="10" type="text" name="t_template<?php echo $row["t_id"]?>" value="<?php echo $row["t_template"]?>"></td>
-		<td><input size="10" type="text" name="t_vodtemplate<?php echo $row["t_id"]?>" value="<?php echo $row["t_vodtemplate"]?>"></td>
-		<td><input size="10" type="text" name="t_playtemplate<?php echo $row["t_id"]?>" value="<?php echo $row["t_playtemplate"]?>"></td>
-		<td><input size="10" type="text" name="t_key<?php echo $row["t_id"]?>" value="<?php echo $row["t_key"]?>"></td>
-		<td><input size="10" type="text" name="t_des<?php echo $row["t_id"]?>" value="<?php echo $row["t_des"]?>"></td>
+<!--        <td><input size="10" type="text" name="t_template<?php echo $row["t_id"]?>" value="<?php echo $row["t_template"]?>"></td>-->
+<!--		<td><input size="10" type="text" name="t_vodtemplate<?php echo $row["t_id"]?>" value="<?php echo $row["t_vodtemplate"]?>"></td>-->
+<!--		<td><input size="10" type="text" name="t_playtemplate<?php echo $row["t_id"]?>" value="<?php echo $row["t_playtemplate"]?>"></td>-->
+<!--		<td><input size="10" type="text" name="t_key<?php echo $row["t_id"]?>" value="<?php echo $row["t_key"]?>"></td>-->
+<!--		<td><input size="10" type="text" name="t_des<?php echo $row["t_id"]?>" value="<?php echo $row["t_des"]?>"></td>-->
 		<td><input size="3" type="text" name="t_sort<?php echo $row["t_id"]?>" value="<?php echo $row["t_sort"]?>"></td>
 		<td>
 		<?php if ($tcount==0){?><a href="admin_ajax.php?action=del&tab={pre}vod_type&t_id=<?php echo $row["t_id"]?>" onClick="return confirm('确定要删除吗?');">删除</a>|<?php }?>
@@ -165,27 +165,27 @@ $(document).ready(function(){
 			t_pid:{
 				required:true
 			},
-			t_template:{
-				required:true,
-				maxlength:64
-			},
-			t_vodtemplate:{
-				required:true,
-				maxlength:64
-			},
-			t_playtemplate:{
-				required:true,
-				maxlength:64
-			},
-			t_sort:{
-				number:true
-			},
-			t_key:{
-				maxlength:254
-			},
-			t_des:{
-				maxlength:254
-			}
+//			t_template:{
+//				required:true,
+//				maxlength:64
+//			},
+//			t_vodtemplate:{
+//				required:true,
+//				maxlength:64
+//			},
+//			t_playtemplate:{
+//				required:true,
+//				maxlength:64
+//			},
+//			t_sort:{
+//				number:true
+//			},
+//			t_key:{
+//				maxlength:254
+//			},
+//			t_des:{
+//				maxlength:254
+//			}
 		}
 	});
 	$("#form3").validate({
@@ -223,9 +223,9 @@ $(document).ready(function(){
 	$("#btnAdd").click(function(){
 		$('#form2').form('clear');
 		$("#flag").val("add");
-		$("#t_template").val("vodlist.html");
-		$("#t_vodtemplate").val("vod.html");
-		$("#t_playtemplate").val("vodplay.html");
+//		$("#t_template").val("vodlist.html");
+//		$("#t_vodtemplate").val("vod.html");
+//		$("#t_playtemplate").val("vodplay.html");
 		
 		$('#win1').window('open'); 
 	});
@@ -253,19 +253,19 @@ function SelectPid(p,i){
 }
 </script>
 <form action="" method="post" id="form1" name="form1">
-<table class="tb2">
+<table class="admin_vod_type tb2">
 	<tr>
 	<td>&nbsp;</td>
-	<td width="25">编号</td>
-	<td width="10%">名称</td>
-	<td width="10%">别名</td>
-	<td width="10%">分类模板</td>
-	<td width="10%">内容模板</td>
-	<td width="10%">播放模板</td>
-	<td width="10%">关键字</td>
-	<td width="10%">描述</td>
-	<td width="5%">排序</td>
-	<td width="10%">操作</td>
+	<td >编号</td>
+	<td >名称</td>
+	<td >别名</td>
+<!--	<td width="10%">分类模板</td>-->
+<!--	<td width="10%">内容模板</td>-->
+<!--	<td width="10%">播放模板</td>-->
+<!--	<td width="10%">关键字</td>-->
+<!--	<td width="10%">描述</td>-->
+	<td >排序</td>
+	<td >操作</td>
 	</tr>
 	<?php
 		getTypeList(0);
@@ -284,7 +284,7 @@ function SelectPid(p,i){
 
 <div id="win1" class="easyui-window" title="窗口" style="padding:5px;width:400px;" closed="true" closable="false" minimizable="false" maximizable="false">
 <form action="admin_ajax.php?action=save&tab={pre}vod_type" method="post" id="form2" name="form2">
-<table class="tb">
+<table class="admin_vod_type tb">
 	<input id="flag" name="flag" type="hidden" value="add">
 	<tr>
 	<td width="20%">父级分类：</td>
@@ -304,31 +304,31 @@ function SelectPid(p,i){
 	<td><input type="text" id="t_enname" name="t_enname" size="15">
 	</td>
 	</tr>
-	<tr>
-	<td>分类模板：</td>
-	<td><input type="text" id="t_template" name="t_template" size="15">
-	</td>
-	</tr>
-	<tr>
-	<td>内容模板：</td>
-	<td><input type="text" id="t_vodtemplate" name="t_vodtemplate" size="15">
-	</td>
-	</tr>
-	<tr>
-	<td>播放模板：</td>
-	<td><input type="text" id="t_playtemplate" name="t_playtemplate" size="15">
-	</td>
-	</tr>
-	<tr>
-	<td>关键字：</td>
-	<td><input type="text" id="t_key" name="t_key" size="15">
-	</td>
-	</tr>
-	<tr>
-	<td>描述：</td>
-	<td><input type="text" id="t_des" name="t_des" size="15">
-	</td>
-	</tr>
+<!--	<tr>-->
+<!--	<td>分类模板：</td>-->
+<!--	<td><input type="text" id="t_template" name="t_template" size="15">-->
+<!--	</td>-->
+<!--	</tr>-->
+<!--	<tr>-->
+<!--	<td>内容模板：</td>-->
+<!--	<td><input type="text" id="t_vodtemplate" name="t_vodtemplate" size="15">-->
+<!--	</td>-->
+<!--	</tr>-->
+<!--	<tr>-->
+<!--	<td>播放模板：</td>-->
+<!--	<td><input type="text" id="t_playtemplate" name="t_playtemplate" size="15">-->
+<!--	</td>-->
+<!--	</tr>-->
+<!--	<tr>-->
+<!--	<td>关键字：</td>-->
+<!--	<td><input type="text" id="t_key" name="t_key" size="15">-->
+<!--	</td>-->
+<!--	</tr>-->
+<!--	<tr>-->
+<!--	<td>描述：</td>-->
+<!--	<td><input type="text" id="t_des" name="t_des" size="15">-->
+<!--	</td>-->
+<!--	</tr>-->
 	<tr>
 	<td>排序：</td>
 	<td><input type="text" id="t_sort" name="t_sort" size="15">

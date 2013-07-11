@@ -145,14 +145,12 @@ function deleteStatus(id){
 
 
 </script>
-<table class="tb">
+<table class="admin_vod_feedback_1 tb">
 	<tr>
 	<td>
-	<table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
+	<table width="100%" border="0" align="center" cellpadding="3" cellspacing="1">
 	<tr>
-	<td colspan="2">
-	过滤条件：
-	反馈意见类别:
+	<td colspan="2">过滤条件：反馈意见类别:
 	<select id="feedback_type" name="feedback_type">
 	<option value="9" <?php if($feedback_type=="9"){ echo "selected";} ?>>程序反馈影片无法播放</option>
 	<option value="1" <?php if($feedback_type=="1"){ echo "selected";} ?>>用户反馈影片无法播放</option>
@@ -229,7 +227,7 @@ function deleteStatus(id){
 		}
 	?>
 
-	<tr>
+	<tr class="formlast">
 	<td align="center" colspan="12">
 	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod_feedback.php?page={p}&feedback_type=" . $feedback_type.'&status=' . $status.'&client=' . $client )?>   //
 	</td>
@@ -253,7 +251,7 @@ function View(){
 	global $db;
 ?>
 
-<table class="tb" width="50%">
+<table class="admin_vod_feedback tb" width="50%">
 	<tr>
 	<td  width="5%"></td>
 	<td width="40%">反馈类别</td>
@@ -285,7 +283,7 @@ function View(){
  
 ?>
 </table>
-<table class="tb" width="50%">
+<table class="admin_vod_feedback tb" width="50%">
 	<tr>
 	<td colspan="3">反馈类别:其它（用户自己填写，可不填）</td>
 	</tr>

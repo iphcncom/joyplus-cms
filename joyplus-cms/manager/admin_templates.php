@@ -123,7 +123,7 @@ function info()
 	<input id="backurl" name="backurl" type="hidden" value="<?php echo $backurl?>">
 	<tr>
 	<td width="10%">文件名称：</td>
-	<td><input id="filename" name="filename" type="text" value="<?php echo $fname?>" size="60" 
+	<td><input id="filename" name="filename" type="text" value="<?php echo $fname?>" size="60"/> 
 	<?php
 	if ($action=="edit"){
 		echo "readonly>&nbsp;注意：编辑时文件名无法修改";
