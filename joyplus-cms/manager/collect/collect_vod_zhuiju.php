@@ -123,7 +123,7 @@ $(document).ready(function(){
 	
 });
 </script>
-<TABLE width="96%" border=0 align=center cellpadding=0 cellSpacing=0 class=tbtitle >
+<TABLE border=0 cellpadding=0 cellSpacing=0 class=tbtitle >
   <TBODY>
     <tr>
 		<td>
@@ -213,7 +213,7 @@ $(document).ready(function(){
 	?>
 	<tr class="formlast">
 	<td colspan="4">
-    全选<input name="chkall" type="checkbox" id="chkall" value="1" onClick="checkAll(this.checked,'m_id[]');"/>&nbsp;
+    <input name="chkall" type="checkbox" id="chkall" value="1" onClick="checkAll(this.checked,'m_id[]');"/> 全选
      &nbsp;<input type="button" id="btnDel" value="批量删除" class="btn"  />
      &nbsp;<input type="button" id="btnDelall" value="删除所有" class="btn"  />
      &nbsp;<input type="button" value="批量修改" id="btnEdit" class="input" />

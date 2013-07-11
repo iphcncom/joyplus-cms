@@ -1867,7 +1867,7 @@ function main()
 	$sql = $sql ."limit ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
 	$rs = $db->query($sql);
 ?>
-<table width="96%" border="0" align="center" cellpadding="3" cellspacing="1">
+<table border="0" cellpadding="3" cellspacing="1">
 	<tr>
 	<td>
 		菜单：<a href="collect_vod_manage.php?action=add">添加采集规则</a> | <a href="collect_vod_manage.php?action=upexp">导入采集规则</a>
@@ -1929,7 +1929,7 @@ function main()
 	?>
 	<tr class="formlast">
 	<td  colspan="6">
-	全选<input name="chkall" type="checkbox" id="chkall" value="1" onClick="checkAll(this.checked,'p_id[]');"/>&nbsp;
+	<input name="chkall" type="checkbox" id="chkall" value="1" onClick="checkAll(this.checked,'p_id[]');"/> 全选
 	<input type="submit" value="批量删除" onClick="if(confirm('确定要删除吗')){form1.action='?action=delall';}else{return false}"  class="input"/>
 	
 	</td>

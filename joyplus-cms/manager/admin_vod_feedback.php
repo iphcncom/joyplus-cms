@@ -229,7 +229,7 @@ function deleteStatus(id){
 
 	<tr class="formlast">
 	<td align="center" colspan="12">
-	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod_feedback.php?page={p}&feedback_type=" . $feedback_type.'&status=' . $status.'&client=' . $client )?>   //
+	<?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod_feedback.php?page={p}&feedback_type=" . $feedback_type.'&status=' . $status.'&client=' . $client )?>
 	</td>
 	</tr>
 </table>

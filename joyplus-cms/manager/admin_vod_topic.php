@@ -340,8 +340,8 @@ function edit(id)
 	}
 	?>
 	<tr class="formlast">
-		<td colspan="12">全选<input type="checkbox" name="chkall" id="chkall"
-			class="checkbox" onClick="checkAll(this.checked,'t_id[]')" /> <!--	<input type="button" value="批量删除" id="btnDel" class="input"  />-->
+		<td colspan="12"><input type="checkbox" name="chkall" id="chkall"
+			class="checkbox" onClick="checkAll(this.checked,'t_id[]')" /> 全选 <!--	<input type="button" value="批量删除" id="btnDel" class="input"  />-->
 		&nbsp;<input type="button" value="批量修改" id="btnEdit" class="input" />
 		&nbsp;<input type="button" value="添加" id="btnAdd" class="input" />
 		&nbsp;<input type="button" value="添加到轮播图" id="btnAddLunBo"

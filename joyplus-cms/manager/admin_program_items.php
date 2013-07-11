@@ -190,7 +190,7 @@ function edit(id)
 <table class="admin_program_items tb">
 	<tr>
 	<td>
-	<table border="0" align="center" cellpadding="3" cellspacing="1">
+	<table border="0" cellpadding="3" cellspacing="1">
 	<tr>
 	<td colspan="2">
 	过滤条件：频道 <select id="tv_id" name="tv_id" >
@@ -199,7 +199,7 @@ function edit(id)
 	</select>
 	
 	<input id="date" name="date" type="text" onclick="new Calendar().show(this);" value="<?php echo $day; ?>" readonly="readonly"/>
-	<input class="input" type="button" value="搜索" id="btnsearch" onClick="filter();">	 |  <input class="input" type="button" value="采集节目单" id="btnsearch1" onClick="collecProgram();">	 | <a href="admin_program.php">返回电视直播</a>
+	<input class="input" type="button" value="搜索" id="btnsearch" onClick="filter();">	 |  <input class="input" type="button" value="采集节目单" id="btnsearch1" onClick="collecProgram();">	 | <a class="input" href="admin_program.php">返回电视直播</a>
 	</td> 
 	</tr>
 	
@@ -217,7 +217,7 @@ function edit(id)
 	<?php
 		if($nums==0){
 	?>
-    <tr><td align="center" colspan="2">没有任何记录!</td></tr>
+    <tr class="formlast"><td align="center" colspan="2">没有任何记录!</td></tr>
     <?php
 		}
 		else{
@@ -269,7 +269,7 @@ function edit(id)
 		}
 	?>
 	<tr class="formlast">
-	<td  colspan="7">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'t_id[]')" />
+	<td  colspan="7"><input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'t_id[]')" /> 全选 
 <!--	<input type="button" value="批量删除" id="btnDel" class="input"  />-->
 	&nbsp;<input type="button" value="批量修改" id="btnEdit" class="input" />
 	&nbsp;<input type="button" value="添加" id="btnAdd_down" class="input" />

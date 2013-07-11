@@ -133,8 +133,6 @@ function wel()
 				if(is_writable("../upload/topic/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
 				echo "<br>/upload/thirdpartlogo/";
 				if(is_writable("../upload/thirdpartlogo/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
-				echo "<br>/log/";
-				if(is_writable("../log/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
 //				echo "<br>/upload/playdata/";
 //				if(is_writable("../upload/playdata/")){ echo "<font color=green>OK</font>";}else{ echo "<font color=red>NO</font>";}
 //				echo "<br>/js/player.js";
@@ -144,7 +142,7 @@ function wel()
                 ?>;
                 <br>备注：如使用在线更新补丁需程序所有目录有写权限；
                 upload及其子目录都需要有写权限；
-                <br>本网站不支持IE浏览器，因为IE浏览器一直在浪费前端工程师的时间；
+                <br>本网站不支持IE浏览器，因为IE浏览器在浪费前端开发的时间；
              </td>
         </tr>
         
@@ -227,7 +225,8 @@ var menu = {
 
 	 "m9":{"text":"消息推送","default":"subscribe","children":{"wel":{"text":"介绍页面","url":"message_default.php"},"subscribe":{"text":"追剧推送","url":"admin_subscribe.php"},"onlinesubscribe":{"text":"实时推送","url":"admin_online_subscribe.php"}}},
 	"m7":{"text":"开放API","default":"api","children":{"api":{"text":"配置","url":"api_manager.php"}}},
-    "m10":{"text":"电视直播","default":"program","children":{"program":{"text":"电视频道管理","url":"admin_program.php"},"program_items":{"text":"节目单管理","url":"admin_program_items.php"},"program_play":{"text":"电视直播源管理","url":"admin_program_play.php"},"program_play_cj":{"text":"导入直播源","url":"admin_program_play_import.php"},"program_items_config":{"text":"相关配置","url":"admin_program_config.php"}}}
+    "m10":{"text":"电视直播","default":"program","children":{"program":{"text":"电视频道管理","url":"admin_program.php"},"program_items":{"text":"节目单管理","url":"admin_program_items.php"},"program_play":{"text":"电视直播源管理","url":"admin_program_play.php"},"program_play_cj":{"text":"导入直播源","url":"admin_program_play_import.php"},"program_items_config":{"text":"相关配置","url":"admin_program_config.php"}}}, 
+	
 
 };
 var currTab = 'm1';
@@ -303,7 +302,7 @@ function login()
 	   <p><span>Joyplus CMS</span> 是一个采用<span>PHP(mysql)</span>构建的高效视频电影网站管理系统！</p>
 	   <div class="intro_1">轻松管理和配置各种信息</div>
 	   <div class="intro_2">轻松发布在线视频资源</div>
-	   <div class="intro_3">设置网站安全验证过滤无效信息</div>
+	   <div class="intro_3">安全验证过滤无效信息</div>
    </div>
    <div class="console_right">
 	   <div class="title">请登录</div>

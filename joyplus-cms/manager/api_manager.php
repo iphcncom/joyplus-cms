@@ -111,7 +111,7 @@ function edit(id)
 		}
 	?>
 	<tr  class="formlast">
-	<td colspan="6">全选<input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'m_id[]')" />
+	<td colspan="6"><input type="checkbox" name="chkall" id="chkall" class="checkbox" onClick="checkAll(this.checked,'m_id[]')" /> 全选 
 	&nbsp;<input type="button" id="btnDel" value="批量删除" class="input" />
 	&nbsp;<input type="button" id="btnAdd" value="添加"  class="input"/>
 	</td></tr>

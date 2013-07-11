@@ -1,6 +1,6 @@
 * {
 	font-size: 12px;
-	font-family: "Microsoft Yahei",Tahoma,Verdana,–¬ÀŒÃÂ;
+	font-family: "Microsoft Yahei",Tahoma,Verdana,Êñ∞ÂÆã‰Ωì;
 }
 html,body {
 	height: 100%
@@ -90,7 +90,7 @@ table {
 	background: #FaFbFF;
 }
 .tb tbody select{
-	margin: 5px 10px;
+	margin: 5px 10px 5px 0;
 }
 .tb tr:first-child {
 	border-top: 4px solid #DEEFFA;
@@ -176,9 +176,9 @@ table {
 	margin: 0 8px 0 0px;
 }
 .pagein {
-	background-color: #fee;
-	border : 1px solid red;
-	color : red;
+	background: #04518c;
+	border : 1px solid #04518c;
+	color : #FFF;
 	text-decoration : none;
 	height: 28px;
 	line-height: 28px;
@@ -186,6 +186,7 @@ table {
 	display: inline-block;
 	margin: 20px 2px;
 	cursor: default;
+	font-size: 14px;
 }
 .pagein:hover {
 	color : red;
@@ -229,8 +230,11 @@ table {
 #btnAdd:hover, .admin_sql.tb .input:hover, .admin_forgot_pwd .input:hover, .admin_leftdim .input:hover, #btnEdit:hover, #btnMove:hover, #btnSave:hover, #btnAddLunBo:hover, .collect_vod_manage .input:hover, .inputbut:hover, #btnCancel:hover, #go:hover, #btnsearch:hover, #btnDel:hover, #pltj:hover, #plfl:hover, #plluobo:hover, #plbd:hover, #plbd:hover, #plyc:hover, #btnAddvideo:hover, #btnAddbang:hover, #btnDelall:hover, .collect_vod .btn:hover, #btnsearch1:hover, #btnAdd_down:hover, #btnSelin:hover, #AllInflowProject:hover {
 	background: #00a1d9;
 }
-#go, #btnsearch {
+#go {
 	height: 30px;
+}
+#btnsearch, input[value="ÊêúÁ¥¢"] {
+	height: 20px;
 }
 .index font[color="green"]{
 	background: #CFC;
@@ -243,10 +247,10 @@ table {
 	padding: 0 5px;
 	margin-left: 10px;
 }
-.admin_sql.tb tr:first-child, .admin_forgot_pwd.tb tr:first-child, .admin_leftdim.tb tr:first-child, .admin_vod_arealang.tb tr:first-child, .admin_vod_topic_1.tb tr:first-child, .admin_vod_1.tb tr:first-child, .admin_vod_2.tb tr:first-child, .admin_online_subscribe.tb tr:first-child, .panel .tb tr:first-child, .admin_vod_feedback_1.tb tr:first-child, .admin_program.tb tr:first-child, .admin_program_items.tb tr:first-child, .admin_program_play.tb tr:first-child, .admin_program_play_import.tb tr:first-child, .admin_program_config.tb tr:first-child, .admin_apk_company.tb tr:first-child, .admin_apk.tb tr:first-child, .admin_apk_temp.tb tr:first-child {
+.admin_sql.tb tr:first-child, .admin_forgot_pwd.tb tr:first-child, .admin_leftdim.tb tr:first-child, .admin_vod_arealang.tb tr:first-child, .admin_vod_topic_1.tb tr:first-child, .admin_vod_1.tb tr:first-child, .admin_vod_2.tb tr:first-child, .admin_online_subscribe.tb tr:first-child, .panel .tb tr:first-child, .admin_vod_feedback_1.tb tr:first-child, .admin_program.tb tr:first-child, .admin_program_items.tb tr:first-child, .admin_program_play.tb tr:first-child, .admin_program_play_import.tb tr:first-child, .admin_program_config.tb tr:first-child, .admin_apk_company.tb tr:first-child, .admin_apk.tb tr:first-child, .admin_apk_temp.tb tr:first-child, .admin_vod_topic_items.tb tr:first-child {
 	border-top: none !important;
 }
-.admin_sql .odd, .admin_sql.tb tr:nth-child(2n), .admin_forgot_pwd .odd, .admin_forgot_pwd.tb tr:nth-child(2n), .admin_leftdim .odd, .admin_leftdim.tb tr:nth-child(2n), .admin_vod_arealang .odd, .admin_vod_arealang.tb tr:nth-child(2n), .admin_vod_topic_1 .odd, .admin_vod_topic_1.tb tr:nth-child(2n), .admin_vod_1 .odd, .admin_vod_1.tb tr:nth-child(2n), .admin_vod_2 .odd, .admin_vod_2.tb tr:nth-child(2n), .admin_online_subscribe .odd, .admin_online_subscribe.tb tr:nth-child(2n), .panel.window .odd, .panel.window .tb tr:nth-child(2n), .admin_vod_feedback_1 .odd, .admin_program .odd, .admin_program.tb tr:nth-child(2n), .admin_program_items .odd, .admin_program_items.tb tr:nth-child(2n), .admin_program_play .odd, .admin_program_play.tb tr:nth-child(2n), .admin_program_play_import .odd, .admin_program_play_import.tb tr:nth-child(2n), .admin_program_config  .odd, .admin_program_config.tb tr:nth-child(2n), .admin_apk_company .odd, .admin_apk_company.tb tr:nth-child(2n), .admin_apk .odd, .admin_apk.tb tr:nth-child(2n) , .admin_apk_temp .odd, .admin_apk_temp.tb tr:nth-child(2n) {
+.admin_sql .odd, .admin_sql.tb tr:nth-child(2n), .admin_forgot_pwd .odd, .admin_forgot_pwd.tb tr:nth-child(2n), .admin_leftdim .odd, .admin_leftdim.tb tr:nth-child(2n), .admin_vod_arealang .odd, .admin_vod_arealang.tb tr:nth-child(2n), .admin_vod_topic_1 .odd, .admin_vod_topic_1.tb tr:nth-child(2n), .admin_vod_1 .odd, .admin_vod_1.tb tr:nth-child(2n), .admin_vod_2 .odd, .admin_vod_2.tb tr:nth-child(2n), .admin_online_subscribe .odd, .admin_online_subscribe.tb tr:nth-child(2n), .panel.window .odd, .panel.window .tb tr:nth-child(2n), .admin_vod_feedback_1 .odd, .admin_program .odd, .admin_program.tb tr:nth-child(2n), .admin_program_items .odd, .admin_program_items.tb tr:nth-child(2n), .admin_program_play .odd, .admin_program_play.tb tr:nth-child(2n), .admin_program_play_import .odd, .admin_program_play_import.tb tr:nth-child(2n), .admin_program_config  .odd, .admin_program_config.tb tr:nth-child(2n), .admin_apk_company .odd, .admin_apk_company.tb tr:nth-child(2n), .admin_apk .odd, .admin_apk.tb tr:nth-child(2n) , .admin_apk_temp .odd, .admin_apk_temp.tb tr:nth-child(2n), .admin_vod_topic_items .odd, .admin_vod_topic_items.tb tr:nth-child(2n) {
 	background: none !important;
 }
 #import_file, #file {
@@ -263,6 +267,12 @@ input[type="password"]{
 	box-shadow: 0 0 3px #999 inset;
 	font-size: 16px;
 	margin-right: 10px;
+}
+input[value="ÂèñÊ∂à"] {
+	background: #9a9c9f !important;
+}
+input[value="ÂèñÊ∂à"]:hover {
+	background: #00a1d9 !important;
 }
 .admin_vod_type input[type="text"]{
 	width: 100%;
@@ -284,4 +294,54 @@ input[type="password"]{
 }
 .index.tb tr {
 	line-height: 200%;
+}
+#confirm {
+	padding: 15px;
+	background: #FFF;
+	outline: 5000px solid rgba(0, 0, 0, .25);
+	*outline:none;
+	*border: 5px solid #999;
+	box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.panel.window {
+	outline: 5000px solid rgba(0, 0, 0, .25);
+	*outline:none;
+}
+#confirm #ajaxcontent, #confirm #bd_keyword {
+	margin-right: 10px;
+}
+#confirm input[type="button"] {
+	padding: 2px 10px;
+	background: #04518c;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+}
+#confirm input[value="Êü•ËØ¢"] {
+	margin-bottom: 10px;
+}
+#confirm input[type="button"]:hover {
+	background: #00a1d9;
+}
+.form100 {
+	width: 100%;
+}
+.panel .tb tbody select{
+	margin: 0;
+}
+#d_type_name_span {
+	margin-left:-10px;
+}
+#d_type_name_span input{
+	margin-left:10px;
+}
+#TB_window input[type="checkbox"], #TB_window h3 {
+	margin: 8px 5px 8px 0;
+}
+#weiboText {
+	padding: 10px;
+	
+}
+#TB_window #btnEdit {
+	margin-top: 6px;
 }

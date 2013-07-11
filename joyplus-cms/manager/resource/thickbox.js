@@ -208,7 +208,7 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 						}
 					}else{//this means the window is already up, we are just loading new content via ajax
 						$("#TB_ajaxContent")[0].style.width = ajaxContentW +"px";
-						$("#TB_ajaxContent")[0].style.height = ajaxContentH +"px";
+						$("#TB_ajaxContent")[0].style.height = (ajaxContentH + 17) +"px";
 						$("#TB_ajaxContent")[0].scrollTop = 0;
 						$("#TB_ajaxWindowTitle").html(caption);
 					}
