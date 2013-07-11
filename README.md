@@ -15,3 +15,7 @@ Joyplus CMS 是一个采用PHP(mysql)构建的高效视频电影网站管理系�
 How To Use
 ================
 请[点击此处](http://www.joyplus.tv)访问Joyplus CMS使用文档。
+
+Licenses
+================
+All source code is licensed under the
