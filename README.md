@@ -18,4 +18,4 @@ How To Use
 
 Licenses
 ================
-All source code is licensed under the [Licenses](https://github.com/joyplus/joyplus-cms/commit/ea4f44d2c5d77939bfdba3bb23fee9fe11043768)
+All source code is licensed under the [Licenses](https://github.com/joyplus/joyplus-cms/raw/master/Licenses)
