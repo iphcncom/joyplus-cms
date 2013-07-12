@@ -115,9 +115,6 @@ html,body {
 	float: left;
 	margin-right: 5px;
 }
-#menu span strong {
-	text-transform: uppercase;
-}
 #menu a {
 	color: #f2d03b;
 	text-decoration: none;
