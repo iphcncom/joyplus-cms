@@ -1954,7 +1954,7 @@ $(document).ready(function(){
 			value="<?php echo $d_enname?>"> &nbsp;备注：<input id="d_remarks"
 			name="d_remarks" type="text" size="40"
 			value="<?php echo $d_remarks?>"> &nbsp;连载信息：<input id="d_state"
-			name="d_state" type="text" size="4" value="<?php echo $d_state?>"> <!--	&nbsp;&nbsp;&nbsp;播放设备:-->
+			name="d_state" type="text" size="10" value="<?php echo $d_state?>"> <!--	&nbsp;&nbsp;&nbsp;播放设备:-->
 		<!--	<select id="can_play_device" name="can_play_device">--> <!--	<option value="0" <?php if ($can_play_device==0){ echo "selected";} ?>>所有设备</option>-->
 		<!--	<option value="1" <?php if ($can_play_device==1){ echo "selected";} ?>>只能ipad/iphone播放</option>-->
 		<!--	<option value="2" <?php if ($can_play_device==2){ echo "selected";} ?>>只能Android播放</option>-->
