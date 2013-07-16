@@ -18,6 +18,7 @@ if ($flag=="vod"){
 	$thit="d_hits";
 	$ttopic="d_topic";
 	$thide="d_hide";
+	$d_status ="d_status";
 }
 else if ($flag=="art"){
 	$tid ="a_id";
@@ -49,6 +50,7 @@ switch($action)
 	case "plbd" : mplbangdan();break;
 
 	case "plyc" : mplyinccang();break;
+	case "plsh" : mpshenhe();break;
 	case "ckname" : mname();break;
 	default: redirect( getReferer() );break;
 }
@@ -1153,6 +1155,20 @@ function mplyinccang()
 		echo "reload";
 	}
 }
+
+function mpshenhe()
+{
+	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thide,$thit,$ttopic,$d_status;
+	if ($show ==1){
+		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"\">请选择...</option><option value=\"0\">未审核</option><option value=\"1\">审核并锁定</option></select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" > <input type=\"button\" value=\"取消\" onclick=\"closew();\" >";
+		echo $str;
+	}
+	else if($show ==2){
+		$db->query ("UPDATE {pre}".$flag . " set ". $d_status ."=".$ajaxcontent. " WHERE " . $tid ." IN(".$id.")" );
+		echo "reload";
+	}
+}
+
 
 function mtopic()
 {
