@@ -1029,7 +1029,7 @@ function mtuijian()
 {
 	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thit,$ttopic;
 	if ($show==1){
-		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"\">请选择推荐</option><option value=\"1\">推荐1</option><option value=\"2\">推荐2</option><option value=\"3\">推荐3</option><option value=\"4\">推荐4</option><option value=\"5\">推荐5</option><option value=\"6\">推荐6</option><option value=\"7\">推荐7</option><option value=\"8\">推荐8</option><option value=\"0\">取消推荐</option></select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut><input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
+		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"\">请选择推荐</option><option value=\"1\">推荐1</option><option value=\"2\">推荐2</option><option value=\"3\">推荐3</option><option value=\"4\">推荐4</option><option value=\"5\">推荐5</option><option value=\"6\">推荐6</option><option value=\"7\">推荐7</option><option value=\"8\">推荐8</option><option value=\"0\">取消推荐</option></select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" ><input type=\"button\" value=\"取消\" onclick=\"closew();\" >";
 		echo $str;
 	}
 	else{
@@ -1223,7 +1223,7 @@ function bdtopic()
 	}
 
 	if ($show ==1){
-		$str="<input type='text' name='bd_keyword' id='bd_keyword' value='".$keyword."' size='30' ><input type='button' value='查询' onclick=\"setdayBDkewyowrd('bd','".$id."','vod','".$dbtype."',document.getElementById('bd_keyword').value);\"></br><select style='width:155px' id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"0\">请选择".$name."</option>" . makeSelectWhere("{pre}".$flag."_topic","t_id","t_name","t_name,t_sort","","&nbsp;|&nbsp;&nbsp;",""," where t_id > 4 ".$bd."  ") ."</select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut> <input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
+		$str="<input type='text' name='bd_keyword' id='bd_keyword' value='".$keyword."' size='30' ><input type='button' value='查询' onclick=\"setdayBDkewyowrd('bd','".$id."','vod','".$dbtype."',document.getElementById('bd_keyword').value);\"></br><select style='width:155px' id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"0\">请选择".$name."</option>" . makeSelectWhere("{pre}".$flag."_topic","t_id","t_name","t_name,t_sort","","&nbsp;|&nbsp;&nbsp;",""," where t_id > 4 ".$bd."  ") ."</select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" > <input type=\"button\" value=\"取消\" onclick=\"closew();\" >";
 		echo $str;
 	}
 	else if ($show ==2){
