@@ -80,7 +80,7 @@ function show_header()
 </head>
 <div class="container">
 	<div class="header">
-		<span>版本号：V1.0</span>
+		<span>版本号：V1.1</span>
 		<h1>Joyplus视频管理系统 安装向导</h1>
 EOT;
 }
@@ -342,98 +342,105 @@ function checkdb(){
 </script>
 
 <div class="main">
-<form id="form2" action="index.php?action=b" method="post">
-<div id="form_items_3"><br />
+	<form id="form2" action="index.php?action=b" method="post">
+		<div id="form_items_3">
+			<br />
 
 
-<div class="desc"><b>填写数据库信息</b></div>
-<table class="tb2" style="margin:20px 0 20px 55px;">
-	<tr>
-		<th class="tbopt" align="left">&nbsp;数据库类型:</th>
-		<td><select name="app_dbtype" id="app_dbtype"
-			onChange="setdb(this.value);">
-			<option value="mysql">mysql数据库</option>
-		</select></td>
-		<td>网站使用数据库的类型</td>
-	</tr>
-	<tr style="display: none">
-		<th class="tbopt" align="left">&nbsp;表前缀:</th>
-		<td><input class="txt" type="text" name="app_tablepre"
-			id="app_tablepre" value="mac_" /></td>
-		<td>数据库表名前缀</td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;数据库服务器:</th>
-		<td><input class="txt" type="text" name="app_dbserver"
-			id="app_dbserver" value="localhost" /></td>
-		<td>数据库服务器地址, 一般为 localhost</td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;数据库名称:</th>
-		<td><input class="txt" type="text" name="app_dbname" id="app_dbname"
-			value="" /></td>
-		<td></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;数据库用户名:</th>
-		<td><input class="txt" type="text" name="app_dbuser" id="app_dbuser"
-			value="" /></td>
-		<td></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;数据库密码:</th>
-		<td><input class="txt" type="text" name="app_dbpass" id="app_dbpass"
-			value="" /></td>
-		<td></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;测试连接数据库:</th>
-		<td><strong><a onclick="checkdb()" style="cursor: pointer;"><font
-			color="red">>>>MYSQL连接测试</font></a></strong></td>
-		<td></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;</th>
-		<td><span id="checkinfo"></span></td>
-		<td></td>
-	</tr>
-</table>
-<div class="desc"><b>填写管理员信息<font color="red">（请牢记你所填写的信息，登录时需要）</font></b></div>
-<table class="tb2" style="margin:20px 0 20px 55px;">
-	<tr>
-		<th class="tbopt" align="left">&nbsp; 管理员账号:</th>
-		<td><input class="txt" type="text" name="m_name" id="m_name"
-			value="" /></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp; 管理员密码:</th>
-		<td><input class="txt" type="password" name="m_password1"
-			id="m_password1" value="" /></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp; 确认密码:</th>
-		<td><input class="txt" type="password" name="m_password2"
-			id="m_password2" value="" /></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp; 安全码:</th>
-		<td><input class="txt" type="password" name="app_safecode"
-			id="app_safecode" value="" /></td>
-	</tr>
-</table>
-</div>
-<table class="tb2 btn2" style="width:100%;">
-	<tr>
-		<th class="tbopt" align="left">&nbsp;</th>
-		<td><input type="hidden" name="action" value="c" />
-		<div class="btnbox marginbot">
-			<input class="left btnpre" type="button" onclick="history.back();" value="上一步">
-			<input class="right btnnext" id="btnStep1b" type="button" value="下一步">
-		</td>
-		<td></td>
-	</tr>
-</table>
-</form>
+			<div class="desc">
+				<b>填写数据库信息</b>
+			</div>
+			<table class="tb2" style="margin: 20px 0 20px 55px;">
+				<tr>
+					<th class="tbopt" align="left">&nbsp;数据库类型:</th>
+					<td><select name="app_dbtype" id="app_dbtype"
+						onChange="setdb(this.value);">
+							<option value="mysql">mysql数据库</option>
+					</select></td>
+					<td>网站使用数据库的类型</td>
+				</tr>
+				<tr style="display: none">
+					<th class="tbopt" align="left">&nbsp;表前缀:</th>
+					<td><input class="txt" type="text" name="app_tablepre"
+						id="app_tablepre" value="mac_" /></td>
+					<td>数据库表名前缀</td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;数据库服务器:</th>
+					<td><input class="txt" type="text" name="app_dbserver"
+						id="app_dbserver" value="localhost" /></td>
+					<td>数据库服务器地址, 一般为 localhost</td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;数据库名称:</th>
+					<td><input class="txt" type="text" name="app_dbname"
+						id="app_dbname" value="" /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;数据库用户名:</th>
+					<td><input class="txt" type="text" name="app_dbuser"
+						id="app_dbuser" value="" /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;数据库密码:</th>
+					<td><input class="txt" type="text" name="app_dbpass"
+						id="app_dbpass" value="" /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;测试连接数据库:</th>
+					<td><strong><a onclick="checkdb()" style="cursor: pointer;"><font
+								color="red">>>>MYSQL连接测试</font> </a> </strong></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;</th>
+					<td><span id="checkinfo"></span></td>
+					<td></td>
+				</tr>
+			</table>
+			<div class="desc">
+				<b>填写管理员信息<font color="red">（请牢记你所填写的信息，登录时需要）</font> </b>
+			</div>
+			<table class="tb2" style="margin: 20px 0 20px 55px;">
+				<tr>
+					<th class="tbopt" align="left">&nbsp; 管理员账号:</th>
+					<td><input class="txt" type="text" name="m_name" id="m_name"
+						value="" /></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp; 管理员密码:</th>
+					<td><input class="txt" type="password" name="m_password1"
+						id="m_password1" value="" /></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp; 确认密码:</th>
+					<td><input class="txt" type="password" name="m_password2"
+						id="m_password2" value="" /></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp; 安全码:</th>
+					<td><input class="txt" type="password" name="app_safecode"
+						id="app_safecode" value="" /></td>
+				</tr>
+			</table>
+		</div>
+		<table class="tb2 btn2" style="width: 100%;">
+			<tr>
+				<th class="tbopt" align="left">&nbsp;</th>
+				<td><input type="hidden" name="action" value="c" />
+					<div class="btnbox marginbot">
+						<input class="left btnpre" type="button" onclick="history.back();"
+							value="上一步"> <input class="right btnnext" id="btnStep1b"
+							type="button" value="下一步">
+				
+				</td>
+				<td></td>
+			</tr>
+		</table>
+	</form>
 	<?php
 }
 
@@ -1326,8 +1333,8 @@ EOT;
 		$db->query( "insert into ".$app_tablepre."mac_manager(m_id,m_name,m_password,m_status,m_levels) values('1','".$m_name."','".md5($m_password1)."',1,'2, 4, 6, 7, 8 ,9, 10')");
 		echo '<script type="text/javascript">showmessage(\'管理员帐号'.$m_name.'初始化成功... \');</script>';
 
-		
-		
+
+
 		$db->query("
 					INSERT INTO `mac_vod_type` (`t_id`, `t_name`, `t_enname`, `t_sort`, `t_pid`, `t_key`, `t_des`, `t_template`, `t_vodtemplate`, `t_playtemplate`, `t_hide`, `t_union`) VALUES
 					(1, '电影', 'dianying', 1, 0, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 0, ''),
@@ -1340,7 +1347,237 @@ EOT;
 					(133, '教育', '教育', 85, 0, '教育', '教育', 'vodlist.html', 'vod.html', 'vodplay.html', 0, NULL),
 					(173, '混合类', 'hunhelei', 125, 0, 'hunhelei', 'hunhelei', 'vodlist.html', 'vod.html', 'vodplay.html', 0, NULL);");
 
-		// $db->query( "INSERT into ".$app_tablepre."vod_type (t_id,t_name,t_enname,t_sort,t_pid,t_key,t_des,t_template,t_vodtemplate,t_playtemplate,t_downtemplate,t_hide,t_union)  VALUES ('1','电影','dianying',1,0,'','','vodlist.html','vod.html','vodplay.html','voddown.html',0,'')");
+		$file = "joyplus.sql";
+		if (file_exists($file)){
+
+			global $db;
+			$buffer = '';
+			// Defaults for parser
+			$sql = '';
+			$start_pos = 0;
+			$i = 0;
+			$len= 0;
+			$big_value = 2147483647;
+			$delimiter_keyword = 'DELIMITER '; // include the space because it's mandatory
+			$length_of_delimiter_keyword = strlen($delimiter_keyword);
+			$buffer=iconv("UTF-8","UTF-8", file_get_contents($file));
+			$len = strlen($buffer);
+			$GLOBALS['finished']=true;
+			$sql_delimiter = ';';
+			while ($i < $len) {
+				$found_delimiter = false;
+				// Find first interesting character
+				$old_i = $i;
+				// this is about 7 times faster that looking for each sequence i
+				// one by one with strpos()
+				if (preg_match('/(\'|"|#|-- |\/\*|`|(?i)(?<![A-Z0-9_])' . $delimiter_keyword . ')/', $buffer, $matches, PREG_OFFSET_CAPTURE, $i)) {
+					// in $matches, index 0 contains the match for the complete
+					// expression but we don't use it
+					$first_position = $matches[1][1];
+				} else {
+					$first_position = $big_value;
+				}
+				/**
+				 * @todo we should not look for a delimiter that might be
+				 *       inside quotes (or even double-quotes)
+				 */
+
+				// the cost of doing this one with preg_match() would be too high
+				$first_sql_delimiter = strpos($buffer, $sql_delimiter, $i);
+				if ($first_sql_delimiter === false) {
+					$first_sql_delimiter = $big_value;
+				} else {
+					$found_delimiter = true;
+				}
+
+				// set $i to the position of the first quote, comment.start or delimiter found
+				$i = min($first_position, $first_sql_delimiter);
+
+				if ($i == $big_value) {
+					// none of the above was found in the string
+
+					$i = $old_i;
+					if (!$GLOBALS['finished']) {
+						break;
+					}
+					// at the end there might be some whitespace...
+					if (trim($buffer) == '') {
+						$buffer = '';
+						$len = 0;
+						break;
+					}
+					// We hit end of query, go there!
+					$i = strlen($buffer) - 1;
+				}
+
+				// Grab current character
+				$ch = $buffer[$i];
+
+				// Quotes
+				if (strpos('\'"`', $ch) !== false) {
+					$quote = $ch;
+					$endq = false;
+					while (!$endq) {
+						// Find next quote
+						$pos = strpos($buffer, $quote, $i + 1);
+						/*
+						 * Behave same as MySQL and accept end of query as end of backtick.
+						 * I know this is sick, but MySQL behaves like this:
+						 *
+						 * SELECT * FROM `table
+						 *
+						 * is treated like
+						 *
+						 * SELECT * FROM `table`
+						 */
+						if ($pos === false && $quote == '`' && $found_delimiter) {
+							$pos = $first_sql_delimiter - 1;
+							// No quote? Too short string
+						} elseif ($pos === false) {
+							// We hit end of string => unclosed quote, but we handle it as end of query
+							if ($GLOBALS['finished']) {
+								$endq = true;
+								$i = $len - 1;
+							}
+							$found_delimiter = false;
+							break;
+						}
+						// Was not the quote escaped?
+						$j = $pos - 1;
+						while ($buffer[$j] == '\\') $j--;
+						// Even count means it was not escaped
+						$endq = (((($pos - 1) - $j) % 2) == 0);
+						// Skip the string
+						$i = $pos;
+
+						if ($first_sql_delimiter < $pos) {
+							$found_delimiter = false;
+						}
+					}
+					if (!$endq) {
+						break;
+					}
+					$i++;
+					// Aren't we at the end?
+					if ($GLOBALS['finished'] && $i == $len) {
+						$i--;
+					} else {
+						continue;
+					}
+				}
+
+				// Not enough data to decide
+				if ((($i == ($len - 1) && ($ch == '-' || $ch == '/'))
+				|| ($i == ($len - 2) && (($ch == '-' && $buffer[$i + 1] == '-')
+				|| ($ch == '/' && $buffer[$i + 1] == '*')))) && !$GLOBALS['finished']) {
+					break;
+				}
+
+				// Comments
+				if ($ch == '#'
+				|| ($i < ($len - 1) && $ch == '-' && $buffer[$i + 1] == '-'
+				&& (($i < ($len - 2) && $buffer[$i + 2] <= ' ')
+				|| ($i == ($len - 1)  && $GLOBALS['finished'])))
+				|| ($i < ($len - 1) && $ch == '/' && $buffer[$i + 1] == '*')
+				) {
+					// Copy current string to SQL
+					if ($start_pos != $i) {
+						$sql .= substr($buffer, $start_pos, $i - $start_pos);
+					}
+					// Skip the rest
+					$start_of_comment = $i;
+					// do not use PHP_EOL here instead of "\n", because the export
+					// file might have been produced on a different system
+					$i = strpos($buffer, $ch == '/' ? '*/' : "\n", $i);
+					// didn't we hit end of string?
+					if ($i === false) {
+						if ($GLOBALS['finished']) {
+							$i = $len - 1;
+						} else {
+							break;
+						}
+					}
+					// Skip *
+					if ($ch == '/') {
+						$i++;
+					}
+					// Skip last char
+					$i++;
+					// We need to send the comment part in case we are defining
+					// a procedure or function and comments in it are valuable
+					$sql .= substr($buffer, $start_of_comment, $i - $start_of_comment);
+					// Next query part will start here
+					$start_pos = $i;
+					// Aren't we at the end?
+					if ($i == $len) {
+						$i--;
+					} else {
+						continue;
+					}
+				}
+				// Change delimiter, if redefined, and skip it (don't send to server!)
+				if (strtoupper(substr($buffer, $i, $length_of_delimiter_keyword)) == $delimiter_keyword
+				&& ($i + $length_of_delimiter_keyword < $len)) {
+					// look for EOL on the character immediately after 'DELIMITER '
+					// (see previous comment about PHP_EOL)
+					$new_line_pos = strpos($buffer, "\n", $i + $length_of_delimiter_keyword);
+					// it might happen that there is no EOL
+					if (false === $new_line_pos) {
+						$new_line_pos = $len;
+					}
+					$sql_delimiter = substr($buffer, $i + $length_of_delimiter_keyword, $new_line_pos - $i - $length_of_delimiter_keyword);
+					$i = $new_line_pos + 1;
+					// Next query part will start here
+					$start_pos = $i;
+					continue;
+				}
+
+				// End of SQL
+				if ($found_delimiter || ($GLOBALS['finished'] && ($i == $len - 1))) {
+					$tmp_sql = $sql;
+					if ($start_pos < $len) {
+						$length_to_grab = $i - $start_pos;
+
+						if (! $found_delimiter) {
+							$length_to_grab++;
+						}
+						$tmp_sql .= substr($buffer, $start_pos, $length_to_grab);
+						unset($length_to_grab);
+					}
+					// Do not try to execute empty SQL
+					if (! preg_match('/^([\s]*;)*$/', trim($tmp_sql))) {
+						$sql = $tmp_sql;
+						$sql=preg_replace("/--.*\n/iU","",$sql);//去掉注释
+						$sql = trim($sql);
+						if((stripos($sql, "CREATE") !==false && stripos($sql, "CREATE") ==0 )|| (stripos($sql, "INSERT") !==false && strpos($sql, "INSERT")==0)
+						|| (stripos($sql, "UPDATE") !==false && strpos($sql, "UPDATE")==0)|| (stripos($sql, "DELETE") !==false && strpos($sql, "DELETE")==0)){
+
+							$rs2=$db->query($sql);
+						}else{
+							$sql = str_replace("/*!40101", "", $sql);
+							$sql = str_replace("*/", "", $sql);
+							$rs2=$db->query($sql);
+						}
+
+						$buffer = substr($buffer, $i + strlen($sql_delimiter));
+						$len = strlen($buffer);
+						$sql = '';
+						$i = 0;
+						$start_pos = 0;
+						// Any chance we will get a complete query?
+						//if ((strpos($buffer, ';') === false) && !$GLOBALS['finished']) {
+						if ((strpos($buffer, $sql_delimiter) === false) && !$GLOBALS['finished']) {
+							break;
+						}
+					} else {
+						$i++;
+						$start_pos = $i;
+					}
+				}
+			}
+
+
+		}
 
 
 		echo '<script type="text/javascript">showmessage(\'数据分类初始化成功... \');</script>';
@@ -1353,16 +1590,17 @@ EOT;
 function stepD()
 {
 	show_step(4,"安装完毕","正在删除安装脚本");
-		//if (file_exists("index.php")){
-		//	@unlink("index.php");
-		//}
-	?> <iframe id="tongji" name="tongji"
-	src="http://www.maccms.com/tongji.html?7x-php" MARGINWIDTH="0"
-	MARGINHEIGHT="0" HSPACE="0" VSPACE="0" FRAMEBORDER="0" SCROLLING="no"
-	width="0" height="0"></iframe>
-<div class="main">
-<div class="desc">如果没有自动删除install/index.php，请手工删除。 5秒后自动跳转到后台管理登录页面...</div>
-<script> setTimeout("gonextpage();",5000); function gonextpage(){location.href='../manager/index.php';} </script>
-	<?php
+	//if (file_exists("index.php")){
+	//	@unlink("index.php");
+	//}
+	?>
+	<iframe id="tongji" name="tongji"
+		src="http://www.maccms.com/tongji.html?7x-php" MARGINWIDTH="0"
+		MARGINHEIGHT="0" HSPACE="0" VSPACE="0" FRAMEBORDER="0" SCROLLING="no"
+		width="0" height="0"></iframe>
+	<div class="main">
+		<div class="desc">如果没有自动删除install/index.php，请手工删除。 5秒后自动跳转到后台管理登录页面...</div>
+		<script> setTimeout("gonextpage();",5000); function gonextpage(){location.href='../manager/index.php';} </script>
+		<?php
 }
 ?>

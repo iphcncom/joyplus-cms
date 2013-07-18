@@ -1268,8 +1268,7 @@ function plluobo()
 	}
 	//		$db->query ("UPDATE {pre}".$flag . " set ". $ttopic ."=".$ajaxcontent. " WHERE " . $tid ." IN(".$id.")" );
 	//		echo "reload";
-	echo "popular".$id."$<script language=\"javascript\">alert('添加成功');</script>";
-
+  echo "bd".$id."$<script language=\"javascript\">alert('添加成功');</script>";
 }
 
 ?>
