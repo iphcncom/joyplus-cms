@@ -1381,7 +1381,9 @@ function send(e){
 			type="button" id="plbd" value="视频悦榜"
 			onClick="plsetBD('plbd','vod','2')" class="input"> <input
 			type="button" id="plyc" value="显隐" onClick="plset('plyc','vod')"
-			class="input"> <span id="plmsg" name="plmsg"></span></td>
+			class="input"> 
+			<input type="button" id="plsh" value="批量审核" onClick="plset('plsh','vod')" class="input"> 
+			<span id="plmsg" name="plmsg"></span></td>
 	</tr>
 	<tr class="formlast">
 		<td align="center" colspan="12"><?php echo pagelist_manage($pagecount,$pagenum,$nums,app_pagenum,"admin_vod.php?page={p}&can_search_device=" . $can_search_device . "&d_douban_id=" . $d_douban_id . "&keyword=" . urlencode($keyword) . "&d_status=".$d_status."&keyword_col=".$keyword_col."&sort=" . $sort . "&select_videourl_play=" . $select_videourl_play . "&topic=" . $topic . "&level=".$level."&order=".$order ."&stype=" . $stype ."&sserver=" . $sserver ."&sstate=".$sstate."&repeat=".$repeat."&repeatlen=".$repeatlen."&from=".$from."&spic=".$spic."&hide=".$hide."&douban_comment=".$douban_comment."&douban_score=".$douban_score."&select_weburl=".$select_weburl."&select_videourl=".$select_videourl."&ipadpic=".$ipadpic)?>

@@ -18,6 +18,7 @@ if ($flag=="vod"){
 	$thit="d_hits";
 	$ttopic="d_topic";
 	$thide="d_hide";
+	$d_status ="d_status";
 }
 else if ($flag=="art"){
 	$tid ="a_id";
@@ -49,6 +50,7 @@ switch($action)
 	case "plbd" : mplbangdan();break;
 
 	case "plyc" : mplyinccang();break;
+	case "plsh" : mpshenhe();break;
 	case "ckname" : mname();break;
 	default: redirect( getReferer() );break;
 }
@@ -1027,7 +1029,7 @@ function mtuijian()
 {
 	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thit,$ttopic;
 	if ($show==1){
-		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"\">请选择推荐</option><option value=\"1\">推荐1</option><option value=\"2\">推荐2</option><option value=\"3\">推荐3</option><option value=\"4\">推荐4</option><option value=\"5\">推荐5</option><option value=\"6\">推荐6</option><option value=\"7\">推荐7</option><option value=\"8\">推荐8</option><option value=\"0\">取消推荐</option></select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut><input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
+		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"\">请选择推荐</option><option value=\"1\">推荐1</option><option value=\"2\">推荐2</option><option value=\"3\">推荐3</option><option value=\"4\">推荐4</option><option value=\"5\">推荐5</option><option value=\"6\">推荐6</option><option value=\"7\">推荐7</option><option value=\"8\">推荐8</option><option value=\"0\">取消推荐</option></select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" ><input type=\"button\" value=\"取消\" onclick=\"closew();\" >";
 		echo $str;
 	}
 	else{
@@ -1154,6 +1156,20 @@ function mplyinccang()
 	}
 }
 
+function mpshenhe()
+{
+	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thide,$thit,$ttopic,$d_status;
+	if ($show ==1){
+		$str="<select id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"\">请选择...</option><option value=\"0\">未审核</option><option value=\"1\">审核并锁定</option></select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" > <input type=\"button\" value=\"取消\" onclick=\"closew();\" >";
+		echo $str;
+	}
+	else if($show ==2){
+		$db->query ("UPDATE {pre}".$flag . " set ". $d_status ."=".$ajaxcontent. " WHERE " . $tid ." IN(".$id.")" );
+		echo "reload";
+	}
+}
+
+
 function mtopic()
 {
 	global $db,$action,$flag,$show,$id,$name,$ajaxcontent,$tid,$ttype,$thit,$ttopic;
@@ -1207,7 +1223,7 @@ function bdtopic()
 	}
 
 	if ($show ==1){
-		$str="<input type='text' name='bd_keyword' id='bd_keyword' value='".$keyword."' size='30' ><input type='button' value='查询' onclick=\"setdayBDkewyowrd('bd','".$id."','vod','".$dbtype."',document.getElementById('bd_keyword').value);\"></br><select style='width:155px' id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"0\">请选择".$name."</option>" . makeSelectWhere("{pre}".$flag."_topic","t_id","t_name","t_name,t_sort","","&nbsp;|&nbsp;&nbsp;",""," where t_id > 4 ".$bd."  ") ."</select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" class=inputbut> <input type=\"button\" value=\"取消\" onclick=\"closew();\" class=inputbut>";
+		$str="<input type='text' name='bd_keyword' id='bd_keyword' value='".$keyword."' size='30' ><input type='button' value='查询' onclick=\"setdayBDkewyowrd('bd','".$id."','vod','".$dbtype."',document.getElementById('bd_keyword').value);\"></br><select style='width:155px' id=\"ajaxcontent\" name=\"ajaxcontent\"><option value=\"0\">请选择".$name."</option>" . makeSelectWhere("{pre}".$flag."_topic","t_id","t_name","t_name,t_sort","","&nbsp;|&nbsp;&nbsp;",""," where t_id > 4 ".$bd."  ") ."</select><input type=\"button\" value=\"确定\" onclick=\"ajaxsubmit('".$id."','".$action."','".$flag."');\" > <input type=\"button\" value=\"取消\" onclick=\"closew();\" >";
 		echo $str;
 	}
 	else if ($show ==2){
@@ -1252,8 +1268,7 @@ function plluobo()
 	}
 	//		$db->query ("UPDATE {pre}".$flag . " set ". $ttopic ."=".$ajaxcontent. " WHERE " . $tid ." IN(".$id.")" );
 	//		echo "reload";
-	echo "popular".$id."$<script language=\"javascript\">alert('添加成功');</script>";
-
+  echo "bd".$id."$<script language=\"javascript\">alert('添加成功');</script>";
 }
 
 ?>

@@ -984,6 +984,7 @@ function getPage($url,$charset)
 			curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1);
 			$content = @curl_exec($ch);	
+			
 //			var_dump($content);
 			$httpCode = @curl_getinfo ( $ch, CURLINFO_HTTP_CODE );
 //			if($httpCode == 302){
@@ -1578,6 +1579,7 @@ function makeSelectAreaLang($flag,$val)
 	else{
 		$arr = $cache[5];
 	}
+	
 	$i=0;
 	foreach($arr as $v){
 		if ($val == $v){ $i++; $strSelected=" selected"; } else{ $strSelected=""; }
@@ -1781,7 +1783,8 @@ function updateCacheFile()
 		exit;
 	}
 	$arr[] = $cachevodtype;
-
+   
+	$arr[] = array();
 	
 	//视频专题缓存
 	try{
@@ -1793,8 +1796,8 @@ function updateCacheFile()
 		exit;
 	}
 	$arr[] = $cachevodtopic;
-	
-	
+	   
+	$arr[] = array();
 	
 	//地区缓存
 	try{
@@ -1824,7 +1827,7 @@ function updateCacheFile()
 	
 
 	
-	
+	$arr[] = array();
 	
 	
 	setGlobalCache("cache",$arr,1,'php');

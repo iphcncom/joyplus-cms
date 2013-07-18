@@ -218,7 +218,7 @@ table {
 	width: 110px;
 	text-align: left
 }
-#btnAdd, .admin_sql.tb .input, #addvod, .admin_forgot_pwd .input, .admin_leftdim .input, #btnEdit, #btnMove, #btnSave, #btnAddLunBo, .collect_vod_manage .input, .inputbut, #btnCancel, #go, #btnsearch, #btnDel, #pltj, #plfl, #plluobo, #plbd, #plbd, #plyc, #btnAddvideo, #btnAddbang, #btnDelall, .collect_vod .btn, #btnsearch1, #btnAdd_down, #btnSelin, #AllInflowProject {
+#btnAdd, .admin_sql.tb .input, #addvod, .admin_forgot_pwd .input, .admin_leftdim .input, #btnEdit, #btnMove, #btnSave, #btnAddLunBo, .collect_vod_manage .input, .inputbut, #btnCancel, #go, #btnsearch, #btnDel, #pltj, #plfl, #plluobo, #plbd, #plbd, #plyc,#plsh, #btnAddvideo, #btnAddbang, #btnDelall, .collect_vod .btn, #btnsearch1, #btnAdd_down, #btnSelin, #AllInflowProject {
 	padding: 0 15px;
 	height: 32px;
 	background: #04518c;
@@ -298,8 +298,8 @@ input[value="取消"]:hover {
 #confirm {
 	padding: 15px;
 	background: #FFF;
-	outline: 5000px solid rgba(0, 0, 0, .25);
-	*outline:none;
+
+
 	*border: 5px solid #999;
 	box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }

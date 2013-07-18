@@ -80,7 +80,7 @@ function show_header()
 </head>
 <div class="container">
 	<div class="header">
-		<span>版本号：V1.0</span>
+		<span>版本号：V1.1</span>
 		<h1>Joyplus视频管理系统 安装向导</h1>
 EOT;
 }
@@ -342,98 +342,105 @@ function checkdb(){
 </script>
 
 <div class="main">
-<form id="form2" action="index.php?action=b" method="post">
-<div id="form_items_3"><br />
+	<form id="form2" action="index.php?action=b" method="post">
+		<div id="form_items_3">
+			<br />
 
 
-<div class="desc"><b>填写数据库信息</b></div>
-<table class="tb2" style="margin:20px 0 20px 55px;">
-	<tr>
-		<th class="tbopt" align="left">&nbsp;数据库类型:</th>
-		<td><select name="app_dbtype" id="app_dbtype"
-			onChange="setdb(this.value);">
-			<option value="mysql">mysql数据库</option>
-		</select></td>
-		<td>网站使用数据库的类型</td>
-	</tr>
-	<tr style="display: none">
-		<th class="tbopt" align="left">&nbsp;表前缀:</th>
-		<td><input class="txt" type="text" name="app_tablepre"
-			id="app_tablepre" value="mac_" /></td>
-		<td>数据库表名前缀</td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;数据库服务器:</th>
-		<td><input class="txt" type="text" name="app_dbserver"
-			id="app_dbserver" value="localhost" /></td>
-		<td>数据库服务器地址, 一般为 localhost</td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;数据库名称:</th>
-		<td><input class="txt" type="text" name="app_dbname" id="app_dbname"
-			value="" /></td>
-		<td></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;数据库用户名:</th>
-		<td><input class="txt" type="text" name="app_dbuser" id="app_dbuser"
-			value="" /></td>
-		<td></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;数据库密码:</th>
-		<td><input class="txt" type="text" name="app_dbpass" id="app_dbpass"
-			value="" /></td>
-		<td></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;测试连接数据库:</th>
-		<td><strong><a onclick="checkdb()" style="cursor: pointer;"><font
-			color="red">>>>MYSQL连接测试</font></a></strong></td>
-		<td></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp;</th>
-		<td><span id="checkinfo"></span></td>
-		<td></td>
-	</tr>
-</table>
-<div class="desc"><b>填写管理员信息<font color="red">（请牢记你所填写的信息，登录时需要）</font></b></div>
-<table class="tb2" style="margin:20px 0 20px 55px;">
-	<tr>
-		<th class="tbopt" align="left">&nbsp; 管理员账号:</th>
-		<td><input class="txt" type="text" name="m_name" id="m_name"
-			value="" /></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp; 管理员密码:</th>
-		<td><input class="txt" type="password" name="m_password1"
-			id="m_password1" value="" /></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp; 确认密码:</th>
-		<td><input class="txt" type="password" name="m_password2"
-			id="m_password2" value="" /></td>
-	</tr>
-	<tr>
-		<th class="tbopt" align="left">&nbsp; 安全码:</th>
-		<td><input class="txt" type="password" name="app_safecode"
-			id="app_safecode" value="" /></td>
-	</tr>
-</table>
-</div>
-<table class="tb2 btn2" style="width:100%;">
-	<tr>
-		<th class="tbopt" align="left">&nbsp;</th>
-		<td><input type="hidden" name="action" value="c" />
-		<div class="btnbox marginbot">
-			<input class="left btnpre" type="button" onclick="history.back();" value="上一步">
-			<input class="right btnnext" id="btnStep1b" type="button" value="下一步">
-		</td>
-		<td></td>
-	</tr>
-</table>
-</form>
+			<div class="desc">
+				<b>填写数据库信息</b>
+			</div>
+			<table class="tb2" style="margin: 20px 0 20px 55px;">
+				<tr>
+					<th class="tbopt" align="left">&nbsp;数据库类型:</th>
+					<td><select name="app_dbtype" id="app_dbtype"
+						onChange="setdb(this.value);">
+							<option value="mysql">mysql数据库</option>
+					</select></td>
+					<td>网站使用数据库的类型</td>
+				</tr>
+				<tr style="display: none">
+					<th class="tbopt" align="left">&nbsp;表前缀:</th>
+					<td><input class="txt" type="text" name="app_tablepre"
+						id="app_tablepre" value="mac_" /></td>
+					<td>数据库表名前缀</td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;数据库服务器:</th>
+					<td><input class="txt" type="text" name="app_dbserver"
+						id="app_dbserver" value="localhost" /></td>
+					<td>数据库服务器地址, 一般为 localhost</td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;数据库名称:</th>
+					<td><input class="txt" type="text" name="app_dbname"
+						id="app_dbname" value="" /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;数据库用户名:</th>
+					<td><input class="txt" type="text" name="app_dbuser"
+						id="app_dbuser" value="" /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;数据库密码:</th>
+					<td><input class="txt" type="text" name="app_dbpass"
+						id="app_dbpass" value="" /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;测试连接数据库:</th>
+					<td><strong><a onclick="checkdb()" style="cursor: pointer;"><font
+								color="red">>>>MYSQL连接测试</font> </a> </strong></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp;</th>
+					<td><span id="checkinfo"></span></td>
+					<td></td>
+				</tr>
+			</table>
+			<div class="desc">
+				<b>填写管理员信息<font color="red">（请牢记你所填写的信息，登录时需要）</font> </b>
+			</div>
+			<table class="tb2" style="margin: 20px 0 20px 55px;">
+				<tr>
+					<th class="tbopt" align="left">&nbsp; 管理员账号:</th>
+					<td><input class="txt" type="text" name="m_name" id="m_name"
+						value="" /></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp; 管理员密码:</th>
+					<td><input class="txt" type="password" name="m_password1"
+						id="m_password1" value="" /></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp; 确认密码:</th>
+					<td><input class="txt" type="password" name="m_password2"
+						id="m_password2" value="" /></td>
+				</tr>
+				<tr>
+					<th class="tbopt" align="left">&nbsp; 安全码:</th>
+					<td><input class="txt" type="password" name="app_safecode"
+						id="app_safecode" value="" /></td>
+				</tr>
+			</table>
+		</div>
+		<table class="tb2 btn2" style="width: 100%;">
+			<tr>
+				<th class="tbopt" align="left">&nbsp;</th>
+				<td><input type="hidden" name="action" value="c" />
+					<div class="btnbox marginbot">
+						<input class="left btnpre" type="button" onclick="history.back();"
+							value="上一步"> <input class="right btnnext" id="btnStep1b"
+							type="button" value="下一步">
+				
+				</td>
+				<td></td>
+			</tr>
+		</table>
+	</form>
 	<?php
 }
 
@@ -1326,176 +1333,251 @@ EOT;
 		$db->query( "insert into ".$app_tablepre."mac_manager(m_id,m_name,m_password,m_status,m_levels) values('1','".$m_name."','".md5($m_password1)."',1,'2, 4, 6, 7, 8 ,9, 10')");
 		echo '<script type="text/javascript">showmessage(\'管理员帐号'.$m_name.'初始化成功... \');</script>';
 
-		
-		
+
+
 		$db->query("
 					INSERT INTO `mac_vod_type` (`t_id`, `t_name`, `t_enname`, `t_sort`, `t_pid`, `t_key`, `t_des`, `t_template`, `t_vodtemplate`, `t_playtemplate`, `t_hide`, `t_union`) VALUES
 					(1, '电影', 'dianying', 1, 0, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 0, ''),
 					(2, '连续剧', 'lianxuju', 2, 0, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 0, ',114_7,'),
 					(3, '综艺', 'zongyi', 3, 0, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 0, ',114_16,'),
 					(4, '视频', 'shiping', 4, 0, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, ''),
-					(5, '动作片', 'dongzuopian', 11, 1, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, ',114_11,'),
-					(6, '喜剧片', 'xijupian', 12, 1, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, ',114_8,'),
-					(7, '爱情片', 'aiqingpian', 13, 1, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, ',114_9,'),
-					(8, '科幻片', 'kehuanpian', 14, 1, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, ',114_13,114_15,'),
-					(9, '恐怖片', 'kongbupian', 14, 1, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, ',114_14,'),
-					(10, '剧情片', 'juqingpian', 16, 1, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, ',114_10,'),
-					(11, '战争片', 'zhanzhengpian', 17, 1, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, ',114_12,'),
-					(22, '武侠片', '武侠片', 20, 1, '', '武侠片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(23, '警匪片', '警匪片', 21, 1, '', '警匪片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(24, '穿越片', '穿越片', 22, 1, '', '穿越片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(21, '传记片', '传记片', 19, 1, '', '传记片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(19, '动画片', 'dh', 18, 1, 'dh', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(25, '神话片', '神话片', 23, 1, '', '神话片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(26, '古装片', '古装片', 24, 1, '', '古装片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(27, '音乐片', '音乐片', 25, 1, '', '音乐片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(28, '歌舞片', '歌舞片', 26, 1, '', '歌舞片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(29, '年代片', '年代片', 27, 1, '', '年代片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(30, '军事片', '军事片', 28, 1, '', '军事片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(31, '农村片', '农村片', 29, 1, '', '农村片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(32, '传奇片', '传奇片', 30, 1, '', '传奇片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(33, '生活片', '生活片', 31, 1, '', '生活片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(34, '西部片', '西部片', 32, 1, '', '西部片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(35, '戏曲片', '戏曲片', 33, 1, '', '戏曲片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(36, '歌舞片', '歌舞片', 34, 1, '', '歌舞片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(37, '言情片', '言情片', 35, 1, '', '言情片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(38, '舞蹈片', '舞蹈片', 36, 1, '', '舞蹈片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(39, '少儿片', '少儿片', 37, 1, '', '少儿片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(40, '社会片', '社会片', 38, 1, '', '社会片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(41, '犯罪片', '犯罪片', 39, 1, '', '犯罪片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(42, '惊悚片', '惊悚片', 40, 1, '', '惊悚片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(43, '冒险片', '冒险片', 41, 1, '', '冒险片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(44, '悬疑片', '悬疑片', 42, 1, '', '悬疑片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(45, '历史片', '历史片', 43, 1, '', '历史片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(46, '恐怖片', '恐怖片', 44, 1, '', '恐怖片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(47, '偶像片', '偶像片', 45, 1, '偶像片', '偶像片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(48, '都市片', '都市片', 46, 1, '都市片', '都市片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(49, '谍战片', '谍战片', 47, 1, '谍战片', '谍战片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(50, '魔幻片', '魔幻片', 48, 1, '魔幻片', '魔幻片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(51, '儿童片', '儿童片', 49, 1, '儿童片', '儿童片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(52, '纪实片', '纪实片', 50, 1, '纪实片', '纪实片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(53, '搞笑片', '搞笑片', 51, 1, '搞笑片', '搞笑片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(54, '家庭片', '家庭片', 52, 1, '家庭片', '家庭片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(55, '宫廷片', '宫廷片', 53, 1, '宫廷片', '宫廷片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(56, '奇幻片', '奇幻片', 54, 1, '奇幻片', '奇幻片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(57, '现代片', '现代片', 55, 1, '现代片', '现代片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(58, '动作片', 'dongzuopian', 11, 2, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(59, '喜剧片', 'xijupian', 12, 2, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(60, '爱情片', 'aiqingpian', 13, 2, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(61, '科幻片', 'kehuanpian', 14, 2, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(62, '恐怖片', 'kongbupian', 14, 2, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(63, '剧情片', 'juqingpian', 16, 2, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(64, '战争片', 'zhanzhengpian', 17, 2, '', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(65, '武侠片', '武侠片', 20, 2, '', '武侠片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(66, '警匪片', '警匪片', 21, 2, '', '警匪片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(67, '穿越片', '穿越片', 22, 2, '', '穿越片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(68, '传记片', '传记片', 19, 2, '', '传记片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(69, '动画片', 'dh', 18, 2, 'dh', '', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(70, '神话片', '神话片', 23, 2, '', '神话片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(71, '古装片', '古装片', 24, 2, '', '古装片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(72, '音乐片', '音乐片', 25, 2, '', '音乐片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(73, '歌舞片', '歌舞片', 26, 2, '', '歌舞片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(74, '年代片', '年代片', 27, 2, '', '年代片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(75, '军事片', '军事片', 28, 2, '', '军事片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(76, '农村片', '农村片', 29, 2, '', '农村片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(77, '传奇片', '传奇片', 30, 2, '', '传奇片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(78, '生活片', '生活片', 31, 2, '', '生活片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(79, '西部片', '西部片', 32, 2, '', '西部片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(80, '戏曲片', '戏曲片', 33, 2, '', '戏曲片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(81, '歌舞片', '歌舞片', 34, 2, '', '歌舞片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(82, '言情片', '言情片', 35, 2, '', '言情片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(83, '舞蹈片', '舞蹈片', 36, 2, '', '舞蹈片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(84, '少儿片', '少儿片', 37, 2, '', '少儿片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(85, '社会片', '社会片', 38, 2, '', '社会片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(86, '犯罪片', '犯罪片', 39, 2, '', '犯罪片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(87, '惊悚片', '惊悚片', 40, 2, '', '惊悚片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(88, '冒险片', '冒险片', 41, 2, '', '冒险片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(89, '悬疑片', '悬疑片', 42, 2, '', '悬疑片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(90, '历史片', '历史片', 43, 2, '', '历史片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(91, '恐怖片', '恐怖片', 44, 2, '', '恐怖片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(92, '偶像片', '偶像片', 45, 2, '偶像片', '偶像片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(93, '都市片', '都市片', 46, 2, '都市片', '都市片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(94, '谍战片', '谍战片', 47, 2, '谍战片', '谍战片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(95, '魔幻片', '魔幻片', 48, 2, '魔幻片', '魔幻片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(96, '儿童片', '儿童片', 49, 2, '儿童片', '儿童片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(97, '纪实片', '纪实片', 50, 2, '纪实片', '纪实片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(98, '搞笑片', '搞笑片', 51, 2, '搞笑片', '搞笑片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(99, '家庭片', '家庭片', 52, 2, '家庭片', '家庭片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(100, '宫廷片', '宫廷片', 53, 2, '宫廷片', '宫廷片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(101, '奇幻片', '奇幻片', 54, 2, '奇幻片', '奇幻片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(102, '现代片', '现代片', 55, 2, '现代片', '现代片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(103, '选秀', '选秀', 56, 3, '选秀', '选秀', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(104, '音乐', '音乐', 57, 3, '音乐', '音乐', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(105, '脱口秀', '脱口秀', 58, 3, '脱口秀', '脱口秀', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(106, '歌舞', '歌舞', 59, 3, '歌舞', '歌舞', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(107, '谈话', '谈话', 60, 3, '谈话', '谈话', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(108, '情感', '情感', 61, 3, '情感', '情感', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(109, '娱乐', '娱乐', 62, 3, '娱乐', '娱乐', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(110, '搞笑', '搞笑', 63, 3, '搞笑', '搞笑', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(111, '益智', '益智', 64, 3, '益智', '益智', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(112, '演唱会', '演唱会', 65, 3, '演唱会', '演唱会', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(113, '真人秀', '真人秀', 66, 3, '真人秀', '真人秀', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(114, '职场秀', '职场秀', 67, 3, '职场秀', '职场秀', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(115, '纪实', '纪实', 68, 3, '纪实', '纪实', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(116, '娱乐新闻', '娱乐新闻', 69, 4, '娱乐新闻', '娱乐新闻', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(117, '明星访谈', '明星访谈', 70, 4, '明星访谈', '明星访谈', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(118, '晚会典礼', '晚会典礼', 71, 4, '晚会典礼', '晚会典礼', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(119, '美食', '美食', 72, 3, '美食', '美食', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(120, '旅游', '旅游', 73, 3, '旅游', '旅游', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(121, '汽车', '汽车', 74, 3, '汽车', '汽车', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(122, '访谈', '访谈', 75, 3, '访谈', '访谈', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(123, '搞笑', '搞笑', 76, 3, '搞笑', '搞笑', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(124, '时尚', '时尚', 77, 3, '时尚', '时尚', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(125, '晚会', '晚会', 78, 3, '晚会', '晚会', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(126, '曲艺', '曲艺', 79, 3, '曲艺', '曲艺', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(127, '舞蹈', '舞蹈', 80, 3, '舞蹈', '舞蹈', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(128, '游戏', '游戏', 81, 3, '游戏', '游戏', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(129, '生活', '生活', 82, 3, '生活', '生活', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
+					
 					(131, '动漫', '动漫', 83, 0, '动漫', '动漫', 'vodlist.html', 'vod.html', 'vodplay.html', 0, NULL),
 					(132, '记录片', '记录片', 84, 0, '记录片', '记录片', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
 					(133, '教育', '教育', 85, 0, '教育', '教育', 'vodlist.html', 'vod.html', 'vodplay.html', 0, NULL),
-					(134, '战斗', '战斗', 86, 131, '战斗', '战斗', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(135, '热血', '热血', 87, 131, '热血', '热血', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(136, '冒险', '冒险', 88, 131, '冒险', '冒险', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(137, '奇幻', '奇幻', 89, 131, '奇幻', '奇幻', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(138, '治愈', '治愈', 90, 131, '治愈', '治愈', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(139, '搞笑', '搞笑', 91, 131, '搞笑', '搞笑', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(140, '恋爱', '恋爱', 92, 131, '恋爱', '恋爱', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(141, '校园', '校园', 93, 131, '校园', '校园', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(142, '魔法', '魔法', 94, 131, '魔法', '魔法', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(143, '励志', '励志', 95, 131, '励志', '励志', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(144, '机战', '机战', 96, 131, '机战', '机战', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(145, '日常', '日常', 97, 131, '日常', '日常', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(146, '科幻', '科幻', 98, 131, '科幻', '科幻', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(147, '悬疑推理', '悬疑推理', 99, 131, '悬疑推理', '悬疑推理', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(148, '惊悚', '惊悚', 100, 131, '惊悚', '惊悚', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(149, '竞技', '竞技', 101, 131, '竞技', '竞技', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(150, '美少女', '美少女', 102, 131, '美少女', '美少女', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(151, 'LOLI', 'LOLI', 103, 131, 'LOLI', 'LOLI', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(152, '后宫', '后宫', 104, 131, '后宫', '后宫', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(153, '耽美', '耽美', 105, 131, '耽美', '耽美', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(154, '百合', '百合', 106, 131, '百合', '百合', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(155, '运动', '运动', 107, 131, '运动', '运动', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(156, '神魔', '神魔', 108, 131, '神魔', '神魔', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(157, '怪物', '怪物', 109, 131, '怪物', '怪物', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(158, '男性向', '男性向', 110, 131, '男性向', '男性向', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(159, '女性向', '女性向', 111, 131, '女性向', '女性向', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(160, '成人', '成人', 112, 131, '成人', '成人', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(161, '真人', '真人', 113, 131, '真人', '真人', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(162, '童话', '童话', 114, 131, '童话', '童话', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(163, '英雄', '英雄', 115, 131, '英雄', '英雄', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(164, '益智', '益智', 116, 131, '益智', '益智', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(165, '魔幻', '魔幻', 117, 131, '魔幻', '魔幻', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(166, '动作', '动作', 118, 131, '动作', '动作', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(167, '教育', '教育', 119, 131, '教育', '教育', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(168, '轻松', '轻松', 120, 131, '轻松', '轻松', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(169, '神话', '神话', 121, 131, '神话', '神话', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(170, '生活', '生活', 122, 131, '生活', '生活', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(171, '宠物', '宠物', 123, 131, '宠物', '宠物', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
-					(172, '都市', '都市', 124, 131, '都市', '都市', 'vodlist.html', 'vod.html', 'vodplay.html', 1, NULL),
 					(173, '混合类', 'hunhelei', 125, 0, 'hunhelei', 'hunhelei', 'vodlist.html', 'vod.html', 'vodplay.html', 0, NULL);");
 
-		// $db->query( "INSERT into ".$app_tablepre."vod_type (t_id,t_name,t_enname,t_sort,t_pid,t_key,t_des,t_template,t_vodtemplate,t_playtemplate,t_downtemplate,t_hide,t_union)  VALUES ('1','电影','dianying',1,0,'','','vodlist.html','vod.html','vodplay.html','voddown.html',0,'')");
+		$file = "joyplus.sql";
+		if (file_exists($file)){
+
+			global $db;
+			$buffer = '';
+			// Defaults for parser
+			$sql = '';
+			$start_pos = 0;
+			$i = 0;
+			$len= 0;
+			$big_value = 2147483647;
+			$delimiter_keyword = 'DELIMITER '; // include the space because it's mandatory
+			$length_of_delimiter_keyword = strlen($delimiter_keyword);
+			$buffer=iconv("UTF-8","UTF-8", file_get_contents($file));
+			$len = strlen($buffer);
+			$GLOBALS['finished']=true;
+			$sql_delimiter = ';';
+			while ($i < $len) {
+				$found_delimiter = false;
+				// Find first interesting character
+				$old_i = $i;
+				// this is about 7 times faster that looking for each sequence i
+				// one by one with strpos()
+				if (preg_match('/(\'|"|#|-- |\/\*|`|(?i)(?<![A-Z0-9_])' . $delimiter_keyword . ')/', $buffer, $matches, PREG_OFFSET_CAPTURE, $i)) {
+					// in $matches, index 0 contains the match for the complete
+					// expression but we don't use it
+					$first_position = $matches[1][1];
+				} else {
+					$first_position = $big_value;
+				}
+				/**
+				 * @todo we should not look for a delimiter that might be
+				 *       inside quotes (or even double-quotes)
+				 */
+
+				// the cost of doing this one with preg_match() would be too high
+				$first_sql_delimiter = strpos($buffer, $sql_delimiter, $i);
+				if ($first_sql_delimiter === false) {
+					$first_sql_delimiter = $big_value;
+				} else {
+					$found_delimiter = true;
+				}
+
+				// set $i to the position of the first quote, comment.start or delimiter found
+				$i = min($first_position, $first_sql_delimiter);
+
+				if ($i == $big_value) {
+					// none of the above was found in the string
+
+					$i = $old_i;
+					if (!$GLOBALS['finished']) {
+						break;
+					}
+					// at the end there might be some whitespace...
+					if (trim($buffer) == '') {
+						$buffer = '';
+						$len = 0;
+						break;
+					}
+					// We hit end of query, go there!
+					$i = strlen($buffer) - 1;
+				}
+
+				// Grab current character
+				$ch = $buffer[$i];
+
+				// Quotes
+				if (strpos('\'"`', $ch) !== false) {
+					$quote = $ch;
+					$endq = false;
+					while (!$endq) {
+						// Find next quote
+						$pos = strpos($buffer, $quote, $i + 1);
+						/*
+						 * Behave same as MySQL and accept end of query as end of backtick.
+						 * I know this is sick, but MySQL behaves like this:
+						 *
+						 * SELECT * FROM `table
+						 *
+						 * is treated like
+						 *
+						 * SELECT * FROM `table`
+						 */
+						if ($pos === false && $quote == '`' && $found_delimiter) {
+							$pos = $first_sql_delimiter - 1;
+							// No quote? Too short string
+						} elseif ($pos === false) {
+							// We hit end of string => unclosed quote, but we handle it as end of query
+							if ($GLOBALS['finished']) {
+								$endq = true;
+								$i = $len - 1;
+							}
+							$found_delimiter = false;
+							break;
+						}
+						// Was not the quote escaped?
+						$j = $pos - 1;
+						while ($buffer[$j] == '\\') $j--;
+						// Even count means it was not escaped
+						$endq = (((($pos - 1) - $j) % 2) == 0);
+						// Skip the string
+						$i = $pos;
+
+						if ($first_sql_delimiter < $pos) {
+							$found_delimiter = false;
+						}
+					}
+					if (!$endq) {
+						break;
+					}
+					$i++;
+					// Aren't we at the end?
+					if ($GLOBALS['finished'] && $i == $len) {
+						$i--;
+					} else {
+						continue;
+					}
+				}
+
+				// Not enough data to decide
+				if ((($i == ($len - 1) && ($ch == '-' || $ch == '/'))
+				|| ($i == ($len - 2) && (($ch == '-' && $buffer[$i + 1] == '-')
+				|| ($ch == '/' && $buffer[$i + 1] == '*')))) && !$GLOBALS['finished']) {
+					break;
+				}
+
+				// Comments
+				if ($ch == '#'
+				|| ($i < ($len - 1) && $ch == '-' && $buffer[$i + 1] == '-'
+				&& (($i < ($len - 2) && $buffer[$i + 2] <= ' ')
+				|| ($i == ($len - 1)  && $GLOBALS['finished'])))
+				|| ($i < ($len - 1) && $ch == '/' && $buffer[$i + 1] == '*')
+				) {
+					// Copy current string to SQL
+					if ($start_pos != $i) {
+						$sql .= substr($buffer, $start_pos, $i - $start_pos);
+					}
+					// Skip the rest
+					$start_of_comment = $i;
+					// do not use PHP_EOL here instead of "\n", because the export
+					// file might have been produced on a different system
+					$i = strpos($buffer, $ch == '/' ? '*/' : "\n", $i);
+					// didn't we hit end of string?
+					if ($i === false) {
+						if ($GLOBALS['finished']) {
+							$i = $len - 1;
+						} else {
+							break;
+						}
+					}
+					// Skip *
+					if ($ch == '/') {
+						$i++;
+					}
+					// Skip last char
+					$i++;
+					// We need to send the comment part in case we are defining
+					// a procedure or function and comments in it are valuable
+					$sql .= substr($buffer, $start_of_comment, $i - $start_of_comment);
+					// Next query part will start here
+					$start_pos = $i;
+					// Aren't we at the end?
+					if ($i == $len) {
+						$i--;
+					} else {
+						continue;
+					}
+				}
+				// Change delimiter, if redefined, and skip it (don't send to server!)
+				if (strtoupper(substr($buffer, $i, $length_of_delimiter_keyword)) == $delimiter_keyword
+				&& ($i + $length_of_delimiter_keyword < $len)) {
+					// look for EOL on the character immediately after 'DELIMITER '
+					// (see previous comment about PHP_EOL)
+					$new_line_pos = strpos($buffer, "\n", $i + $length_of_delimiter_keyword);
+					// it might happen that there is no EOL
+					if (false === $new_line_pos) {
+						$new_line_pos = $len;
+					}
+					$sql_delimiter = substr($buffer, $i + $length_of_delimiter_keyword, $new_line_pos - $i - $length_of_delimiter_keyword);
+					$i = $new_line_pos + 1;
+					// Next query part will start here
+					$start_pos = $i;
+					continue;
+				}
+
+				// End of SQL
+				if ($found_delimiter || ($GLOBALS['finished'] && ($i == $len - 1))) {
+					$tmp_sql = $sql;
+					if ($start_pos < $len) {
+						$length_to_grab = $i - $start_pos;
+
+						if (! $found_delimiter) {
+							$length_to_grab++;
+						}
+						$tmp_sql .= substr($buffer, $start_pos, $length_to_grab);
+						unset($length_to_grab);
+					}
+					// Do not try to execute empty SQL
+					if (! preg_match('/^([\s]*;)*$/', trim($tmp_sql))) {
+						$sql = $tmp_sql;
+						$sql=preg_replace("/--.*\n/iU","",$sql);//去掉注释
+						$sql = trim($sql);
+						if((stripos($sql, "CREATE") !==false && stripos($sql, "CREATE") ==0 )|| (stripos($sql, "INSERT") !==false && strpos($sql, "INSERT")==0)
+						|| (stripos($sql, "UPDATE") !==false && strpos($sql, "UPDATE")==0)|| (stripos($sql, "DELETE") !==false && strpos($sql, "DELETE")==0)){
+
+							$rs2=$db->query($sql);
+						}else{
+							$sql = str_replace("/*!40101", "", $sql);
+							$sql = str_replace("*/", "", $sql);
+							$rs2=$db->query($sql);
+						}
+
+						$buffer = substr($buffer, $i + strlen($sql_delimiter));
+						$len = strlen($buffer);
+						$sql = '';
+						$i = 0;
+						$start_pos = 0;
+						// Any chance we will get a complete query?
+						//if ((strpos($buffer, ';') === false) && !$GLOBALS['finished']) {
+						if ((strpos($buffer, $sql_delimiter) === false) && !$GLOBALS['finished']) {
+							break;
+						}
+					} else {
+						$i++;
+						$start_pos = $i;
+					}
+				}
+			}
+
+
+		}
 
 
 		echo '<script type="text/javascript">showmessage(\'数据分类初始化成功... \');</script>';
@@ -1508,16 +1590,17 @@ EOT;
 function stepD()
 {
 	show_step(4,"安装完毕","正在删除安装脚本");
-		//if (file_exists("index.php")){
-		//	@unlink("index.php");
-		//}
-	?> <iframe id="tongji" name="tongji"
-	src="http://www.maccms.com/tongji.html?7x-php" MARGINWIDTH="0"
-	MARGINHEIGHT="0" HSPACE="0" VSPACE="0" FRAMEBORDER="0" SCROLLING="no"
-	width="0" height="0"></iframe>
-<div class="main">
-<div class="desc">如果没有自动删除install/index.php，请手工删除。 5秒后自动跳转到后台管理登录页面...</div>
-<script> setTimeout("gonextpage();",5000); function gonextpage(){location.href='../manager/index.php';} </script>
-	<?php
+	//if (file_exists("index.php")){
+	//	@unlink("index.php");
+	//}
+	?>
+	<iframe id="tongji" name="tongji"
+		src="http://www.maccms.com/tongji.html?7x-php" MARGINWIDTH="0"
+		MARGINHEIGHT="0" HSPACE="0" VSPACE="0" FRAMEBORDER="0" SCROLLING="no"
+		width="0" height="0"></iframe>
+	<div class="main">
+		<div class="desc">如果没有自动删除install/index.php，请手工删除。 5秒后自动跳转到后台管理登录页面...</div>
+		<script> setTimeout("gonextpage();",5000); function gonextpage(){location.href='../manager/index.php';} </script>
+		<?php
 }
 ?>

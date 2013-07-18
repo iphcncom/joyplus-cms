@@ -235,7 +235,10 @@ function edit(id,type)
 	  <input name="t_id[]" type="checkbox" id="t_id" value="<?php echo $t_id?>" /></td>
       <td><?php echo $t_id?></td>
       <td>
-    <a href="admin_vod.php?action=edit&id=<?php echo $row["vod_id"];?>">
+
+    <a href=<?php if ($row['type']==='0'){ echo 'admin_vod.php?action=edit&id=';}
+    else{
+    echo 'admin_vod_topic_items.php?topic_id=';}?><?php echo $row["vod_id"];?>>
       <?php echo $row["vod_name"]?></a> <?php if($row['type'] ==='0') { echo '[视频]';} else if($row['type'] ==='1') {echo '[榜单]';} else if($row['type'] ==='3') {echo '[二维码图片]';}?> </td>
 	  <td>
 	 <?php echo $row["iphone_pic_url"]?></td>
