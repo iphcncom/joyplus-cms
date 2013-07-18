@@ -298,8 +298,8 @@ input[value="取消"]:hover {
 #confirm {
 	padding: 15px;
 	background: #FFF;
-	outline: 5000px solid rgba(0, 0, 0, .25);
-	*outline:none;
+
+
 	*border: 5px solid #999;
 	box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
