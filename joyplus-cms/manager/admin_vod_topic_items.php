@@ -68,7 +68,7 @@ if($flag==1){
 	$pagecount=ceil($nums/app_pagenum);
 	//$sql = "SELECT a.id as id, a.flag as flag, a.disp_order as disp_order, vod.d_name as vod_name,vod.d_id as vod_id FROM {pre}vod_topic_items a,{pre}vod vod where ".$where." and a.vod_id=vod.d_id ORDER BY a.disp_order,a.id ASC limit ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
 //	var_dump($sql);
-	  $sql = "SELECT a.id as id, a.flag as flag, a.disp_order as disp_order, vod.d_name as vod_name,vod.d_id as vod_id FROM {pre}vod_topic_items AS a LEFT JOIN {pre}vod AS vod ON a.vod_id = vod.d_id WHERE a.topic_id =$topic_id ORDER BY a.disp_order,a.id ASC LIMIT ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
+	  $sql = "SELECT a.id as id, a.flag as flag, a.disp_order as disp_order, vod.d_name as vod_name,vod.d_id as vod_id FROM {pre}vod_topic_items AS a LEFT JOIN {pre}vod AS vod ON a.vod_id = vod.d_id WHERE ".$where." and a.topic_id =$topic_id LIMIT ".(app_pagenum * ($pagenum-1)) .",".app_pagenum;
 	$rs = $db->query($sql);
 ?>
 <script language="javascript">
