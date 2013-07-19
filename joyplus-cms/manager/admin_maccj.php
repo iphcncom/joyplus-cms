@@ -569,7 +569,7 @@ function glist()
 	    $xn_vod_type=4;
 	    $xn_vod_from=5;
 	    $xn_vod_time=6;
-	    if ( strpos($html, "</maccms>") <= 0){
+	    if ( strpos($html, "</joyplus>") <= 0){
 	    	echo "加载数据发生错误 , <a href=\"javascript:void(0)\" onclick=\"getlist(".$rtype.",".$rpage.",rkey,false);\">获取数据失败，请点击我重试</a>"; exit;
     	}
     }
@@ -601,7 +601,7 @@ function glist()
     unset($array2);
     echo "    </ul> </div>";
     
-    echo "<table class=\"tb\" style=\"padding-top:0px;border-top:1px solid #DEEFFA;border-bottom:0px solid #DEEFFA;\"><tr><td>数据查询：<input id=\"rkey\" name=\"rkey\" type=\"text\" onFocus=\"if (value =='请输入关键词'){value =''}\" onBlur=\"if (value ==''){value='请输入关键词'}\" value=\"请输入关键词\" size=\"30\" value='" . $rkey . "'>&nbsp;<input type=\"button\" id=\"btnsearch\" value=\"查询数据\" onclick=\"getlist(0,1,$('#rkey').val(),true);\" />&nbsp;<font color='red'>采集前请绑定相应分类 ，没有绑定分类的将不会采集入库</font>(<a href=\"http://www.maccms.com\" target=\"_blank\">maccms联盟专用采集服务端[请不要删除版权]</a>)</td></tr></table>";
+    echo "<table class=\"tb\" style=\"padding-top:0px;border-top:1px solid #DEEFFA;border-bottom:0px solid #DEEFFA;\"><tr><td>数据查询：<input id=\"rkey\" name=\"rkey\" type=\"text\" onFocus=\"if (value =='请输入关键词'){value =''}\" onBlur=\"if (value ==''){value='请输入关键词'}\" value=\"请输入关键词\" size=\"30\" value='" . $rkey . "'>&nbsp;<input type=\"button\" id=\"btnsearch\" value=\"查询数据\" onclick=\"getlist(0,1,$('#rkey').val(),true);\" />&nbsp;<font color='red'>采集前请绑定相应分类 ，没有绑定分类的将不会采集入库</font>(<a href=\"http://www.joyplus.tv\" target=\"_blank\">joyplus联盟专用采集服务端[请不要删除版权]</a>)</td></tr></table>";
 	
 	
 	preg_match_all($xn_vod,$html,$array3);
@@ -726,7 +726,7 @@ function bindsave()
     	$url = $cjurl . "?action=list&rpage=" . $rpage . "&rtype=" . $rtype . "&rkey=" . $rkey;
 	    $html = trim(getPage($url, "utf-8"));
     	
-	    if ( strpos($html, "</maccms>") <= 0){
+	    if ( strpos($html, "</joyplus>") <= 0){
 	    	echo "加载数据发生错误 , <a href=\"javascript:void(0)\" onclick=\"getlist(".$rtype.",".$rpage.",rkey,false);\">获取数据失败，请点击我重试</a>"; exit;
     	}
     }
@@ -793,7 +793,7 @@ function main()
 		$html .= "<script type=\"text/javascript\" src=\"".$f."\" charset=\"utf-8\"></script>";
 	}
 	else{
-		$html .= "<script type=\"text/javascript\" src=\"http://www.maccms.com/union/xmlutf.js\" charset=\"utf-8\"></script>";
+		$html .= "<script type=\"text/javascript\" src=\"http://www.joyplus.com/union/xmlutf.js\" charset=\"utf-8\"></script>";
 	}
 	$html .= "</span></body></html>";
 	echo $html;

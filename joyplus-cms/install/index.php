@@ -1594,10 +1594,7 @@ function stepD()
 	//	@unlink("index.php");
 	//}
 	?>
-	<iframe id="tongji" name="tongji"
-		src="http://www.maccms.com/tongji.html?7x-php" MARGINWIDTH="0"
-		MARGINHEIGHT="0" HSPACE="0" VSPACE="0" FRAMEBORDER="0" SCROLLING="no"
-		width="0" height="0"></iframe>
+	
 	<div class="main">
 		<div class="desc">如果没有自动删除install/index.php，请手工删除。 5秒后自动跳转到后台管理登录页面...</div>
 		<script> setTimeout("gonextpage();",5000); function gonextpage(){location.href='../manager/index.php';} </script>

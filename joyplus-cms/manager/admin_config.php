@@ -176,7 +176,7 @@ function sethtmldir(id,value){
     <tr>
       <td>网站域名：</td>
       <td><input name="app_siteurl" type="text" id="app_siteurl" value="<?php echo app_siteurl?>" size="40" maxlength="500">
-        <font color="#FF0000">＊</font> 如：WwW.MacCms.Com,不要加http://</td>
+        <font color="#FF0000">＊</font> 如：WwW.joyplus.Com,不要加http://</td>
     </tr>
     <tr>
       <td>网站关键字：</td>
@@ -190,7 +190,7 @@ function sethtmldir(id,value){
     </tr>
     <tr>
       <td>安装目录：</td>
-      <td><input name="app_installdir" type="text" id="app_installdir" value="<?php echo app_installdir?>" size="40" maxlength="500">  <font color="#FF0000">＊</font> 根目录 ＂/＂，二级目录 ＂/maccms/＂以此类推 </td>
+      <td><input name="app_installdir" type="text" id="app_installdir" value="<?php echo app_installdir?>" size="40" maxlength="500">  <font color="#FF0000">＊</font> 根目录 ＂/＂，二级目录 ＂/joyplus/＂以此类推 </td>
     </tr>
         <tr>
           <td>当前使用模板：</td>
@@ -698,7 +698,7 @@ function sethtmldir(id,value){
 	    <tr>
 	      <td>远程附件访问地址：</td>
 	      <td><input name="app_ftpurl" type="text" id="app_ftpurl" value="<?php echo app_ftpurl?>" size="30"> 
-	        <font color="#FF0000">＊</font> (必须/结尾,不使用则留空)如 http://img.maccms.com/ </td>
+	        <font color="#FF0000">＊</font> (必须/结尾,不使用则留空)如 http://img.joyplus.com/ </td>
 	    </tr>
 	    <tr>
 	      <td>是否删除本地图片：</td>
@@ -739,10 +739,6 @@ function sethtmldir(id,value){
 	      <td>过滤数据参数：</td>
 	      <td><input name="app_apivodfilter" type="text" id="app_apivodfilter" value="<?php echo app_apivodfilter?>" size="50"> 
 	        <font color="#FF0000">＊</font> SQL查询条件例如 and d_hide=0 </td>
-	    </tr>
-	    <tr>
-	      <td>友情提醒信息：</td>
-	      <td><font color="#FF0000">此数据主要提供给苹果CMS联盟资源库使用或为其他服务商提供数据接口。如不使用请关闭。<br> 接口地址为 【http://域名/inc/api.php】 接口各种参数说明请参考说明文档</font></td>
 	    </tr>
 	</table>
 
@@ -900,7 +896,7 @@ function configplaysave()
 	$autoFull = be("post","autofull");
 	$popenW = be("post","popenW");
 	$popenH = be("post","popenH");
-	$maccmsplay = be("post","maccmsplay");
+	$joyplusplay = be("post","joyplusplay");
 	$loadads = be("post","loadads");
 	$showlist = be("post","showlist");
 	$colors = be("post","colors");
@@ -916,7 +912,7 @@ function configplaysave()
 	$fc = regReplace($fc,"var\spopenW\=\"(\d+?)\"\;","var popenW=\"".$popenW."\";");
 	$fc = regReplace($fc,"var\spopenH\=\"(\d+?)\"\;","var popenH=\"".$popenH."\";");
 	$fc = regReplace($fc,"var\sautoFull\=(\d+?)\;","var autoFull=".$autoFull.";");
-	$fc = regReplace($fc,"var\smaccmsplay\=(\d+?)\;","var maccmsplay=".$maccmsplay.";");
+	$fc = regReplace($fc,"var\sjoyplusplay\=(\d+?)\;","var joyplusplay=".$joyplusplay.";");
 	$fc = regReplace($fc,"var\sloadads\=*\"*(\S+?)'*\"*\;","var loadads=\"".$loadads."\";");
 	$fc = regReplace($fc,"var\sshowlist\=(\d+?)\;","var showlist=".$showlist.";");
 	$fc = regReplace($fc,"var\scolors\=*\"*(\S+?)'*\"*\;","var colors=\"".$colors."\";");
@@ -938,13 +934,13 @@ function configplay()
 	$popenW = regMatch($fc,"var\spopenW\=(\d+?)\;");
 	$popenH = regMatch($fc,"var\spopenH\=(\d+?)\;");
 	$autoFull= regMatch($fc,"var\sautoFull\=(\d+?)\;");
-	$maccmsplay=regMatch($fc,"var\smaccmsplay\=(\d+?)\;");
+	$joyplusplay=regMatch($fc,"var\sjoyplusplay\=(\d+?)\;");
 	$loadads=regMatch($fc,"var\sloadads\=*\"*(\S+?)'*\"*\;");
 	$showlist=regMatch($fc,"var\sshowlist\=(\d+?)\;");
 	$colors=regMatch($fc,"var\scolors\=*\"*(\S+?)'*\"*\;");
 ?>
 <script language="javascript">
-var a = <?php echo $maccmsplay?>;
+var a = <?php echo $joyplusplay?>;
 $(document).ready(function(){
 	$("#form1").validate({
 		rules:{
@@ -983,7 +979,7 @@ $(document).ready(function(){
 	});
 	
 	$("#t1 input:radio").click(function(){
-		var v = $("input[name='maccmsplay']:checked").val();
+		var v = $("input[name='joyplusplay']:checked").val();
 		if(v==3){
 			$("#s1").show();
 		}
@@ -1054,9 +1050,9 @@ function setColor(v)
     <tr>
       <td>播放器文件：</td>
       <td id="t1">
-      	<br><input type="radio" name="maccmsplay" value="1" <?php if( $maccmsplay == 1 ){echo "checked";}?>><font color=black>1，本地播放器文件(播放器代码可能失效)</font>
-        <br><input type="radio" name="maccmsplay" value="2" <?php if( $maccmsplay == 2 ){echo "checked";}?>><font color=red>2，官方普通窗口版本(去广告、播放器代码随时更新不失效)</font>
-        <br><input type="radio" name="maccmsplay" value="3" <?php if( $maccmsplay == 3 ){echo "checked";}?>><font color=red>3，官方美化窗口版本(去广告、播放器代码随时更新不失效)</font>
+      	<br><input type="radio" name="joyplusplay" value="1" <?php if( $joyplusplay == 1 ){echo "checked";}?>><font color=black>1，本地播放器文件(播放器代码可能失效)</font>
+        <br><input type="radio" name="joyplusplay" value="2" <?php if( $joyplusplay == 2 ){echo "checked";}?>><font color=red>2，官方普通窗口版本(去广告、播放器代码随时更新不失效)</font>
+        <br><input type="radio" name="joyplusplay" value="3" <?php if( $joyplusplay == 3 ){echo "checked";}?>><font color=red>3，官方美化窗口版本(去广告、播放器代码随时更新不失效)</font>
         <span id="s1" style="display:none">
         <br>
         列表开关：关闭<input type="radio" name="showlist" value="0" <?php if( $showlist == 0 ){echo "checked";}?>>

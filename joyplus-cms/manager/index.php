@@ -324,7 +324,7 @@ function login()
 		<div class="console_left">
 			<div class="title">欢迎使用Joyplus视频管理系统</div>
 			<p>
-				<span>Joyplus CMS</span> 是一个采用<span>PHP(mysql)</span>构建的高效视频电影网站管理系统！
+				<span>Joyplus CMS</span> 是一个采用<span>yii和PHP(mysql)</span>构建的高效视频电影网站管理系统！
 			</p>
 			<div class="intro_1">轻松管理和配置各种信息</div>
 			<div class="intro_2">轻松发布在线视频资源</div>
