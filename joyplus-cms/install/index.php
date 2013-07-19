@@ -66,7 +66,7 @@ function show_header()
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Joyplus视频管理系统 安装向导</title>
+<title>悦视频视频管理系统 安装向导</title>
 <link rel="stylesheet" href="../install/style.css" type="text/css" media="all" />
 <script type="text/javascript" src="../js/jquery.js"></script>
 <script type="text/javascript" src="../js/jquery.validate.js"></script>
@@ -81,7 +81,7 @@ function show_header()
 <div class="container">
 	<div class="header">
 		<span>版本号：V1.1</span>
-		<h1>Joyplus视频管理系统 安装向导</h1>
+		<h1>悦视频视频管理系统 安装向导</h1>
 EOT;
 }
 
@@ -195,7 +195,7 @@ function stepA()
 	<th class="padleft">当前状态</th>
 </tr>
 EOT;
-	$arr = array("inc/config.php","inc/config.ftp.php","inc/config.interface.php","inc/cache.php","inc/timmingset.xml","inc/vodarea.txt","inc/vodlang.txt","upload/","upload/cache/","upload/export/","upload/thirdpartlogo/","install/index.php","log");
+	$arr = array("inc/config.php","inc/config.ftp.php","inc/config.interface.php","inc/cache.php","inc/timmingset.xml","inc/vodarea.txt","inc/vodlang.txt","upload/","upload/vod/","upload/topic/","upload/cache/","upload/export/","upload/thirdpartlogo/","install/index.php","log");
 	foreach($arr as $f){
 		$st="可写";
 		$cs="w";
