@@ -9,7 +9,7 @@ function headAdminCollect($title)
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=7" />
-<title><?php echo $title?> - 苹果MacCMS</title>
+<title><?php echo $title?> - Joyplus CMS</title>
 <link rel="stylesheet" type="text/css" href="../../images/admin.css" />
 <link rel="stylesheet" type="text/css" href="../../images/default/easyui.css" />
 <link rel="stylesheet" type="text/css" href="../../images/icon.css" />

@@ -89,7 +89,7 @@ $(document).ready(function(){
       <td><?php echo $fsize?>KB</td>
       <td><?php echo $ftime?></td>
       <td>
-	  <input id="text<?php echo $sFile?>" name="text<?php echo $sFile?>" type="text" value='<script src="{maccms:templatepath}ads/<?php echo $sFile?>"></script>' size="70"> 
+	  <input id="text<?php echo $sFile?>" name="text<?php echo $sFile?>" type="text" value='<script src="{joyplus:templatepath}ads/<?php echo $sFile?>"></script>' size="70"> 
 	  <input class="input" type="button" value="复制" name=Submit onClick='copyData(document.getElementById("text<?php echo $sFile?>").value);'>
 	  </td>
       <td><A href="admin_ads.php?action=edit&file=<?php echo $sFile?>">修改</a> | <A href="admin_ads.php?action=del&file=<?php echo $sFile?>" onClick="return confirm('确定要删除吗?');">删除</a></td>

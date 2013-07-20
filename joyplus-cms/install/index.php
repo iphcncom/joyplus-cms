@@ -36,27 +36,26 @@ function getcon($varName)
 }
 
 function ckdb()
-{
+{   
 	$server=be("get","server");
 	$dbname=be("get","db");
 	$id=be("get","id");
 	$pwd=be("get","pwd");
-	$lnk=mysql_connect($server,$id,$pwd);
-	if(!lnk){
-		die('servererror');
-	}
-	else{
-		$rs = @mysql_select_db($dbname,$lnk);
+	$lnk=mysql_connect($server,$dbname,$pwd); 
+	if(!$lnk){
+		echo('servererror');
+	}else{
+		$rs = @mysql_select_db($id,$lnk);
 		if(!$rs){
-			$rs = @mysql_query(" CREATE DATABASE `$dbname`; ",$lnk);
+			$rs = @mysql_query(" CREATE DATABASE `$id`; ",$lnk);
 			if(!$rs)
 			{
-				die('dberror');
+				echo('dberror');
 			}
 		}
 	}
 	@mysql_close($lnk);
-	die("ok");
+	echo("ok");
 }
 
 function show_header()
@@ -66,7 +65,7 @@ function show_header()
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Joyplus视频管理系统 安装向导</title>
+<title>悦视频视频管理系统 安装向导</title>
 <link rel="stylesheet" href="../install/style.css" type="text/css" media="all" />
 <script type="text/javascript" src="../js/jquery.js"></script>
 <script type="text/javascript" src="../js/jquery.validate.js"></script>
@@ -81,7 +80,7 @@ function show_header()
 <div class="container">
 	<div class="header">
 		<span>版本号：V1.1</span>
-		<h1>Joyplus视频管理系统 安装向导</h1>
+		<h1>悦视频视频管理系统 安装向导</h1>
 EOT;
 }
 
@@ -195,7 +194,7 @@ function stepA()
 	<th class="padleft">当前状态</th>
 </tr>
 EOT;
-	$arr = array("inc/config.php","inc/config.ftp.php","inc/config.interface.php","inc/cache.php","inc/timmingset.xml","inc/vodarea.txt","inc/vodlang.txt","upload/","upload/cache/","upload/export/","upload/thirdpartlogo/","install/index.php","log");
+	$arr = array("inc/config.php","inc/config.ftp.php","inc/config.interface.php","inc/cache.php","inc/timmingset.xml","inc/vodarea.txt","inc/vodlang.txt","upload/","upload/vod/","upload/topic/","upload/cache/","upload/export/","upload/thirdpartlogo/","install/index.php","log");
 	foreach($arr as $f){
 		$st="可写";
 		$cs="w";
@@ -317,10 +316,11 @@ function checkdb(){
 		var dbname=$("#app_dbname").val();
 		var id=$("#app_dbuser").val();
 		var pwd=$("#app_dbpass").val();
-		if(server=="" || dbname=="" || id=="" || pwd==""){
+		if(server=="" || dbname=="" || id=="" ){
 			alert("数据库信息不能为空");return;
 		}
     	$.ajax({cache: false, dataType: 'html', type: 'GET', url: 'index.php?action=ckdb&server='+server+'&db='+dbname+'&id='+id+'&pwd='+pwd,
+        	
     		success: function(obj) {
 				if(obj=='ok'){
 					$("#checkinfo").html( "<font color=green>&nbsp;&nbsp;连接数据库服务器成功!</font>" );
@@ -334,6 +334,7 @@ function checkdb(){
 			},
 			complete: function (XMLHttpRequest, textStatus) {
 				if( XMLHttpRequest.responseText.length >10){
+					
 					$("#checkinfo").html("<font color=red>&nbsp;&nbsp;连接服务器失败!</font>");
 				}
 			}
@@ -1594,10 +1595,7 @@ function stepD()
 	//	@unlink("index.php");
 	//}
 	?>
-	<iframe id="tongji" name="tongji"
-		src="http://www.maccms.com/tongji.html?7x-php" MARGINWIDTH="0"
-		MARGINHEIGHT="0" HSPACE="0" VSPACE="0" FRAMEBORDER="0" SCROLLING="no"
-		width="0" height="0"></iframe>
+	
 	<div class="main">
 		<div class="desc">如果没有自动删除install/index.php，请手工删除。 5秒后自动跳转到后台管理登录页面...</div>
 		<script> setTimeout("gonextpage();",5000); function gonextpage(){location.href='../manager/index.php';} </script>

@@ -10,8 +10,8 @@ function next(){
 	getPlayers(play_nextnum);
 }
 function getPlayers(current_num){
-	//alert(maccms_playlist);
-	var lists= maccms_playlist.split('#');
+	//alert(joyplus_playlist);
+	var lists= joyplus_playlist.split('#');
 	var vodid="";
 	var length=lists.length;
 	for(var i=0;i<length;i++){

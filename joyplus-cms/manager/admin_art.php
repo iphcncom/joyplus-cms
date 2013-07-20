@@ -451,7 +451,7 @@ $(document).ready(function(){
 	</td>
 	</tr>
 	<tr>
-	<td>文章内容：<br>分页标示[artinfo:page]<br>模板中调用分页标签{maccms:page才解析分页</td>
+	<td>文章内容：<br>分页标示[artinfo:page]<br>模板中调用分页标签{joyplus:page才解析分页</td>
 	<td>
 <textarea name="a_content" id="D_Content" class="xheditor {tools:'BtnBr,Cut,Copy,Paste,Pastetext,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,SelectAll,Removeformat,Align,List,Outdent,Indent,Link,Unlink,Img,Flash,Media,Table,Source,Fullscreen',width:'630',height:'250',upBtnText:'上传',html5Upload:false,upMultiple:1,upLinkUrl:'{editorRoot}upload.php?action=xht',upImgUrl:'{editorRoot}upload.php?action=xht'}"><?php echo $a_content?></textarea>
       </td>

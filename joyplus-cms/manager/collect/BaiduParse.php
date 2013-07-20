@@ -218,7 +218,7 @@ class BaiduParse{
 			}else if($type ===3 || $type ==='3'){
 				$url='http://video.baidu.com/show_intro/?dtype=tvshowPlayUrl&service=json&id='.$vedio_id;
 			}else if($type ===131 || $type ==='131'){
-				$url='http://video.baidu.com/comic_intro/?dtype=comicPlayUrl&service=json&id=7592'.$vedio_id;
+				$url='http://video.baidu.com/comic_intro/?dtype=comicPlayUrl&service=json&id='.$vedio_id;
 			}
 
 			writetofile("baiducontent.log","request url:".$url);

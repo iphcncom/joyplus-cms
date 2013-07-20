@@ -8,8 +8,8 @@
 return array(
 		// this is used in contact page
 		'adminEmail'=>'webmaster@ijoyplus.com',
-	    'app_key'=>'ijoyplus_android_0001,ijoyplus_ios_001,qipo_joyplus_001', // product
-//		'app_key'=>'ijoyplus_android_0001bj,ijoyplus_ios_001bj', // test
+	    'app_key'=>'a06f18fb09aa30337082e9d43eb72016,e25387ffd1ffa14e2680491ef491edfa,87974e2b5501e6247ec64e49ce2d6217', // product
+//		'app_key'=>'72dbdcec3b85d5d21c6777c696bc6aa3,24d8190c4578eeb613b2d8a2a2bee66d', // test
         'CACHE_PARAM_EXPIRED_DEFAULT'=>'3600',
         'CACHE_PARAM_EXPIRED_USER'=>'3600',
         'CACHE_PARAM_EXPIRED_PROGRAM'=>'3600',

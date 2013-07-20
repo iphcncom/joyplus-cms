@@ -1,11 +1,4 @@
-//==========================================================================================
-//软件名称：魅魔MacCMS
-//开发作者：MagicBlack    '官方网站：http://www.maccms.com/
-//Copyright (C) 2009 - 2010 ... maccms.com  All Rights Reserved.
-//郑重声明:
-//    1、任何个人或组织不得以盈利为目的发布,修改,本软件及其他副本上一切关于版权的信息；
-//    2、本人保留此软件的法律追究权利；
-//==========================================================================================
+
 
 String.prototype.replaceAll  = function(s1,s2){
    return this.replace(new RegExp(s1,"gm"),s2);
@@ -25,7 +18,7 @@ function copyData(text){
 	    	document.body.appendChild(flash_copy);
 		}
 		flash_copy = $('#flash_copy');
-		flash_copy.innerHTML = '<embed src='+maccms_path+'"images/_clipboard.swf" FlashVars="clipboard='+escape(text)+'" width="0" height="0" type="application/x-shockwave-flash"></embed>';
+		flash_copy.innerHTML = '<embed src='+joyplus_path+'"images/_clipboard.swf" FlashVars="clipboard='+escape(text)+'" width="0" height="0" type="application/x-shockwave-flash"></embed>';
 	}
 	alert("复制成功");
 	return true;
@@ -75,20 +68,20 @@ function creatediv(z,w,h){
 function closew(){	$("#confirm").remove(); }
 
 function getHit(action,id){
-	$.get(maccms_path+"inc/ajax.php?action="+action+"hit&id="+id,function(obj){
+	$.get(joyplus_path+"inc/ajax.php?action="+action+"hit&id="+id,function(obj){
 		if(obj=="err"){ $('#hit').html('发生错误');}else{ $('#hit').html(obj);}
 	});
 }
 function getGoodBad(action,id){
-	$.get(maccms_path+"inc/ajax.php?action="+action+"num&id="+id+"&rnd="+Math.random(),function(obj){
+	$.get(joyplus_path+"inc/ajax.php?action="+action+"num&id="+id+"&rnd="+Math.random(),function(obj){
 		if(obj=="err"){ $('#'+action+'_num').html('发生错误');}else{ $('#'+action+'_num').html(obj);}
 	});
 }
 function vodError(id,name){
-	location.href= maccms_path + "gbook.php?id="+id+"&name="+ encodeURI(name);
+	location.href= joyplus_path + "gbook.php?id="+id+"&name="+ encodeURI(name);
 }
 function userFav(id){
-	$.get(maccms_path+"inc/ajax.php?action=userfav&id="+id+"&rnd="+Math.random(),function(obj){
+	$.get(joyplus_path+"inc/ajax.php?action=userfav&id="+id+"&rnd="+Math.random(),function(obj){
 		if(obj=="ok"){
 			alert("会员收藏成功");
 		}
@@ -104,10 +97,10 @@ function userFav(id){
 	});
 }
 function desktop(name){
-	location.href= maccms_path + "inc/ajax.php?action=desktop&name="+encodeURI(name)+"&url=" + encodeURI(location.href);
+	location.href= joyplus_path + "inc/ajax.php?action=desktop&name="+encodeURI(name)+"&url=" + encodeURI(location.href);
 }
 function vodGood(id,div){
-	$.get(maccms_path+"inc/ajax.php?id="+id+"&action=vodgood&rnd="+Math.random(),function (obj){
+	$.get(joyplus_path+"inc/ajax.php?id="+id+"&action=vodgood&rnd="+Math.random(),function (obj){
 		if (!isNaN(obj)){
 			try{ $('#'+div).html(obj);}catch(e) {}
 			alert('感谢你的支持！');
@@ -118,7 +111,7 @@ function vodGood(id,div){
 }
 
 function vodBad(id,div){
-	$.get(maccms_path+"inc/ajax.php?id="+id+"&action=vodbad&rnd="+Math.random(),function (obj){
+	$.get(joyplus_path+"inc/ajax.php?id="+id+"&action=vodbad&rnd="+Math.random(),function (obj){
 		if(!isNaN(obj)){
 			try{$('#'+div).html(obj);}catch(e) {}
 			alert('踩我好悲哀！');
@@ -128,7 +121,7 @@ function vodBad(id,div){
 	});
 }
 function getScore(action,id){
-	$.get(maccms_path+"inc/ajax.php?action=getscore&ac2="+action+"&id="+id+"&rnd="+Math.random(),function(obj){
+	$.get(joyplus_path+"inc/ajax.php?action=getscore&ac2="+action+"&id="+id+"&rnd="+Math.random(),function(obj){
 		if(obj=="err"){ $('#score'+action+'_num').html('发生错误');}else{ $('#score'+action+'_num').html(obj);}
 	});
 }
@@ -136,12 +129,12 @@ function vodScoreMark(id,sc,s){
 	var pjf = (parseInt(s / sc * 10) * 0.1) || 0;
 	pjf = pjf.toFixed(1);
 	document.write("<div id=\"vod-rating\" class=\"vod-rating\"></div>");
-	$.ajax({ cache: false, dataType: 'html', type: 'GET', url: maccms_path +'inc/ajax.php?id='+id+'&action=getscore&ac2=pjf',
+	$.ajax({ cache: false, dataType: 'html', type: 'GET', url: joyplus_path +'inc/ajax.php?id='+id+'&action=getscore&ac2=pjf',
 	success: function(r){
 		pjf = Number(r);
 	},
 	complete:function(a,b){
-		$("#vod-rating").rater({maxvalue:10,curvalue:pjf ,style:'inline-normal',url: maccms_path +'inc/ajax.php?id='+id+'&action=score&score='});
+		$("#vod-rating").rater({maxvalue:10,curvalue:pjf ,style:'inline-normal',url: joyplus_path +'inc/ajax.php?id='+id+'&action=score&score='});
 	}});
 }
 function vodScoreMark1(id,sc,s){
@@ -154,7 +147,7 @@ function vodScoreMark1(id,sc,s){
 	}
 	document.write(str +'&nbsp;<input type="button" value=" 评 分 " id="scoresend" style="width:55px;height:21px"/></div></div>');
 	
-	$.ajax({ cache: false, dataType: 'html', type: 'GET', url: maccms_path +'inc/ajax.php?id='+id+'&action=getscore&ac2=pjf&ac3=all',
+	$.ajax({ cache: false, dataType: 'html', type: 'GET', url: joyplus_path +'inc/ajax.php?id='+id+'&action=getscore&ac2=pjf&ac3=all',
 		success: function(r){
 			var arr = r.split(",");
 			$("#rating_msg1").html(arr[1]);
@@ -173,7 +166,7 @@ function vodScoreMark1(id,sc,s){
 		}
 		if(!rc){alert('你还没选取分数');return;}
 		
-		$.get(maccms_path +'inc/ajax.php?id='+id+'&action=score&ac3=all&score='+ i ,function (obj){
+		$.get(joyplus_path +'inc/ajax.php?id='+id+'&action=score&ac3=all&score='+ i ,function (obj){
 			if(obj.indexOf("haved")!=-1){
 				alert('你已经评过分啦');
 			}else{
@@ -191,18 +184,18 @@ function vodScoreMark1(id,sc,s){
 function getComment(url){
 	$.get(url,function(obj){
 		if (obj=="err"){
-			$("#maccms_comment").html("<font color='red'>发生错误</font>");
+			$("#joyplus_comment").html("<font color='red'>发生错误</font>");
 		}else{
-			$("#maccms_comment").html(obj);
+			$("#joyplus_comment").html(obj);
 		}
 	});
 }
 function getGbook(id,name){
-	$.get(maccms_path + "plus/gbook/?action=main&id="+id+"&name="+ encodeURI(name),function(obj){
+	$.get(joyplus_path + "plus/gbook/?action=main&id="+id+"&name="+ encodeURI(name),function(obj){
 		if (obj=="err"){
-			$("#maccms_gbook").html("<font color='red'>发生错误</font>");
+			$("#joyplus_gbook").html("<font color='red'>发生错误</font>");
 		}else{
-			$("#maccms_gbook").html(obj);
+			$("#joyplus_gbook").html(obj);
 		}
 	});
 }
@@ -282,6 +275,6 @@ function history_del(){
 window.onload = function(){
 try {
     var timmingRun = (new Image());
-    timmingRun.src = maccms_path + 'inc/timming.php?t=' + Math.random()
+    timmingRun.src = joyplus_path + 'inc/timming.php?t=' + Math.random()
 } catch(e) {}
 };

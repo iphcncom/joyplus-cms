@@ -1,9 +1,9 @@
 <?php
 define("app_sitename","免费在线电影");      //网站名称
-define("app_installdir","/");        //网站路径
-define("app_siteurl","thirdpart_cms.yue001.com");        //网站域名地址
-define("app_keywords","免费在线电影");        //网站关键字
-define("app_description","提供最新最快的影视资讯和在线播放");        //网站描述信息
+define("app_installdir","");        //网站路径
+define("app_siteurl","");        //网站域名地址
+define("app_keywords","");        //网站关键字
+define("app_description","");        //网站描述信息
 define("app_templatedir","default");    //模板目录
 define("app_htmldir","html");      //模板html目录
 define("app_cache",0);       //是否开启缓存

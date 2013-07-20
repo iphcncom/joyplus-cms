@@ -6,7 +6,7 @@ require_once ("version.php");
 chkLogin();
 
 $action = be("get","action");
-$updateserver = "http://www.maccms.com/update/p/";
+$updateserver = "";
 $updatelog = "bak/update.xml";
 
 $verstr = getPage($updateserver . "?v=". version,"utf-8");
@@ -26,7 +26,7 @@ dispseObj();
 function checkversion()
 {
 	global $verstr;
-	if(strpos($verstr,"</maccms>")>0){
+	if(strpos($verstr,"</joyplus>")>0){
 		$doc = new DOMDocument();
 		$doc -> formatOutput = true;
 		$doc -> loadxml($verstr);
@@ -48,7 +48,7 @@ function checkversion()
 function getcheckversion()
 {
 	global $verstr;
-	if(strpos($verstr,"</maccms>")>0){
+	if(strpos($verstr,"</joyplus>")>0){
 		$doc = new DOMDocument();
 		$doc -> formatOutput = true;
 		$doc -> loadxml($verstr);
@@ -197,7 +197,7 @@ function showfilelist()
 	<?php
 	}
 	else{
-		echo "<tr><td colspan=\"5\" >已经是最新版本，无需升级，请随时关注 www.maccms.com 官方信息！</td></tr>";
+		echo "<tr><td colspan=\"5\" >已经是最新版本，无需升级，请随时关注 www.joyplus.com 官方信息！</td></tr>";
 	}
 	unset($nodes);
 	unset($xmlnode);

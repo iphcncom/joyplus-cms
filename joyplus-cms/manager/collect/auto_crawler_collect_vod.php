@@ -30,8 +30,9 @@ function crawler($crontab){
 function collect($crontab){
 	writetofile("crawler_collect.sql", 'collect start.');
 	global $db;
+	$time=date("Y-m-d");
 	$count = $db->getOne("SELECT count(*) FROM mac_cj_zhuiju  where status=0 and crontab_desc like'%".$crontab."%'  ");
-	$sql="select a.* from {pre}cj_vod as a , mac_cj_zhuiju as b where a.m_id= b.m_id and b.crontab_desc like'%".$crontab."%' and a.m_typeid>0 and a.m_name IS NOT NULL AND a.m_name != '' and a.m_playfrom not in ('tudou','kankan','cntv','wasu')";
+	$sql="select a.* from {pre}cj_vod as a , mac_cj_zhuiju as b where a.m_id= b.m_id and b.crontab_desc like'%".$crontab."%' and a.m_typeid>0 and a.m_name IS NOT NULL AND a.m_addtime like'%".$time."%' and a.m_name != '' and a.m_playfrom not in ('tudou','kankan','cntv','wasu')";
     
 	MovieInflow($sql,$count,true);
 	writetofile("crawler_collect.sql", 'collect stop.');

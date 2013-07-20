@@ -514,7 +514,7 @@ class AppTemplate
             $tempSize = getCache($appName);
         }
         else{
-            $labelRule = "\{maccms:".$strtype."list[\s\S]+?num=([\d]+)[\s\S]*\}";
+            $labelRule = "\{joyplus:".$strtype."list[\s\S]+?num=([\d]+)[\s\S]*\}";
 		    $labelRule = buildregx($labelRule,"is");
 		    preg_match_all($labelRule,$this->html,$arr);
 			for($i=0;$i<count($arr[1]);$i++)
@@ -580,10 +580,10 @@ class AppTemplate
     {
         global $mac;
         if ( $mac["curviewtype"] < 2){
-            $this->html = replaceStr($this->html, "{maccms:runtime}", getRunTime() );
+            $this->html = replaceStr($this->html, "{joyplus:runtime}", getRunTime() );
         }
         else{
-            $this->html = replaceStr($this->html, "{maccms:runtime}", "");
+            $this->html = replaceStr($this->html, "{joyplus:runtime}", "");
         }
     }
     
@@ -591,49 +591,49 @@ class AppTemplate
     {
     	global $mac;
     	
-        $this->html = replaceStr($this->html, "{maccms:url}", app_siteurl);
-        $this->html = replaceStr($this->html, "{maccms:path}", app_installdir);
-        $this->html = replaceStr($this->html, "{maccms:templatepath}", app_installdir . "template/" . app_templatedir . "/");
-        $this->html = replaceStr($this->html, "{maccms:name}", app_sitename);
-        $this->html = replaceStr($this->html, "{maccms:keywords}", app_keywords);
-        $this->html = replaceStr($this->html, "{maccms:description}", app_description);
-        $this->html = replaceStr($this->html, "{maccms:icp}", app_icp);
-        $this->html = replaceStr($this->html, "{maccms:qq}", app_qq);
-        $this->html = replaceStr($this->html, "{maccms:email}", app_email);
-        $this->html = replaceStr($this->html, "{maccms:curvodtypeid}", $mac["vodtypeid"]);
-        $this->html = replaceStr($this->html, "{maccms:curvodtypepid}", $mac["vodtypepid"]);
-        $this->html = replaceStr($this->html, "{maccms:curvodtopicid}", $mac["vodtopicid"]);
-        $this->html = replaceStr($this->html, "{maccms:curarttypeid}", $mac["arttypeid"]);
-        $this->html = replaceStr($this->html, "{maccms:curarttypepid}", $mac["arttypepid"]);
-        $this->html = replaceStr($this->html, "{maccms:curarttopicid}", $mac["arttopicid"]);
-        $this->html = replaceStr($this->html, "{maccms:userid}", $_SESSION["userid"]);
-        $this->html = replaceStr($this->html, "{maccms:username}", $_SESSION["username"]);
-        $this->html = replaceStr($this->html, "{maccms:desktop}", "<a href=\"javascript:void(0)\" onclick=\"desktop('');return false;\"/>保存到桌面</a>");
+        $this->html = replaceStr($this->html, "{joyplus:url}", app_siteurl);
+        $this->html = replaceStr($this->html, "{joyplus:path}", app_installdir);
+        $this->html = replaceStr($this->html, "{joyplus:templatepath}", app_installdir . "template/" . app_templatedir . "/");
+        $this->html = replaceStr($this->html, "{joyplus:name}", app_sitename);
+        $this->html = replaceStr($this->html, "{joyplus:keywords}", app_keywords);
+        $this->html = replaceStr($this->html, "{joyplus:description}", app_description);
+        $this->html = replaceStr($this->html, "{joyplus:icp}", app_icp);
+        $this->html = replaceStr($this->html, "{joyplus:qq}", app_qq);
+        $this->html = replaceStr($this->html, "{joyplus:email}", app_email);
+        $this->html = replaceStr($this->html, "{joyplus:curvodtypeid}", $mac["vodtypeid"]);
+        $this->html = replaceStr($this->html, "{joyplus:curvodtypepid}", $mac["vodtypepid"]);
+        $this->html = replaceStr($this->html, "{joyplus:curvodtopicid}", $mac["vodtopicid"]);
+        $this->html = replaceStr($this->html, "{joyplus:curarttypeid}", $mac["arttypeid"]);
+        $this->html = replaceStr($this->html, "{joyplus:curarttypepid}", $mac["arttypepid"]);
+        $this->html = replaceStr($this->html, "{joyplus:curarttopicid}", $mac["arttopicid"]);
+        $this->html = replaceStr($this->html, "{joyplus:userid}", $_SESSION["userid"]);
+        $this->html = replaceStr($this->html, "{joyplus:username}", $_SESSION["username"]);
+        $this->html = replaceStr($this->html, "{joyplus:desktop}", "<a href=\"javascript:void(0)\" onclick=\"desktop('');return false;\"/>保存到桌面</a>");
         
-        $this->html = replaceStr($this->html, "{maccms:gbooklink}", app_installdir . "gbook.php" );
-        $this->html = replaceStr($this->html, "{maccms:searchlink}", app_installdir . "search.php" );
+        $this->html = replaceStr($this->html, "{joyplus:gbooklink}", app_installdir . "gbook.php" );
+        $this->html = replaceStr($this->html, "{joyplus:searchlink}", app_installdir . "search.php" );
         
-        $this->html = replaceStr($this->html, "{maccms:indexlink}", $this->getIndexLink());
-        $this->html = replaceStr($this->html, "{maccms:artindexlink}", $this->getArtIndexLink());
-        $this->html = replaceStr($this->html, "{maccms:vodmaplink}", $this->getMapLink());
-        $this->html = replaceStr($this->html, "{maccms:artmaplink}", $this->getArtMapLink());
-        $this->html = replaceStr($this->html, "{maccms:vodtopiclink}", $this->getTopicIndexLink("vod", true));
-        $this->html = replaceStr($this->html, "{maccms:arttopiclink}", $this->getTopicIndexLink("art", true));
-        $this->html = replaceStr($this->html, "{maccms:visits}", "<script src=\"" . app_installdir . "js/tj.js\"></script>");
+        $this->html = replaceStr($this->html, "{joyplus:indexlink}", $this->getIndexLink());
+        $this->html = replaceStr($this->html, "{joyplus:artindexlink}", $this->getArtIndexLink());
+        $this->html = replaceStr($this->html, "{joyplus:vodmaplink}", $this->getMapLink());
+        $this->html = replaceStr($this->html, "{joyplus:artmaplink}", $this->getArtMapLink());
+        $this->html = replaceStr($this->html, "{joyplus:vodtopiclink}", $this->getTopicIndexLink("vod", true));
+        $this->html = replaceStr($this->html, "{joyplus:arttopiclink}", $this->getTopicIndexLink("art", true));
+        $this->html = replaceStr($this->html, "{joyplus:visits}", "<script src=\"" . app_installdir . "js/tj.js\"></script>");
         
-        if (indexOf($this->html, "{maccms:vodallcount}")) { $this->html = replaceStr($this->html, "{maccms:vodallcount}", getVodCount("all"));}
-        if (indexOf($this->html, "{maccms:voddaycount}")) { $this->html = replaceStr($this->html, "{maccms:voddaycount}", getVodCount("day"));}
-        if (indexOf($this->html, "{maccms:artallcount}")) { $this->html = replaceStr($this->html, "{maccms:artallcount}", getArtCount("all"));}
-        if (indexOf($this->html, "{maccms:artdaycount}")) { $this->html = replaceStr($this->html, "{maccms:artdaycount}", getArtCount("day"));}
-        if (indexOf($this->html, "{maccms:usercount}")) { $this->html = replaceStr($this->html, "{maccms:usercount}", getUserCount("all"));}
-        if (indexOf($this->html, "{maccms:userdaycount}")) { $this->html = replaceStr($this->html, "{maccms:userdaycount}", getUserCount("day"));}
+        if (indexOf($this->html, "{joyplus:vodallcount}")) { $this->html = replaceStr($this->html, "{joyplus:vodallcount}", getVodCount("all"));}
+        if (indexOf($this->html, "{joyplus:voddaycount}")) { $this->html = replaceStr($this->html, "{joyplus:voddaycount}", getVodCount("day"));}
+        if (indexOf($this->html, "{joyplus:artallcount}")) { $this->html = replaceStr($this->html, "{joyplus:artallcount}", getArtCount("all"));}
+        if (indexOf($this->html, "{joyplus:artdaycount}")) { $this->html = replaceStr($this->html, "{joyplus:artdaycount}", getArtCount("day"));}
+        if (indexOf($this->html, "{joyplus:usercount}")) { $this->html = replaceStr($this->html, "{joyplus:usercount}", getUserCount("all"));}
+        if (indexOf($this->html, "{joyplus:userdaycount}")) { $this->html = replaceStr($this->html, "{joyplus:userdaycount}", getUserCount("day"));}
         
     }
     
     function headfoot()
     {
-        $this->html = replaceStr($this->html, "{maccms:head}", getFileByCache("template_head",root. "template/" . app_templatedir . "/" . app_htmldir . "/head.html"));
-        $this->html = replaceStr($this->html, "{maccms:foot}", getFileByCache("template_foot",root. "template/" . app_templatedir . "/" . app_htmldir . "/foot.html"));
+        $this->html = replaceStr($this->html, "{joyplus:head}", getFileByCache("template_head",root. "template/" . app_templatedir . "/" . app_htmldir . "/head.html"));
+        $this->html = replaceStr($this->html, "{joyplus:foot}", getFileByCache("template_foot",root. "template/" . app_templatedir . "/" . app_htmldir . "/foot.html"));
     }
     
     function mark()
@@ -643,7 +643,7 @@ class AppTemplate
         $this->base();
         $this->typematrix();
        	
-        $labelRule = buildregx('{maccms:([\S]+)\s+(.*?)}([\s\S]+?){/maccms:\1}',"");
+        $labelRule = buildregx('{joyplus:([\S]+)\s+(.*?)}([\s\S]+?){/joyplus:\1}',"");
 		preg_match_all($labelRule ,$this->html,$matches1);
 		
         for($i=0;$i<count($matches1[0]);$i++)
@@ -750,7 +750,7 @@ class AppTemplate
     function typematrix()
     {
     	global $db;
-    	$labelRule = buildregx("{maccms:typematrix([\s\S]*?)}([\s\S]*?){/maccms:typematrix}","");
+    	$labelRule = buildregx("{joyplus:typematrix([\s\S]*?)}([\s\S]*?){/joyplus:typematrix}","");
 		preg_match_all($labelRule ,$this->html,$matches1);
 		
 		
@@ -1041,7 +1041,7 @@ class AppTemplate
     	global $db,$mac;
     	
         if (indexOf($this->html, "[pagelist:content")){ $field_des = "a_content";} else{ $field_des = "0"; }
-        $labelRule = buildregx("{maccms:artpagelist([\s\S]*?)}([\s\S]*?){/maccms:artpagelist}","");
+        $labelRule = buildregx("{joyplus:artpagelist([\s\S]*?)}([\s\S]*?){/joyplus:artpagelist}","");
 		preg_match_all($labelRule ,$this->html,$matches1);
 		if (isN($this->page)){ $this->page = $mac["page"]; }
 		
@@ -1291,7 +1291,7 @@ class AppTemplate
     	global $db,$mac,$cache;
     	
         if (indexOf($this->html, "[pagelist:content")){ $field_des = "d_content";} else{ $field_des = "0"; }
-        $labelRule = buildregx("{maccms:vodpagelist([\s\S]*?)}([\s\S]*?){/maccms:vodpagelist}","");
+        $labelRule = buildregx("{joyplus:vodpagelist([\s\S]*?)}([\s\S]*?){/joyplus:vodpagelist}","");
 		preg_match_all($labelRule ,$this->html,$matches1);
 		if (isN($this->page)){ $this->page = $mac["page"]; }
 		
@@ -1544,7 +1544,7 @@ class AppTemplate
     {
     	global $db,$mac;
     	
-        $labelRule = buildregx("{maccms:topicpagelist([\s\S]*?)}([\s\S]*?){/maccms:topicpagelist}","");
+        $labelRule = buildregx("{joyplus:topicpagelist([\s\S]*?)}([\s\S]*?){/joyplus:topicpagelist}","");
 		preg_match_all($labelRule ,$this->html,$matches1);
 		if (isN($this->page)){ $this->page = $mac["page"]; }
 		
@@ -2480,7 +2480,7 @@ class AppTemplate
     
     function pageshow()
 	{
-        $labelRule = buildregx("{maccms:pagenum([\s\S]*?)}","");
+        $labelRule = buildregx("{joyplus:pagenum([\s\S]*?)}","");
 		preg_match_all($labelRule ,$this->html,$matches1);
 		
         for($i=0;$i<count($matches1[0]);$i++)
@@ -2580,15 +2580,15 @@ class AppTemplate
         }
         
         $this->html = replaceStr($this->html, $pagenumval, $strpagenum);
-        $this->html = replaceStr($this->html, "{maccms:pagenow}", $this->page);
-        $this->html = replaceStr($this->html, "{maccms:pagefirst}", $pagefirst);
-        $this->html = replaceStr($this->html, "{maccms:pagelast}", $pagelast);
-        $this->html = replaceStr($this->html, "{maccms:pagepre}", $pagepre);
-        $this->html = replaceStr($this->html, "{maccms:pagenext}", $pagenext);
-        $this->html = replaceStr($this->html, "{maccms:pagedata}", $this->data_count);
-        $this->html = replaceStr($this->html, "{maccms:pagesize}", $this->page_size);
-        $this->html = replaceStr($this->html, "{maccms:pagecount}", $this->page_count);
-        $this->html = replaceStr($this->html, "{maccms:pageselect}", $pagesel);
+        $this->html = replaceStr($this->html, "{joyplus:pagenow}", $this->page);
+        $this->html = replaceStr($this->html, "{joyplus:pagefirst}", $pagefirst);
+        $this->html = replaceStr($this->html, "{joyplus:pagelast}", $pagelast);
+        $this->html = replaceStr($this->html, "{joyplus:pagepre}", $pagepre);
+        $this->html = replaceStr($this->html, "{joyplus:pagenext}", $pagenext);
+        $this->html = replaceStr($this->html, "{joyplus:pagedata}", $this->data_count);
+        $this->html = replaceStr($this->html, "{joyplus:pagesize}", $this->page_size);
+        $this->html = replaceStr($this->html, "{joyplus:pagecount}", $this->page_count);
+        $this->html = replaceStr($this->html, "{joyplus:pageselect}", $pagesel);
         $this->html = replaceStr($this->html, "{searchpage:count}", $this->data_count);
     }
     
@@ -2615,7 +2615,7 @@ class AppTemplate
         if($playserver !=""){
         	$playserverarr = explode("$$$",$playserver); $playserverarrlen = count($playserverarr);
         }
-        $labelRule = buildregx("{maccms:playlist([\s\S]*?)}([\s\S]*?){/maccms:playlist}","");
+        $labelRule = buildregx("{joyplus:playlist([\s\S]*?)}([\s\S]*?){/joyplus:playlist}","");
 		preg_match_all($labelRule ,$this->html,$matches1);
 		
                    
@@ -2671,7 +2671,7 @@ class AppTemplate
                    }
                   
                     $n=0;
-                    $labelRule = buildregx("{maccms:urllist([\s\S]*?)}([\s\S]*?){/maccms:urllist}","");
+                    $labelRule = buildregx("{joyplus:urllist([\s\S]*?)}([\s\S]*?){/joyplus:urllist}","");
 					preg_match_all($labelRule ,$this->markval,$matches3);
 					
                     for($k=0;$k<count($matches3[0]);$k++)
@@ -2827,7 +2827,7 @@ class AppTemplate
     	if ($downurl !=""){
     		$downarr1 = explode("$$$",$downurl); $downarr1len = count($downarr1);
     	}
-        $labelRule = buildregx("{maccms:downlist([\s\S]*?)}([\s\S]*?){/maccms:downlist}","");
+        $labelRule = buildregx("{joyplus:downlist([\s\S]*?)}([\s\S]*?){/joyplus:downlist}","");
 		preg_match_all($labelRule ,$this->html,$matches1);
 		
         for($i=0;$i<count($matches1[0]);$i++)
@@ -2852,7 +2852,7 @@ class AppTemplate
                 $url = $downarr2[1];
                 $urlarr = explode("#",$url);
                 
-                $labelRule = buildregx("{maccms:urllist([\s\S]*?)}([\s\S]*?){/maccms:urllist}","");
+                $labelRule = buildregx("{joyplus:urllist([\s\S]*?)}([\s\S]*?){/joyplus:urllist}","");
 				preg_match_all($labelRule ,$this->markval,$matches3);
 					
                 for($k=0;$k<count($matches3[0]);$k++)
@@ -2911,7 +2911,7 @@ class AppTemplate
         }
         
        
-      $labelRule = buildregx("{maccms:downlist([\s\S]*?)}([\s\S]*?){/maccms:downlist}","");
+      $labelRule = buildregx("{joyplus:downlist([\s\S]*?)}([\s\S]*?){/joyplus:downlist}","");
 		preg_match_all($labelRule ,$this->html,$matches1);
 		
 		
@@ -2954,7 +2954,7 @@ class AppTemplate
                    
                     
                     $n=0;
-                   $labelRule = buildregx("{maccms:urllist([\s\S]*?)}([\s\S]*?){/maccms:urllist}","");
+                   $labelRule = buildregx("{joyplus:urllist([\s\S]*?)}([\s\S]*?){/joyplus:urllist}","");
 					preg_match_all($labelRule ,$this->markval,$matches3);
 					
                     for($k=0;$k<count($matches3[0]);$k++)
@@ -3060,7 +3060,7 @@ class AppTemplate
     {
     	if ($c_type == 1){ $strLabel = "vodinfo";} else {$strLabel = "artinfo";}
         
-        $str = "<div id=\"maccms_comment\"><div style=\"padding:5px;text-align:center;\"><img src=\"" . app_installdir . "images/loading.gif\"/> &nbsp;&nbsp;<strong>评论载入中，请稍候.....</strong></div></div><script language=\"javascript\">getComment('" . app_installdir . "plus/comment/?id=". $c_vid . "&type=" . $c_type . "');</script>";
+        $str = "<div id=\"joyplus_comment\"><div style=\"padding:5px;text-align:center;\"><img src=\"" . app_installdir . "images/loading.gif\"/> &nbsp;&nbsp;<strong>评论载入中，请稍候.....</strong></div></div><script language=\"javascript\">getComment('" . app_installdir . "plus/comment/?id=". $c_vid . "&type=" . $c_type . "');</script>";
         
         $this->html = replaceStr($this->html, "[" . $strLabel . ":comment]", $str);
     }
