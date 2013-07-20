@@ -161,6 +161,7 @@ function deleteStatus(id){
 	<option value="6" <?php if($feedback_type=="6"){ echo "selected";} ?>>用户反馈画质不清晰</option>
 	<option value="7" <?php if($feedback_type=="7"){ echo "selected";} ?>>用户反馈音画不同步</option>
 	<option value="8" <?php if($feedback_type=="8"){ echo "selected";} ?>>用户反馈其它（用户自己填写，可不填）</option>
+	<option value="10" <?php if($feedback_type=="10"){ echo "selected";} ?>>程序反馈视频地址失效</option>
 	</select>
 	
 	<select id="client" name="client">
@@ -259,7 +260,7 @@ function View(){
 	</tr>
 	
 <?php 
-   for ($i=1;$i<10;$i++){
+   for ($i=1;$i<=10;$i++){
    	if($i ==8){
    		continue;
    	}
@@ -275,6 +276,7 @@ function View(){
 	<option value="6" <?php if($i=="6"){ echo "selected";} ?>>用户反馈画质不清晰</option>
 	<option value="7" <?php if($i=="7"){ echo "selected";} ?>>用户反馈音画不同步</option>
 	<option value="8" <?php if($i=="8"){ echo "selected";} ?>>用户反馈其它（用户自己填写，可不填）</option>
+	<option value="10" <?php if($i=="10"){ echo "selected";} ?>>程序反馈视频地址失效</option>
 	</select></td>
 	<td><?php echo   $db->getOne("select count(*) as count from tbl_video_feedback where feedback_type like '%".$i."%' and prod_id=".$d_id);?></td>
 	</tr>
