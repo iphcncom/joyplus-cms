@@ -36,27 +36,26 @@ function getcon($varName)
 }
 
 function ckdb()
-{
+{   
 	$server=be("get","server");
 	$dbname=be("get","db");
 	$id=be("get","id");
 	$pwd=be("get","pwd");
-	$lnk=mysql_connect($server,$id,$pwd);
-	if(!lnk){
-		die('servererror');
-	}
-	else{
-		$rs = @mysql_select_db($dbname,$lnk);
+	$lnk=mysql_connect($server,$dbname,$pwd); 
+	if(!$lnk){
+		echo('servererror');
+	}else{
+		$rs = @mysql_select_db($id,$lnk);
 		if(!$rs){
-			$rs = @mysql_query(" CREATE DATABASE `$dbname`; ",$lnk);
+			$rs = @mysql_query(" CREATE DATABASE `$id`; ",$lnk);
 			if(!$rs)
 			{
-				die('dberror');
+				echo('dberror');
 			}
 		}
 	}
 	@mysql_close($lnk);
-	die("ok");
+	echo("ok");
 }
 
 function show_header()
@@ -317,10 +316,11 @@ function checkdb(){
 		var dbname=$("#app_dbname").val();
 		var id=$("#app_dbuser").val();
 		var pwd=$("#app_dbpass").val();
-		if(server=="" || dbname=="" || id=="" || pwd==""){
+		if(server=="" || dbname=="" || id=="" ){
 			alert("数据库信息不能为空");return;
 		}
     	$.ajax({cache: false, dataType: 'html', type: 'GET', url: 'index.php?action=ckdb&server='+server+'&db='+dbname+'&id='+id+'&pwd='+pwd,
+        	
     		success: function(obj) {
 				if(obj=='ok'){
 					$("#checkinfo").html( "<font color=green>&nbsp;&nbsp;连接数据库服务器成功!</font>" );
@@ -334,6 +334,7 @@ function checkdb(){
 			},
 			complete: function (XMLHttpRequest, textStatus) {
 				if( XMLHttpRequest.responseText.length >10){
+					
 					$("#checkinfo").html("<font color=red>&nbsp;&nbsp;连接服务器失败!</font>");
 				}
 			}
